@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="bn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>লোন — RentFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../design-system/tokens.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+      body {
+        font-family: var(--font-sans);
+        line-height: var(--line-height-body);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-(--color-surface) text-(--color-ink)">
+    <!-- ============ SIDEBAR (desktop ≥lg, fixed 264px) — লোন active ============ -->
+    <aside
+      class="fixed inset-y-0 left-0 z-30 hidden w-[264px] flex-col border-r border-(--color-border) bg-(--color-surface-raised) lg:flex"
+      aria-label="সাইডবার নেভিগেশন"
+    >
+      <div class="flex h-16 shrink-0 items-center gap-2.5 px-6">
+        <span
+          class="flex h-8 w-8 items-center justify-center rounded-(--radius-md) bg-(--color-primary) text-(--color-on-primary)"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M3 10.5 12 3l9 7.5" />
+            <path d="M5 9.5V21h14V9.5" />
+          </svg>
+        </span>
+        <span class="text-lg font-bold tracking-tight text-(--color-ink)"
+          >RentFlow</span
+        >
+      </div>
+
+      <nav class="flex-1 space-y-1 overflow-y-auto px-3 py-2">
+        <!-- ড্যাশবোর্ড -->
+        <a
+          href="02-dashboard.html"
+          class="flex items-center gap-3 rounded-(--radius-md) px-3 py-2.5 text-sm font-medium text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft) hover:text-(--color-ink)"
+        >
+          <svg
+            class="shrink-0"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M3 10.5 12 3l9 7.5" />
+            <path d="M5 9.5V21h14V9.5" />
+          </svg>
+          ড্যাশবোর্ড
+        </a>
+        <!-- বিল ও মিটার -->
+        <a
+          href="03-meter-entry.html"
+          class="flex items-center gap-3 rounded-(--radius-md) px-3 py-2.5 text-sm font-medium text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft) hover:text-(--color-ink)"
+        >
+          <svg
+            class="shrink-0"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M6 2h12v20l-2-1.5L14 22l-2-1.5L10 22l-2-1.5L6 22V2z" />
+            <path d="M9 7h6M9 11h6M9 15h4" />
+          </svg>
+          বিল ও মিটার
+        </a>
+        <!-- রেন্টি -->
+        <a
+          href="09-tenant-list.html"
+          class="flex items-center gap-3 rounded-(--radius-md) px-3 py-2.5 text-sm font-medium text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft) hover:text-(--color-ink)"
+        >
+          <svg
+            class="shrink-0"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          রেন্টি
+        </a>
+        <!-- সারাংশ -->
+        <a
+          href="22-monthly-summary-ledger.html"
+          class="flex items-center gap-3 rounded-(--radius-md) px-3 py-2.5 text-sm font-medium text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft) hover:text-(--color-ink)"
+        >
+          <svg
+            class="shrink-0"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M3 3v18h18" />
+            <path d="M8 17v-5" />
+            <path d="M13 17V7" />
+            <path d="M18 17v-8" />
+          </svg>
+          সারাংশ
+        </a>
+        <!-- লোন (active) -->
+        <a
+          href="23-loan-list.html"
+          class="flex items-center gap-3 rounded-(--radius-md) bg-(--color-primary-tint) px-3 py-2.5 text-sm font-semibold text-(--color-ink)"
+          aria-current="page"
+        >
+          <svg
+            class="shrink-0 text-(--color-primary)"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="2" y="6" width="20" height="12" rx="2" />
+            <circle cx="12" cy="12" r="2.5" />
+          </svg>
+          লোন
+        </a>
+        <!-- ফিনান্স -->
+        <a
+          href="26-income-expense-list.html"
+          class="flex items-center gap-3 rounded-(--radius-md) px-3 py-2.5 text-sm font-medium text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft) hover:text-(--color-ink)"
+        >
+          <svg
+            class="shrink-0"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M20 7H5a2 2 0 0 1-2-2 2 2 0 0 1 2-2h13v4" />
+            <path d="M3 5v14a2 2 0 0 0 2 2h15v-4" />
+            <path d="M21 12h-4a2 2 0 0 0 0 4h4z" />
+          </svg>
+          ফিনান্স
+        </a>
+        <!-- সেটিংস -->
+        <a
+          href="29-settings-hub.html"
+          class="flex items-center gap-3 rounded-(--radius-md) px-3 py-2.5 text-sm font-medium text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft) hover:text-(--color-ink)"
+        >
+          <svg
+            class="shrink-0"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+            />
+          </svg>
+          সেটিংস
+        </a>
+      </nav>
+
+      <div class="shrink-0 border-t border-(--color-border) p-3">
+        <div
+          class="flex items-center gap-3 rounded-(--radius-md) bg-(--color-surface-soft) p-3"
+        >
+          <span
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-(--color-primary-tint) text-sm font-bold text-(--color-ink)"
+            >র</span
+          >
+          <div class="min-w-0">
+            <p class="truncate text-sm font-semibold text-(--color-ink)">
+              রফিক ভাই
+            </p>
+            <p class="truncate text-xs text-(--color-ink-muted)">
+              আবাসিক ভবন — মিরপুর-১০
+            </p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="lg:pl-[264px]">
+      <main
+        class="mx-auto w-full max-w-md pb-32 md:max-w-3xl lg:max-w-6xl lg:px-8 lg:pb-16 xl:max-w-7xl"
+      >
+        <!-- ============ TOP BAR ============ -->
+        <header class="px-4 pt-5 lg:px-0 lg:pt-8">
+          <div class="flex items-center justify-between gap-3">
+            <div class="min-w-0">
+              <h1 class="text-xl font-bold leading-tight text-(--color-ink)">
+                লোন
+              </h1>
+              <p class="mt-1 text-sm text-(--color-ink-muted)">
+                আবাসিক ভবন — মিরপুর-১০
+              </p>
+            </div>
+            <a
+              href="24-add-loan.html"
+              class="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-(--radius-button) bg-(--color-primary) px-4 py-2.5 text-sm font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active)"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+              নতুন লোন
+            </a>
+          </div>
+        </header>
+
+        <!-- ============ SUMMARY CHIPS ============ -->
+        <section
+          class="mt-4 grid grid-cols-3 gap-3 px-4 lg:px-0"
+          aria-label="লোন সারসংক্ষেপ"
+        >
+          <div
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg)"
+          >
+            <p class="text-xs text-(--color-ink-faint)">চলমান</p>
+            <p
+              class="mt-1.5 text-xl font-bold leading-none text-(--color-info)"
+            >
+              ১
+            </p>
+          </div>
+          <div
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg)"
+          >
+            <p class="text-xs text-(--color-ink-faint)">মোট বিতরণ</p>
+            <p class="mt-1.5 text-xl font-bold leading-none text-(--color-ink)">
+              ৳৫,০০০
+            </p>
+          </div>
+          <div
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg)"
+          >
+            <p class="text-xs text-(--color-ink-faint)">বাকি</p>
+            <p
+              class="mt-1.5 text-xl font-bold leading-none text-(--color-warning)"
+            >
+              ৳৩,০০০
+            </p>
+          </div>
+        </section>
+
+        <!-- ============ FILTER CHIPS ============ -->
+        <div class="mt-3 flex flex-wrap gap-2 px-4 lg:px-0">
+          <!-- সব (active) -->
+          <button
+            class="inline-flex items-center gap-1 rounded-(--radius-pill) border border-(--color-primary) bg-(--color-primary-tint) px-3.5 py-1.5 text-sm font-semibold text-(--color-ink)"
+            aria-pressed="true"
+          >
+            সব ২
+          </button>
+          <button
+            class="inline-flex items-center gap-1 rounded-(--radius-pill) border border-(--color-border) bg-(--color-surface-raised) px-3.5 py-1.5 text-sm font-medium text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft)"
+            aria-pressed="false"
+          >
+            চলমান ১
+          </button>
+          <button
+            class="inline-flex items-center gap-1 rounded-(--radius-pill) border border-(--color-border) bg-(--color-surface-raised) px-3.5 py-1.5 text-sm font-medium text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft)"
+            aria-pressed="false"
+          >
+            বন্ধ ১
+          </button>
+        </div>
+
+        <!-- ============ LOAN LIST (cards on mobile / 2-col grid on desktop) ============ -->
+        <section
+          class="mt-4 grid gap-3 px-4 md:grid-cols-2 md:gap-4 lg:px-0"
+          aria-label="লোন তালিকা"
+        >
+          <!-- নাফিসা আক্তার — চলমান লোন -->
+          <a
+            href="25-loan-detail.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <div class="flex items-center gap-3">
+              <span
+                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-(--color-primary-tint) text-sm font-bold text-(--color-ink)"
+                >না</span
+              >
+              <div class="min-w-0 flex-1">
+                <p class="truncate text-sm font-semibold text-(--color-ink)">
+                  নাফিসা আক্তার
+                </p>
+                <p class="mt-0.5 text-xs text-(--color-ink-muted)">রুম ১০৭</p>
+              </div>
+              <span
+                class="inline-flex shrink-0 items-center gap-1.5 rounded-(--radius-pill) bg-(--color-info-tint) px-2.5 py-1 text-xs font-medium text-(--color-info)"
+              >
+                <span class="h-1.5 w-1.5 rounded-full bg-(--color-info)"></span>
+                চলমান
+              </span>
+            </div>
+
+            <div
+              class="mt-4 grid grid-cols-3 gap-2 rounded-(--radius-md) bg-(--color-surface-sunken) px-3 py-2.5 text-center"
+            >
+              <div>
+                <p class="text-xs text-(--color-ink-faint)">পরিমাণ</p>
+                <p class="mt-0.5 text-sm font-semibold text-(--color-ink)">
+                  ৳৫,০০০
+                </p>
+              </div>
+              <div>
+                <p class="text-xs text-(--color-ink-faint)">পরিশোধিত</p>
+                <p class="mt-0.5 text-sm font-semibold text-(--color-ink)">
+                  ৳২,০০০
+                </p>
+              </div>
+              <div>
+                <p class="text-xs text-(--color-ink-faint)">ব্যালেন্স</p>
+                <p class="mt-0.5 text-sm font-bold text-(--color-warning)">
+                  ৳৩,০০০
+                </p>
+              </div>
+            </div>
+
+            <div class="mt-3">
+              <div class="flex items-center justify-between">
+                <p class="text-xs text-(--color-ink-faint)">অগ্রগতি</p>
+                <p class="text-xs font-medium text-(--color-ink-muted)">
+                  ২/৫ কিস্তি
+                </p>
+              </div>
+              <div
+                class="mt-1.5 h-2 w-full overflow-hidden rounded-(--radius-pill) bg-(--color-info-tint)"
+              >
+                <div
+                  class="h-full rounded-(--radius-pill) bg-(--color-info)"
+                  style="width: 40%"
+                ></div>
+              </div>
+            </div>
+
+            <div class="mt-3 flex items-center justify-between gap-3">
+              <p class="min-w-0 truncate text-xs text-(--color-ink-muted)">
+                পরবর্তী কিস্তি · সেপ্টেম্বর ২০২৬
+              </p>
+              <svg
+                class="shrink-0 text-(--color-ink-faint)"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m9 6 6 6-6 6" />
+              </svg>
+            </div>
+          </a>
+
+          <!-- তানভীর ইসলাম — বন্ধ লোন (কনট্রাস্ট) -->
+          <a
+            href="25-loan-detail.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <div class="flex items-center gap-3">
+              <span
+                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-(--color-primary-tint) text-sm font-bold text-(--color-ink)"
+                >তা</span
+              >
+              <div class="min-w-0 flex-1">
+                <p class="truncate text-sm font-semibold text-(--color-ink)">
+                  তানভীর ইসলাম
+                </p>
+                <p class="mt-0.5 text-xs text-(--color-ink-muted)">রুম ১০৪</p>
+              </div>
+              <span
+                class="inline-flex shrink-0 items-center gap-1.5 rounded-(--radius-pill) bg-(--color-surface-soft) px-2.5 py-1 text-xs font-medium text-(--color-ink-faint)"
+              >
+                <span
+                  class="h-1.5 w-1.5 rounded-full bg-(--color-ink-faint)"
+                ></span>
+                বন্ধ
+              </span>
+            </div>
+
+            <div
+              class="mt-4 grid grid-cols-3 gap-2 rounded-(--radius-md) bg-(--color-surface-sunken) px-3 py-2.5 text-center"
+            >
+              <div>
+                <p class="text-xs text-(--color-ink-faint)">পরিমাণ</p>
+                <p class="mt-0.5 text-sm font-semibold text-(--color-ink)">
+                  ৳২,০০০
+                </p>
+              </div>
+              <div>
+                <p class="text-xs text-(--color-ink-faint)">পরিশোধিত</p>
+                <p class="mt-0.5 text-sm font-semibold text-(--color-ink)">
+                  ৳২,০০০
+                </p>
+              </div>
+              <div>
+                <p class="text-xs text-(--color-ink-faint)">ব্যালেন্স</p>
+                <p
+                  class="mt-0.5 text-sm font-semibold text-(--color-ink-faint)"
+                >
+                  ৳০
+                </p>
+              </div>
+            </div>
+
+            <div class="mt-3">
+              <div class="flex items-center justify-between">
+                <p class="text-xs text-(--color-ink-faint)">অগ্রগতি</p>
+                <p class="text-xs font-medium text-(--color-ink-muted)">
+                  ২/২ কিস্তি
+                </p>
+              </div>
+              <div
+                class="mt-1.5 h-2 w-full overflow-hidden rounded-(--radius-pill) bg-(--color-surface-soft)"
+              >
+                <div
+                  class="h-full rounded-(--radius-pill) bg-(--color-ink-faint)"
+                  style="width: 100%"
+                ></div>
+              </div>
+            </div>
+
+            <div class="mt-3 flex items-center justify-between gap-3">
+              <p class="min-w-0 truncate text-xs text-(--color-ink-muted)">
+                সব কিস্তি পরিশোধিত
+              </p>
+              <svg
+                class="shrink-0 text-(--color-ink-faint)"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m9 6 6 6-6 6" />
+              </svg>
+            </div>
+          </a>
+        </section>
+
+        <!-- ============================================================
+           — প্রথম লোনের আগে / empty state —
+           Annotated EMPTY-STATE VARIANT: this is what the list looks like
+           before the first loan is given. Same shell, no data yet.
+           ============================================================ -->
+        <section
+          class="mt-10 border-t border-(--color-border-strong) pt-8"
+          aria-label="খালি অবস্থা প্রিভিউ"
+        >
+          <p
+            class="px-4 text-center text-xs font-semibold uppercase tracking-wide text-(--color-ink-faint) lg:px-0"
+          >
+            — কোনো লোন নেই / empty state —
+          </p>
+          <div class="mt-4 px-4 lg:px-0">
+            <div
+              class="flex flex-col items-center rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) px-6 py-12 text-center"
+            >
+              <span
+                class="flex h-16 w-16 items-center justify-center rounded-full bg-(--color-primary-tint) text-(--color-primary)"
+              >
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="2" y="6" width="20" height="12" rx="2" />
+                  <circle cx="12" cy="12" r="2.5" />
+                </svg>
+              </span>
+              <h3 class="mt-4 text-lg font-semibold text-(--color-ink)">
+                কোনো লোন নেই
+              </h3>
+              <p class="mt-1.5 max-w-60 text-sm text-(--color-ink-muted)">
+                রেন্টিকে টাকা ধার দিলে এখানে লোন হিসেবে রাখুন — কিস্তিতে ফেরত
+                আদায় করুন।
+              </p>
+              <a
+                href="24-add-loan.html"
+                class="mt-5 inline-flex items-center justify-center gap-2 rounded-(--radius-button) bg-(--color-primary) px-5 py-3 text-base font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active)"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+                প্রথম লোন দিন
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================================
+           — লোডিং / loading —
+           Annotated LOADING VARIANT: skeleton loan cards shown while the
+           loan list is still loading. Static, no JS.
+           ============================================================ -->
+        <section
+          class="mt-10 border-t border-(--color-border-strong) pt-8"
+          aria-label="লোডিং প্রিভিউ"
+        >
+          <p
+            class="px-4 text-center text-xs font-semibold uppercase tracking-wide text-(--color-ink-faint) lg:px-0"
+          >
+            — লোডিং / loading —
+          </p>
+          <div
+            class="mt-4 grid gap-3 px-4 md:grid-cols-2 md:gap-4 lg:px-0"
+            aria-hidden="true"
+          >
+            <!-- skeleton loan card 1 -->
+            <div
+              class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg)"
+            >
+              <div class="flex items-center gap-3">
+                <span
+                  class="h-11 w-11 shrink-0 rounded-full bg-(--color-surface-soft)"
+                ></span>
+                <div class="min-w-0 flex-1 space-y-2">
+                  <div
+                    class="h-4 w-2/3 rounded-(--radius-pill) bg-(--color-surface-soft)"
+                  ></div>
+                  <div
+                    class="h-3 w-1/3 rounded-(--radius-pill) bg-(--color-surface-soft)"
+                  ></div>
+                </div>
+                <span
+                  class="h-5 w-16 shrink-0 rounded-(--radius-pill) bg-(--color-surface-soft)"
+                ></span>
+              </div>
+              <div
+                class="mt-4 h-14 w-full rounded-(--radius-md) bg-(--color-surface-soft)"
+              ></div>
+              <div
+                class="mt-3 h-2 w-full rounded-(--radius-pill) bg-(--color-surface-soft)"
+              ></div>
+            </div>
+
+            <!-- skeleton loan card 2 -->
+            <div
+              class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg)"
+            >
+              <div class="flex items-center gap-3">
+                <span
+                  class="h-11 w-11 shrink-0 rounded-full bg-(--color-surface-soft)"
+                ></span>
+                <div class="min-w-0 flex-1 space-y-2">
+                  <div
+                    class="h-4 w-3/4 rounded-(--radius-pill) bg-(--color-surface-soft)"
+                  ></div>
+                  <div
+                    class="h-3 w-1/2 rounded-(--radius-pill) bg-(--color-surface-soft)"
+                  ></div>
+                </div>
+                <span
+                  class="h-5 w-14 shrink-0 rounded-(--radius-pill) bg-(--color-surface-soft)"
+                ></span>
+              </div>
+              <div
+                class="mt-4 h-14 w-full rounded-(--radius-md) bg-(--color-surface-soft)"
+              ></div>
+              <div
+                class="mt-3 h-2 w-full rounded-(--radius-pill) bg-(--color-surface-soft)"
+              ></div>
+            </div>
+
+            <!-- skeleton loan card 3 -->
+            <div
+              class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg)"
+            >
+              <div class="flex items-center gap-3">
+                <span
+                  class="h-11 w-11 shrink-0 rounded-full bg-(--color-surface-soft)"
+                ></span>
+                <div class="min-w-0 flex-1 space-y-2">
+                  <div
+                    class="h-4 w-1/2 rounded-(--radius-pill) bg-(--color-surface-soft)"
+                  ></div>
+                  <div
+                    class="h-3 w-1/4 rounded-(--radius-pill) bg-(--color-surface-soft)"
+                  ></div>
+                </div>
+                <span
+                  class="h-5 w-12 shrink-0 rounded-(--radius-pill) bg-(--color-surface-soft)"
+                ></span>
+              </div>
+              <div
+                class="mt-4 h-14 w-full rounded-(--radius-md) bg-(--color-surface-soft)"
+              ></div>
+              <div
+                class="mt-3 h-2 w-full rounded-(--radius-pill) bg-(--color-surface-soft)"
+              ></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ============ BOTTOM NAV (order: বিল | রেন্টি | হোম | সারাংশ | আরও) — আরও active ============ -->
+    <nav
+      class="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md border-t border-(--color-border) bg-(--color-surface-raised) px-2 pt-2 pb-[max(env(safe-area-inset-bottom),0.75rem)] lg:hidden"
+      aria-label="প্রধান নেভিগেশন"
+    >
+      <div class="grid grid-cols-5">
+        <a
+          href="17-bill-preview.html"
+          class="flex flex-col items-center gap-1 py-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
+          aria-label="বিল"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M6 2h12v20l-2-1.5L14 22l-2-1.5L10 22l-2-1.5L6 22V2z" />
+            <path d="M9 7h6M9 11h6M9 15h4" />
+          </svg>
+          <span class="text-xs">বিল</span>
+        </a>
+        <a
+          href="09-tenant-list.html"
+          class="flex flex-col items-center gap-1 py-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
+          aria-label="রেন্টি"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          <span class="text-xs">রেন্টি</span>
+        </a>
+        <!-- হোম (center, raised) -->
+        <a
+          href="02-dashboard.html"
+          class="flex flex-col items-center pt-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
+          aria-label="হোম"
+        >
+          <span
+            class="-mt-6 flex h-14 w-14 items-center justify-center rounded-full bg-(--color-primary) text-(--color-on-primary) shadow-(--shadow-float)"
+          >
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 10.5 12 3l9 7.5" />
+              <path d="M5 9.5V21h14V9.5" />
+            </svg>
+          </span>
+          <span class="mt-1 text-xs">হোম</span>
+        </a>
+        <a
+          href="22-monthly-summary-ledger.html"
+          class="flex flex-col items-center gap-1 py-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
+          aria-label="সারাংশ"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M3 3v18h18" />
+            <path d="M8 17v-5" />
+            <path d="M13 17V7" />
+            <path d="M18 17v-8" />
+          </svg>
+          <span class="text-xs">সারাংশ</span>
+        </a>
+        <!-- আরও (active) -->
+        <a
+          href="29-settings-hub.html"
+          class="flex flex-col items-center gap-1 py-1 text-(--color-primary)"
+          aria-label="আরও"
+          aria-current="page"
+        >
+          <span
+            class="flex h-9 w-14 items-center justify-center rounded-(--radius-pill) bg-(--color-primary-tint)"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <circle cx="5" cy="12" r="1.4" />
+              <circle cx="12" cy="12" r="1.4" />
+              <circle cx="19" cy="12" r="1.4" />
+            </svg>
+          </span>
+          <span class="text-xs font-semibold">আরও</span>
+        </a>
+      </div>
+    </nav>
+  </body>
+</html>

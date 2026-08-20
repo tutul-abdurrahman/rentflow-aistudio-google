@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="bn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RentFlow — Design Screens</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../design-system/tokens.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+      body {
+        font-family: var(--font-sans);
+        line-height: var(--line-height-body);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-(--color-surface) text-(--color-ink)">
+    <main class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <!-- Brand -->
+      <div class="flex items-center gap-3">
+        <span
+          class="flex h-11 w-11 items-center justify-center rounded-full bg-(--color-primary) text-(--color-on-primary)"
+        >
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M3 10.5 12 3l9 7.5" />
+            <path d="M5 9.5V21h14V9.5" />
+          </svg>
+        </span>
+        <div>
+          <h1 class="text-2xl font-bold tracking-tight text-(--color-ink)">
+            RentFlow — Design Screens
+          </h1>
+          <p class="text-sm text-(--color-ink-muted)">
+            Bangla-first, mobile-first property &amp; rent management web app ·
+            &quot;Paper &amp; Ink&quot;
+          </p>
+        </div>
+      </div>
+
+      <!-- Review tip -->
+      <div
+        class="mt-8 flex items-start gap-2.5 rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) px-4 py-3"
+      >
+        <svg
+          class="mt-0.5 shrink-0 text-(--color-info)"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 16v-4M12 8h.01" />
+        </svg>
+        <p class="text-sm text-(--color-ink-muted)">
+          <span class="font-semibold text-(--color-ink)"
+            >প্রিন্ট/ক্লায়েন্ট রিভিউ টিপ:</span
+          >
+          ব্রাউজার রিসাইজ করে মোবাইল→ডেস্কটপ দেখুন। প্রতিটি স্ক্রিন স্বাধীন —
+          নিজের ব্রাউজার ট্যাবে খোলে।
+        </p>
+      </div>
+
+      <!-- Auth & Onboarding -->
+      <section class="mt-10">
+        <div class="flex items-baseline gap-2">
+          <h2 class="text-lg font-semibold text-(--color-ink)">
+            অথ ও অনবোর্ডিং
+          </h2>
+          <span class="text-xs text-(--color-ink-faint)">Auth · ০৫</span>
+        </div>
+        <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <a
+            href="screens/01-login.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >০১</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              লগ ইন
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              মোবাইল + পাসওয়ার্ড, show/hide, ফরগট (০৬) ও সাইনআপ (০৫) লিংক লাইভ
+            </p>
+          </a>
+          <a
+            href="screens/05-signup.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >০৫</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              নতুন অ্যাকাউন্ট
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              নাম/মোবাইল/পাসওয়ার্ড, নিয়ম চেক, সাকসেস → লগইন পথ
+            </p>
+          </a>
+          <a
+            href="screens/06-forgot-password.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >০৬</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              পাসওয়ার্ড ভুলে গেছেন
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              OTP স্টেপ ফ্লো + নতুন পাসওয়ার্ড সেট
+            </p>
+          </a>
+          <a
+            href="screens/07-onboarding.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >০৭</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              বাড়ির সেটআপ
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              ভাষা → বাড়ির তথ্য → ভাড়া/রেট → সারাংশ
+            </p>
+          </a>
+          <a
+            href="screens/08-onboarding-success.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >০৮</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              সেটআপ সম্পন্ন
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              সাকসেস স্টেট → ড্যাশবোর্ডে প্রবেশ
+            </p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Home -->
+      <section class="mt-10">
+        <div class="flex items-baseline gap-2">
+          <h2 class="text-lg font-semibold text-(--color-ink)">হোম</h2>
+          <span class="text-xs text-(--color-ink-faint)">Home · ০১</span>
+        </div>
+        <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <a
+            href="screens/02-dashboard.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >০২</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              ড্যাশবোর্ড
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              KPI, আদায়ের অগ্রগতি, মাসের কাজ, বকেয়া, সাম্প্রতিক কার্যক্রম
+            </p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Bills & Meter -->
+      <section class="mt-10">
+        <div class="flex items-baseline gap-2">
+          <h2 class="text-lg font-semibold text-(--color-ink)">বিল ও মিটার</h2>
+          <span class="text-xs text-(--color-ink-faint)"
+            >Bills &amp; Meter · ০৭</span
+          >
+        </div>
+        <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <a
+            href="screens/03-meter-entry.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >০৩</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              মিটার রিডিং
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              বিদ্যুৎ সাব-মিটার, পানির ভাগের নিয়ম, রেট, লাইভ সারাংশ
+            </p>
+          </a>
+          <a
+            href="screens/17-bill-preview.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >১৭</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              বিল প্রিভিউ
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              রেন্টি-ভিত্তিক বিল প্রিভিউ, খরচ ব্রেকডাউন, তৈরি → সাকসেস (৩৩)
+            </p>
+          </a>
+          <a
+            href="screens/18-manual-adjustment.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >১৮</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              অ্যাডজাস্টমেন্ট
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              ম্যানুয়াল +/− (ফাঁকা রুম বিদ্যুৎ, জরিমানা), নোট আবশ্যক
+            </p>
+          </a>
+          <a
+            href="screens/19-collection-due-list.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >১৯</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              কালেকশন
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              বকেয়া তালিকা, আদায়, রিসিট ও পেমেন্ট পথ
+            </p>
+          </a>
+          <a
+            href="screens/20-payment-success.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >২০</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              আদায় সফল
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              পেমেন্ট সাকসেস, রিসিট ও প্রিন্ট পাথ
+            </p>
+          </a>
+          <a
+            href="screens/21-single-receipt.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >২১</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              একক রিসিট প্রিন্ট
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              ৩.৫&quot; থার্মাল রিসিট প্রিন্ট ভিউ
+            </p>
+          </a>
+          <a
+            href="screens/33-bill-created.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >৩৩</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              বিল তৈরি
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              বিল তৈরির সাকসেস → কালেকশন / প্রিন্ট
+            </p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Rentee -->
+      <section class="mt-10">
+        <div class="flex items-baseline gap-2">
+          <h2 class="text-lg font-semibold text-(--color-ink)">রেন্টি</h2>
+          <span class="text-xs text-(--color-ink-faint)">Tenants · ০৮</span>
+        </div>
+        <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <a
+            href="screens/09-tenant-list.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >০৯</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              রেন্টি তালিকা
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              সব রেন্টি, রুম, স্ট্যাটাস ও সার্চ
+            </p>
+          </a>
+          <a
+            href="screens/10-add-tenant.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >১০</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              নতুন রেন্টি
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              রুম বরাদ্দ + প্রাথমিক তথ্য
+            </p>
+          </a>
+          <a
+            href="screens/11-tenant-profile.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >১১</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              রেন্টি প্রোফাইল
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              বিস্তারিত, বিল ইতিহাস, রিসিট, লোন
+            </p>
+          </a>
+          <a
+            href="screens/12-edit-tenant.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >১২</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              রেন্টি এডিট
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              তথ্য আপডেট, স্ট্যাটাস পরিবর্তন
+            </p>
+          </a>
+          <a
+            href="screens/13-shift-room.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >১৩</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              রুম পরিবর্তন
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              রেন্টির রুম শিফট, মিটার/ভাড়া হিসাব
+            </p>
+          </a>
+          <a
+            href="screens/14-move-out.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >১৪</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              বেরিয়ে যাওয়া
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              চূড়ান্ত বিল, সিকিউরিটি ফেরত, মুভ-আউট
+            </p>
+          </a>
+          <a
+            href="screens/15-vacated-archive.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >১৫</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              খালি রেন্টি আর্কাইভ
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              বের হয়ে যাওয়া রেন্টিদের সংরক্ষিত তালিকা
+            </p>
+          </a>
+          <a
+            href="screens/16-tenant-history.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >১৬</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              রেন্টি ইতিহাস
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              পেমেন্ট ও বিলের কালানুক্রমিক ইতিহাস
+            </p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Summary -->
+      <section class="mt-10">
+        <div class="flex items-baseline gap-2">
+          <h2 class="text-lg font-semibold text-(--color-ink)">সারাংশ</h2>
+          <span class="text-xs text-(--color-ink-faint)">Summary · ০২</span>
+        </div>
+        <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <a
+            href="screens/04-receipt-grid-print.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >০৪</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              A4 রিসিট গ্রিড
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              A4-তে একাধিক রিসিট, ড্যাশ কাট লাইন, প্রিন্ট CSS
+            </p>
+          </a>
+          <a
+            href="screens/22-monthly-summary-ledger.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >২২</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              মাসিক সারাংশ লেজার
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              মাসভিত্তিক আয়-বকেয়ার লেজার ও প্রিন্ট
+            </p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Loan -->
+      <section class="mt-10">
+        <div class="flex items-baseline gap-2">
+          <h2 class="text-lg font-semibold text-(--color-ink)">লোন</h2>
+          <span class="text-xs text-(--color-ink-faint)">Loans · ০৩</span>
+        </div>
+        <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <a
+            href="screens/23-loan-list.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >২৩</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              লোন তালিকা
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              সব লোন, স্ট্যাটাস, বকেয়া কিস্তি
+            </p>
+          </a>
+          <a
+            href="screens/24-add-loan.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >২৪</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              নতুন লোন
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              লোন এন্ট্রি, কিস্তি ও শর্ত
+            </p>
+          </a>
+          <a
+            href="screens/25-loan-detail.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >২৫</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              লোন বিস্তারিত
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              লোন ডিটেইল, পরিশোধের ইতিহাস
+            </p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Finance -->
+      <section class="mt-10">
+        <div class="flex items-baseline gap-2">
+          <h2 class="text-lg font-semibold text-(--color-ink)">ফিনান্স</h2>
+          <span class="text-xs text-(--color-ink-faint)">Finance · ০৩</span>
+        </div>
+        <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <a
+            href="screens/26-income-expense-list.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >২৬</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              আয়/ব্যয় তালিকা
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              সব আয়-ব্যয় এন্ট্রি, ক্যাটাগরি ফিল্টার
+            </p>
+          </a>
+          <a
+            href="screens/27-add-income-expense.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >২৭</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              নতুন আয়/ব্যয়
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              আয় বা ব্যয় এন্ট্রি, রসিদ/বিবরণ
+            </p>
+          </a>
+          <a
+            href="screens/28-cashflow-summary.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >২৮</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              ক্যাশফ্লো সারাংশ
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              মাসিক নিট আয়, আয়-ব্যয় তুলনা
+            </p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Settings -->
+      <section class="mt-10">
+        <div class="flex items-baseline gap-2">
+          <h2 class="text-lg font-semibold text-(--color-ink)">সেটিংস</h2>
+          <span class="text-xs text-(--color-ink-faint)">Settings · ০৪</span>
+        </div>
+        <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <a
+            href="screens/29-settings-hub.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >২৯</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              সেটিংস
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              সব সেটিংসের হাব, গ্রুপড মেনু
+            </p>
+          </a>
+          <a
+            href="screens/30-rooms-management.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >৩০</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              রুম ব্যবস্থাপনা
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              রুম তালিকা, অবস্থা, রেন্টি বরাদ্দ
+            </p>
+          </a>
+          <a
+            href="screens/31-property-management.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >৩১</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              বাড়ির তথ্য
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              বাড়ির ঠিকানা, রেট, পানির নিয়ম
+            </p>
+          </a>
+          <a
+            href="screens/32-profile.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <span
+              class="inline-flex rounded-(--radius-md) bg-(--color-primary-tint) px-1.5 py-0.5 text-xs font-semibold text-(--color-ink)"
+              >৩২</span
+            >
+            <p class="mt-1.5 text-base font-semibold text-(--color-ink)">
+              প্রোফাইল
+            </p>
+            <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+              ব্যক্তিগত তথ্য, পাসওয়ার্ড, লগআউট
+            </p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Components -->
+      <section class="mt-10">
+        <div class="flex items-baseline gap-2">
+          <h2 class="text-lg font-semibold text-(--color-ink)">
+            কম্পোনেন্ট স্নিপেট
+          </h2>
+          <span class="text-xs text-(--color-ink-faint)">Components · ০৯</span>
+        </div>
+        <p class="mt-1 text-sm text-(--color-ink-faint)">
+          ডেভ টিমের জন্য ক্যানোনিকাল প্যাটার্ন — ভবিষ্যতের সব স্ক্রিন এইগুলো
+          অনুসরণ করবে।
+        </p>
+        <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <a
+            href="components/bottom-nav.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <p class="text-sm font-semibold text-(--color-ink)">Bottom Nav</p>
+            <p class="mt-0.5 text-xs text-(--color-ink-muted)">
+              ৫ ট্যাব · saffron active
+            </p>
+          </a>
+          <a
+            href="components/sidebar.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <p class="text-sm font-semibold text-(--color-ink)">Sidebar</p>
+            <p class="mt-0.5 text-xs text-(--color-ink-muted)">
+              ডেস্কটপ নেভিগেশন, active state
+            </p>
+          </a>
+          <a
+            href="components/brand.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <p class="text-sm font-semibold text-(--color-ink)">Brand</p>
+            <p class="mt-0.5 text-xs text-(--color-ink-muted)">
+              ক্যানোনিকাল লোগো — হোম-আইকন + ওয়ার্ডমার্ক
+            </p>
+          </a>
+          <a
+            href="components/button.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <p class="text-sm font-semibold text-(--color-ink)">Buttons</p>
+            <p class="mt-0.5 text-xs text-(--color-ink-muted)">
+              প্রাইমারি/সেকেন্ডারি/ডেঞ্জার/ঘোস্ট + ৫ স্টেট
+            </p>
+          </a>
+          <a
+            href="components/input.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <p class="text-sm font-semibold text-(--color-ink)">Inputs</p>
+            <p class="mt-0.5 text-xs text-(--color-ink-muted)">
+              টেক্সট/সংখ্যা/৳/সিলেক্ট/টেক্সটএরিয়া + এরর/সাকসেস
+            </p>
+          </a>
+          <a
+            href="components/status-chip.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <p class="text-sm font-semibold text-(--color-ink)">Status Chips</p>
+            <p class="mt-0.5 text-xs text-(--color-ink-muted)">
+              পরিশোধিত/আংশিক/বাকি/অতিরিক্ত বকেয়া/লোন
+            </p>
+          </a>
+          <a
+            href="components/kpi-card.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <p class="text-sm font-semibold text-(--color-ink)">KPI Card</p>
+            <p class="mt-0.5 text-xs text-(--color-ink-muted)">
+              ড্যাশবোর্ড স্ট্যাট কার্ড + ট্রেন্ড
+            </p>
+          </a>
+          <a
+            href="components/empty-state.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <p class="text-sm font-semibold text-(--color-ink)">Empty State</p>
+            <p class="mt-0.5 text-xs text-(--color-ink-muted)">
+              প্রথম মাস / কোনো ডেটা নেই
+            </p>
+          </a>
+          <a
+            href="components/sheet.html"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <p class="text-sm font-semibold text-(--color-ink)">Bottom Sheet</p>
+            <p class="mt-0.5 text-xs text-(--color-ink-muted)">
+              কনফার্ম/কালেকশন সেমি-মোডাল
+            </p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Design system -->
+      <section class="mt-10">
+        <div class="flex items-baseline gap-2">
+          <h2 class="text-lg font-semibold text-(--color-ink)">
+            ডিজাইন সিস্টেম
+          </h2>
+          <span class="text-xs text-(--color-ink-faint)"
+            >Design System · ০২</span
+          >
+        </div>
+        <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <a
+            href="../design-system/tokens.css"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <p class="text-sm font-semibold text-(--color-ink)">tokens.css</p>
+            <p class="mt-0.5 text-xs text-(--color-ink-muted)">
+              সব টোকেনের একমাত্র উৎস — রঙ/স্পেসিং/রেডিয়াস/টাইপ
+            </p>
+          </a>
+          <a
+            href="../design-system/README.md"
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+          >
+            <p class="text-sm font-semibold text-(--color-ink)">README</p>
+            <p class="mt-0.5 text-xs text-(--color-ink-muted)">
+              ডিজাইন সিস্টেমের ব্যবহার বিধি ও নিয়ম
+            </p>
+          </a>
+        </div>
+      </section>
+
+      <footer
+        class="mt-12 border-t border-(--color-border) pt-6 text-xs text-(--color-ink-faint)"
+      >
+        RentFlow · ডিজাইন ক্যানভাস (HTML/CSS) · মোবাইল-ফার্স্ট · বাংলা + ৳
+      </footer>
+    </main>
+  </body>
+</html>

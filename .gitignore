@@ -1,0 +1,9 @@
+# Internal design notes — do not publish
+/docs/
+/docs
+
+# Local VS Code workspace
+/RentFlow.code-workspace
+
+# Windows reserved junk file
+Logo/nul

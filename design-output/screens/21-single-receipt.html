@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="bn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>রিসিট — ১০২ · আগস্ট ২০২৬ — RentFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../design-system/tokens.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+      body {
+        font-family: var(--font-sans);
+        line-height: var(--line-height-body);
+      }
+
+      /* ===== On-screen A4 preview ===== */
+      .print-sheet {
+        display: flex;
+        flex-direction: column;
+        width: 210mm;
+        min-height: 297mm;
+        background: var(--color-surface-raised);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-sm);
+        box-shadow: var(--shadow-overlay);
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .receipt-frame {
+        flex: 1 1 auto;
+        border: 1.5px solid var(--color-border-strong);
+        border-radius: var(--radius-sm);
+      }
+
+      /* ===== Print: hide chrome, A4 portrait ===== */
+      @media print {
+        @page {
+          size: A4 portrait;
+          margin: 0;
+        }
+        html,
+        body {
+          margin: 0;
+          padding: 0;
+          background: var(--color-surface-raised);
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+        .no-print {
+          display: none !important;
+        }
+        .print-stage {
+          margin: 0;
+          padding: 0;
+          background: var(--color-surface-raised);
+          overflow: visible;
+        }
+        .print-sheet {
+          width: 210mm;
+          height: 297mm;
+          margin: 0;
+          border: none;
+          border-radius: 0;
+          box-shadow: none;
+        }
+        .receipt-frame {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-(--color-surface) text-(--color-ink)">
+    <!-- ============ TOOLBAR (hidden on print) ============ -->
+    <header
+      class="no-print sticky top-0 z-30 border-b border-(--color-border) bg-(--color-surface) px-4 py-3"
+    >
+      <div class="mx-auto flex max-w-3xl items-center justify-between gap-3">
+        <a
+          href="20-payment-success.html"
+          class="inline-flex shrink-0 items-center gap-1.5 rounded-(--radius-button) px-2 py-2 text-sm font-semibold text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft)"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="m15 18-6-6 6-6" />
+          </svg>
+          পেছনে
+        </a>
+        <div class="min-w-0 text-center">
+          <h1 class="truncate text-base font-bold text-(--color-ink)">
+            রিসিট — ১০২ · আগস্ট ২০২৬
+          </h1>
+          <p class="text-xs text-(--color-ink-muted)">
+            প্রিন্ট ডায়ালগে Margin: None রাখুন
+          </p>
+        </div>
+        <button
+          onclick="window.print()"
+          class="inline-flex shrink-0 items-center justify-center gap-2 rounded-(--radius-button) bg-(--color-primary) px-4 py-2.5 text-sm font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active)"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M6 9V2h12v7" />
+            <path
+              d="M6 18H4a1 1 0 0 1-1-1v-5a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v5a1 1 0 0 1-1 1h-2"
+            />
+            <path d="M6 14h12v8H6z" />
+          </svg>
+          প্রিন্ট
+        </button>
+      </div>
+    </header>
+
+    <!-- ============ A4 SHEET PREVIEW ============ -->
+    <div class="print-stage overflow-x-auto px-4 py-8">
+      <div class="mx-auto w-max min-w-[210mm]">
+        <div class="print-sheet">
+          <div class="receipt-frame flex flex-col px-14 py-12">
+            <!-- header -->
+            <p
+              class="text-center text-sm font-semibold uppercase tracking-[0.28em] text-(--color-ink-muted)"
+            >
+              মানি রিসিট
+            </p>
+            <div class="mt-5 text-center">
+              <p class="text-2xl font-bold leading-snug text-(--color-ink)">
+                রফিকুল ইসলামের বাসা
+              </p>
+              <p class="mt-1 text-sm leading-relaxed text-(--color-ink-muted)">
+                ৪৪/২, শাহ আলী বাগ, মিরপুর-১০, ঢাকা-১২১৬
+              </p>
+              <p class="text-sm leading-relaxed text-(--color-ink-muted)">
+                মোবাইল: ০১৭১১-২৩৪৫৬৭
+              </p>
+            </div>
+
+            <div
+              class="mt-8 flex items-baseline justify-between border-t border-(--color-border) pt-4 text-base"
+            >
+              <span class="font-bold text-(--color-ink)">রিসিট নং ০০১</span>
+              <span class="text-(--color-ink-muted)">তারিখ: ১৯/০৮/২০২৬</span>
+            </div>
+
+            <p class="mt-8 text-xl font-semibold text-(--color-ink)">
+              রুম ১০২ · রাহাত হোসেন
+            </p>
+            <p class="mt-1 text-base text-(--color-ink-muted)">
+              বিলের মাস: আগস্ট ২০২৬
+            </p>
+
+            <!-- itemized -->
+            <div class="mt-8 border-t-2 border-(--color-border-strong)">
+              <div
+                class="flex items-baseline justify-between border-b border-(--color-border) py-4 text-base"
+              >
+                <span class="text-(--color-ink)">ভাড়া</span>
+                <span class="text-lg font-semibold text-(--color-ink)"
+                  >৳৯,০০০</span
+                >
+              </div>
+              <div
+                class="flex items-baseline justify-between border-b border-(--color-border) py-4 text-base"
+              >
+                <span class="text-(--color-ink)">বিদ্যুৎ ও পানি</span>
+                <span class="text-lg font-semibold text-(--color-ink)"
+                  >৳২,২০০</span
+                >
+              </div>
+              <div
+                class="flex items-baseline justify-between border-b border-(--color-border) py-4 text-base"
+              >
+                <span class="text-(--color-ink)">ময়লা/ওয়েস্ট</span>
+                <span class="text-lg font-semibold text-(--color-ink)"
+                  >৳২০০</span
+                >
+              </div>
+              <div
+                class="flex items-baseline justify-between border-b border-(--color-border) py-4 text-base"
+              >
+                <span class="text-(--color-ink)">আগের বাকি</span>
+                <span class="text-lg font-semibold text-(--color-ink)">৳০</span>
+              </div>
+              <div
+                class="flex items-baseline justify-between border-b border-(--color-border) py-4 text-base"
+              >
+                <span class="text-(--color-ink)">লোন কিস্তি</span>
+                <span class="text-lg font-semibold text-(--color-ink)">৳০</span>
+              </div>
+              <div
+                class="flex items-baseline justify-between pt-5 text-xl font-bold text-(--color-ink)"
+              >
+                <span>মোট</span>
+                <span class="text-2xl">৳১১,৪০০</span>
+              </div>
+            </div>
+
+            <p class="mt-6 text-sm leading-relaxed text-(--color-ink-muted)">
+              টাকা অক্ষরে: এগারো হাজার চারশ টাকা মাত্র
+            </p>
+
+            <!-- signature -->
+            <div class="mt-auto flex items-end justify-end pt-10 text-base">
+              <p
+                class="w-64 border-t border-(--color-border-strong) pt-2 text-right text-(--color-ink-muted)"
+              >
+                আদায়কারীর স্বাক্ষর
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

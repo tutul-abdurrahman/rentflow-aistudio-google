@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="bn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>প্রাক্তন রেন্টি — RentFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../design-system/tokens.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+      body {
+        font-family: var(--font-sans);
+        line-height: var(--line-height-body);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-(--color-surface) text-(--color-ink)">
+    <!-- ============ SIDEBAR (desktop ≥lg, fixed 264px) ============ -->
+    <aside
+      class="fixed inset-y-0 left-0 z-30 hidden w-[264px] flex-col border-r border-(--color-border) bg-(--color-surface-raised) lg:flex"
+      aria-label="সাইডবার নেভিগেশন"
+    >
+      <div class="flex h-16 shrink-0 items-center gap-2.5 px-6">
+        <span
+          class="flex h-8 w-8 items-center justify-center rounded-(--radius-md) bg-(--color-primary) text-(--color-on-primary)"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M3 10.5 12 3l9 7.5" />
+            <path d="M5 9.5V21h14V9.5" />
+          </svg>
+        </span>
+        <span class="text-lg font-bold tracking-tight text-(--color-ink)"
+          >RentFlow</span
+        >
+      </div>
+
+      <nav class="flex-1 space-y-1 overflow-y-auto px-3 py-2">
+        <!-- ড্যাশবোর্ড -->
+        <a
+          href="02-dashboard.html"
+          class="flex items-center gap-3 rounded-(--radius-md) px-3 py-2.5 text-sm font-medium text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft) hover:text-(--color-ink)"
+        >
+          <svg
+            class="shrink-0"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M3 10.5 12 3l9 7.5" />
+            <path d="M5 9.5V21h14V9.5" />
+          </svg>
+          ড্যাশবোর্ড
+        </a>
+        <!-- বিল ও মিটার -->
+        <a
+          href="03-meter-entry.html"
+          class="flex items-center gap-3 rounded-(--radius-md) px-3 py-2.5 text-sm font-medium text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft) hover:text-(--color-ink)"
+        >
+          <svg
+            class="shrink-0"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M6 2h12v20l-2-1.5L14 22l-2-1.5L10 22l-2-1.5L6 22V2z" />
+            <path d="M9 7h6M9 11h6M9 15h4" />
+          </svg>
+          বিল ও মিটার
+        </a>
+        <!-- রেন্টি (active) -->
+        <a
+          href="09-tenant-list.html"
+          class="flex items-center gap-3 rounded-(--radius-md) bg-(--color-primary-tint) px-3 py-2.5 text-sm font-semibold text-(--color-ink)"
+          aria-current="page"
+        >
+          <svg
+            class="shrink-0 text-(--color-primary)"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          রেন্টি
+        </a>
+        <!-- সারাংশ -->
+        <a
+          href="22-monthly-summary-ledger.html"
+          class="flex items-center gap-3 rounded-(--radius-md) px-3 py-2.5 text-sm font-medium text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft) hover:text-(--color-ink)"
+        >
+          <svg
+            class="shrink-0"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M3 3v18h18" />
+            <path d="M8 17v-5" />
+            <path d="M13 17V7" />
+            <path d="M18 17v-8" />
+          </svg>
+          সারাংশ
+        </a>
+        <!-- লোন -->
+        <a
+          href="23-loan-list.html"
+          class="flex items-center gap-3 rounded-(--radius-md) px-3 py-2.5 text-sm font-medium text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft) hover:text-(--color-ink)"
+        >
+          <svg
+            class="shrink-0"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="2" y="6" width="20" height="12" rx="2" />
+            <circle cx="12" cy="12" r="2.5" />
+          </svg>
+          লোন
+        </a>
+        <!-- ফিনান্স -->
+        <a
+          href="26-income-expense-list.html"
+          class="flex items-center gap-3 rounded-(--radius-md) px-3 py-2.5 text-sm font-medium text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft) hover:text-(--color-ink)"
+        >
+          <svg
+            class="shrink-0"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M20 7H5a2 2 0 0 1-2-2 2 2 0 0 1 2-2h13v4" />
+            <path d="M3 5v14a2 2 0 0 0 2 2h15v-4" />
+            <path d="M21 12h-4a2 2 0 0 0 0 4h4z" />
+          </svg>
+          ফিনান্স
+        </a>
+        <!-- সেটিংস -->
+        <a
+          href="29-settings-hub.html"
+          class="flex items-center gap-3 rounded-(--radius-md) px-3 py-2.5 text-sm font-medium text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft) hover:text-(--color-ink)"
+        >
+          <svg
+            class="shrink-0"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.09a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+            />
+          </svg>
+          সেটিংস
+        </a>
+      </nav>
+
+      <div class="shrink-0 border-t border-(--color-border) p-3">
+        <div
+          class="flex items-center gap-3 rounded-(--radius-md) bg-(--color-surface-soft) p-3"
+        >
+          <span
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-(--color-primary-tint) text-sm font-bold text-(--color-ink)"
+            >র</span
+          >
+          <div class="min-w-0">
+            <p class="truncate text-sm font-semibold text-(--color-ink)">
+              রফিক ভাই
+            </p>
+            <p class="truncate text-xs text-(--color-ink-muted)">
+              আবাসিক ভবন — মিরপুর-১০
+            </p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="lg:pl-[264px]">
+      <main
+        class="mx-auto w-full max-w-md pb-32 md:max-w-3xl lg:max-w-6xl lg:px-8 lg:pb-16 xl:max-w-7xl"
+      >
+        <div class="mx-auto w-full max-w-3xl">
+          <!-- ============ TOP BAR ============ -->
+          <header class="px-4 pt-5 lg:px-0 lg:pt-8">
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex min-w-0 items-center gap-2.5">
+                <a
+                  href="09-tenant-list.html"
+                  class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft)"
+                  aria-label="পেছনে যান"
+                >
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="m15 18-6-6 6-6" />
+                  </svg>
+                </a>
+                <div class="min-w-0">
+                  <h1
+                    class="text-xl font-bold leading-tight text-(--color-ink)"
+                  >
+                    প্রাক্তন রেন্টি
+                  </h1>
+                  <p class="truncate text-sm text-(--color-ink-muted)">
+                    ২ বছরের হিস্টরি সংরক্ষিত
+                  </p>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <!-- ============ SEARCH + YEAR FILTER ============ -->
+          <div class="mt-4 px-4 lg:px-0">
+            <div class="relative">
+              <svg
+                class="pointer-events-none absolute inset-y-0 left-4 my-auto text-(--color-ink-faint)"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="11" cy="11" r="7" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+              <input
+                id="archive-search"
+                type="search"
+                placeholder="নাম, রুম বা মোবাইল খুঁজুন…"
+                class="w-full rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) py-3 pl-11 pr-4 text-md text-(--color-ink) transition-colors placeholder:text-(--color-ink-faint) focus:border-(--color-border-focus)"
+              />
+            </div>
+
+            <div
+              class="mt-3 flex flex-wrap gap-2"
+              role="group"
+              aria-label="বছর ফিল্টার"
+            >
+              <!-- সব (active) -->
+              <button
+                data-year="সব"
+                class="archive-chip inline-flex items-center gap-1 rounded-(--radius-pill) border border-(--color-primary) bg-(--color-primary-tint) px-3.5 py-1.5 text-sm font-semibold text-(--color-ink)"
+                aria-pressed="true"
+              >
+                সব ৩
+              </button>
+              <button
+                data-year="২০২৫"
+                class="archive-chip inline-flex items-center gap-1 rounded-(--radius-pill) border border-(--color-border) bg-(--color-surface-raised) px-3.5 py-1.5 text-sm font-medium text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft)"
+                aria-pressed="false"
+              >
+                ২০২৫ ১
+              </button>
+              <button
+                data-year="২০২৬"
+                class="archive-chip inline-flex items-center gap-1 rounded-(--radius-pill) border border-(--color-border) bg-(--color-surface-raised) px-3.5 py-1.5 text-sm font-medium text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft)"
+                aria-pressed="false"
+              >
+                ২০২৬ ২
+              </button>
+            </div>
+          </div>
+
+          <!-- ============ ARCHIVE LIST (cards / 2-col grid on md+) ============ -->
+          <section
+            class="mt-4 grid gap-3 px-4 md:grid-cols-2 md:gap-4 lg:px-0"
+            aria-label="প্রাক্তন রেন্টি তালিকা"
+          >
+            <!-- শামীম রেজা · রুম ১০৬ (row with delete control) -->
+            <div
+              class="relative rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) transition-colors hover:bg-(--color-surface-soft)"
+            >
+              <a
+                href="16-tenant-history.html"
+                class="flex items-center gap-3 rounded-(--radius-card) p-(--space-lg) pr-14"
+              >
+                <span
+                  class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-(--color-surface-soft) text-sm font-bold text-(--color-ink-muted)"
+                  >শা</span
+                >
+                <div class="min-w-0 flex-1">
+                  <p class="truncate text-sm font-semibold text-(--color-ink)">
+                    শামীম রেজা
+                  </p>
+                  <p class="mt-0.5 text-xs text-(--color-ink-muted)">
+                    রুম ১০৬ · মুভ আউট ১০ মে ২০২৬
+                  </p>
+                  <p class="mt-0.5 text-xs text-(--color-ink-faint)">
+                    ০১৭১২-৯৮৭৬৫৪
+                  </p>
+                </div>
+                <span
+                  class="inline-flex shrink-0 items-center gap-1.5 rounded-(--radius-pill) bg-(--color-surface-soft) px-2 py-0.5 text-xs font-medium text-(--color-ink-faint)"
+                >
+                  <span
+                    class="h-1.5 w-1.5 rounded-full bg-(--color-ink-faint)"
+                  ></span>
+                  প্রাক্তন
+                </span>
+              </a>
+              <button
+                id="open-delete"
+                type="button"
+                aria-label="রেকর্ড মুছুন"
+                class="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-(--color-danger) transition-colors hover:bg-(--color-danger-tint)"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 6h18" />
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                  <path d="M10 11v6M14 11v6" />
+                </svg>
+              </button>
+            </div>
+
+            <!-- আরিফ হোসেন · রুম ১০৭ -->
+            <a
+              href="16-tenant-history.html"
+              class="flex items-center gap-3 rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+            >
+              <span
+                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-(--color-surface-soft) text-sm font-bold text-(--color-ink-muted)"
+                >আ</span
+              >
+              <div class="min-w-0 flex-1">
+                <p class="truncate text-sm font-semibold text-(--color-ink)">
+                  আরিফ হোসেন
+                </p>
+                <p class="mt-0.5 text-xs text-(--color-ink-muted)">
+                  রুম ১০৭ · মুভ আউট ৩ ফেব্রুয়ারি ২০২৬
+                </p>
+                <p class="mt-0.5 text-xs text-(--color-ink-faint)">
+                  ০১৬৭৭-৫৫৪৪৩৩
+                </p>
+              </div>
+              <span
+                class="inline-flex shrink-0 items-center gap-1.5 rounded-(--radius-pill) bg-(--color-surface-soft) px-2 py-0.5 text-xs font-medium text-(--color-ink-faint)"
+              >
+                <span
+                  class="h-1.5 w-1.5 rounded-full bg-(--color-ink-faint)"
+                ></span>
+                প্রাক্তন
+              </span>
+            </a>
+
+            <!-- সুমন মিয়া · রুম ১০৫ -->
+            <a
+              href="16-tenant-history.html"
+              class="flex items-center gap-3 rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+            >
+              <span
+                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-(--color-surface-soft) text-sm font-bold text-(--color-ink-muted)"
+                >সু</span
+              >
+              <div class="min-w-0 flex-1">
+                <p class="truncate text-sm font-semibold text-(--color-ink)">
+                  সুমন মিয়া
+                </p>
+                <p class="mt-0.5 text-xs text-(--color-ink-muted)">
+                  রুম ১০৫ · মুভ আউট ১৮ নভেম্বর ২০২৫
+                </p>
+                <p class="mt-0.5 text-xs text-(--color-ink-faint)">
+                  ০১৮৪৪-২২৩৩১১
+                </p>
+              </div>
+              <span
+                class="inline-flex shrink-0 items-center gap-1.5 rounded-(--radius-pill) bg-(--color-surface-soft) px-2 py-0.5 text-xs font-medium text-(--color-ink-faint)"
+              >
+                <span
+                  class="h-1.5 w-1.5 rounded-full bg-(--color-ink-faint)"
+                ></span>
+                প্রাক্তন
+              </span>
+            </a>
+          </section>
+
+          <!-- ============================================================
+               — খালি অবস্থা / empty state —
+               Annotated EMPTY-STATE VARIANT: what the archive looks like
+               when there are no former tenants. Same shell, no rows.
+               ============================================================ -->
+          <section
+            class="mt-10 border-t border-(--color-border-strong) pt-8"
+            aria-label="খালি অবস্থা প্রিভিউ"
+          >
+            <p
+              class="px-4 text-center text-xs font-semibold uppercase tracking-wide text-(--color-ink-faint) lg:px-0"
+            >
+              — খালি অবস্থা / empty state —
+            </p>
+            <div class="mt-4 px-4 lg:px-0">
+              <div
+                class="flex flex-col items-center rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) px-6 py-12 text-center"
+              >
+                <span
+                  class="flex h-16 w-16 items-center justify-center rounded-full bg-(--color-primary-tint) text-(--color-primary)"
+                >
+                  <svg
+                    width="28"
+                    height="28"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M20 7H5a2 2 0 0 1-2-2 2 2 0 0 1 2-2h13v4" />
+                    <path d="M3 5v14a2 2 0 0 0 2 2h15v-4" />
+                    <path d="M21 12h-4a2 2 0 0 0 0 4h4z" />
+                  </svg>
+                </span>
+                <h2 class="mt-4 text-lg font-semibold text-(--color-ink)">
+                  কোনো প্রাক্তন রেন্টি নেই
+                </h2>
+                <p class="mt-1.5 max-w-60 text-sm text-(--color-ink-muted)">
+                  মুভ আউট করলে রেন্টির ২ বছরের হিস্টরি এখানে সংরক্ষিত হবে।
+                </p>
+                <a
+                  href="09-tenant-list.html"
+                  class="mt-5 inline-flex items-center justify-center gap-2 rounded-(--radius-button) bg-(--color-primary) px-5 py-3 text-base font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active)"
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
+                  রেন্টি তালিকা দেখুন
+                </a>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <!-- ============ BOTTOM NAV (order: বিল | রেন্টি | হোম | সারাংশ | আরও) ============ -->
+    <nav
+      class="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md border-t border-(--color-border) bg-(--color-surface-raised) px-2 pt-2 pb-[max(env(safe-area-inset-bottom),0.75rem)] lg:hidden"
+      aria-label="প্রধান নেভিগেশন"
+    >
+      <div class="grid grid-cols-5">
+        <!-- বিল -->
+        <a
+          href="17-bill-preview.html"
+          class="flex flex-col items-center gap-1 py-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
+          aria-label="বিল"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M6 2h12v20l-2-1.5L14 22l-2-1.5L10 22l-2-1.5L6 22V2z" />
+            <path d="M9 7h6M9 11h6M9 15h4" />
+          </svg>
+          <span class="text-xs">বিল</span>
+        </a>
+        <!-- রেন্টি (active) -->
+        <a
+          href="09-tenant-list.html"
+          class="flex flex-col items-center gap-1 py-1 text-(--color-primary)"
+          aria-label="রেন্টি"
+          aria-current="page"
+        >
+          <span
+            class="flex h-9 w-14 items-center justify-center rounded-(--radius-pill) bg-(--color-primary-tint)"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+          </span>
+          <span class="text-xs font-semibold">রেন্টি</span>
+        </a>
+        <!-- হোম (center, raised) -->
+        <a
+          href="02-dashboard.html"
+          class="flex flex-col items-center pt-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
+          aria-label="হোম"
+        >
+          <span
+            class="-mt-6 flex h-14 w-14 items-center justify-center rounded-full bg-(--color-primary) text-(--color-on-primary) shadow-(--shadow-float)"
+          >
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 10.5 12 3l9 7.5" />
+              <path d="M5 9.5V21h14V9.5" />
+            </svg>
+          </span>
+          <span class="mt-1 text-xs">হোম</span>
+        </a>
+        <!-- সারাংশ -->
+        <a
+          href="22-monthly-summary-ledger.html"
+          class="flex flex-col items-center gap-1 py-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
+          aria-label="সারাংশ"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M3 3v18h18" />
+            <path d="M8 17v-5" />
+            <path d="M13 17V7" />
+            <path d="M18 17v-8" />
+          </svg>
+          <span class="text-xs">সারাংশ</span>
+        </a>
+        <!-- আরও -->
+        <a
+          href="29-settings-hub.html"
+          class="flex flex-col items-center gap-1 py-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
+          aria-label="আরও"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+            <circle cx="5" cy="12" r="1.4" />
+            <circle cx="12" cy="12" r="1.4" />
+            <circle cx="19" cy="12" r="1.4" />
+          </svg>
+          <span class="text-xs">আরও</span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- ============ DELETE CONFIRM SHEET ============ -->
+    <div
+      id="scrim"
+      class="fixed inset-0 z-40 hidden bg-(--color-ink)/50"
+      aria-hidden="true"
+    ></div>
+    <div
+      id="sheet"
+      class="fixed inset-x-0 bottom-0 z-50 mx-auto hidden w-full max-w-md rounded-t-(--radius-card) bg-(--color-surface-raised) px-6 pb-[max(env(safe-area-inset-bottom),1rem)] pt-3 shadow-(--shadow-overlay) md:inset-0 md:my-auto md:h-fit md:max-h-[90vh] md:overflow-y-auto md:rounded-(--radius-card) md:pb-6"
+      role="dialog"
+      aria-modal="true"
+      aria-label="রেকর্ড মুছুন নিশ্চিত করুন"
+    >
+      <div
+        class="mx-auto h-1.5 w-12 rounded-(--radius-pill) bg-(--color-border) md:hidden"
+      ></div>
+      <div class="mt-4 flex items-center gap-3">
+        <span
+          class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-(--color-danger-tint) text-(--color-danger)"
+        >
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M3 6h18" />
+            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+            <path d="M10 11v6M14 11v6" />
+          </svg>
+        </span>
+        <div>
+          <h2 class="text-lg font-semibold text-(--color-ink)">
+            শামীম রেজার রেকর্ড মুছবেন?
+          </h2>
+          <p class="text-sm text-(--color-ink-muted)">
+            ২ বছরের আর্কাইভ থেকে মুছে যাবে। ফেরত আনা যাবে না।
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-4 flex gap-3">
+        <button
+          id="cancel-delete"
+          class="inline-flex flex-1 items-center justify-center rounded-(--radius-button) border border-(--color-secondary) bg-transparent px-5 py-3 text-base font-semibold text-(--color-secondary) transition-colors hover:bg-(--color-secondary-hover) active:bg-(--color-secondary-active)"
+        >
+          বাতিল
+        </button>
+        <button
+          id="confirm-delete"
+          class="inline-flex flex-1 items-center justify-center gap-2 rounded-(--radius-button) bg-(--color-danger) px-5 py-3 text-base font-semibold text-(--color-surface-raised) transition-opacity hover:opacity-90 active:opacity-100"
+        >
+          মুছে ফেলুন
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // Demo only — year filter chip toggle.
+      const chips = document.querySelectorAll('.archive-chip')
+      chips.forEach((chip) => {
+        chip.addEventListener('click', () => {
+          chips.forEach((c) => {
+            c.classList.remove(
+              'border-(--color-primary)',
+              'bg-(--color-primary-tint)',
+              'font-semibold',
+              'text-(--color-ink)',
+            )
+            c.classList.add(
+              'border-(--color-border)',
+              'bg-(--color-surface-raised)',
+              'font-medium',
+              'text-(--color-ink-muted)',
+            )
+            c.setAttribute('aria-pressed', 'false')
+          })
+          chip.classList.add(
+            'border-(--color-primary)',
+            'bg-(--color-primary-tint)',
+            'font-semibold',
+            'text-(--color-ink)',
+          )
+          chip.classList.remove(
+            'border-(--color-border)',
+            'bg-(--color-surface-raised)',
+            'font-medium',
+            'text-(--color-ink-muted)',
+          )
+          chip.setAttribute('aria-pressed', 'true')
+        })
+      })
+
+      // Demo only — toggle the delete confirm sheet (canvas only, no persistence).
+      const openDelete = document.getElementById('open-delete')
+      const cancelDelete = document.getElementById('cancel-delete')
+      const confirmDelete = document.getElementById('confirm-delete')
+      const scrim = document.getElementById('scrim')
+      const sheet = document.getElementById('sheet')
+      openDelete.addEventListener('click', () => {
+        scrim.classList.remove('hidden')
+        sheet.classList.remove('hidden')
+      })
+      const hide = () => {
+        scrim.classList.add('hidden')
+        sheet.classList.add('hidden')
+      }
+      cancelDelete.addEventListener('click', hide)
+      confirmDelete.addEventListener('click', hide)
+      scrim.addEventListener('click', hide)
+    </script>
+  </body>
+</html>

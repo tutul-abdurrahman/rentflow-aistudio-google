@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="bn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Component — Empty State | RentFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../design-system/tokens.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+      body {
+        font-family: var(--font-sans);
+        line-height: var(--line-height-body);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-(--color-surface) p-6 text-(--color-ink)">
+    <main class="mx-auto max-w-md">
+      <h1 class="text-xl font-bold">Empty State</h1>
+      <p class="mt-1 text-sm text-(--color-ink-faint)">
+        Illustration-less empty state: tinted icon disc + title + one-line
+        caption + single CTA. Used for first month / no-data views.
+      </p>
+
+      <div
+        class="mt-8 flex flex-col items-center rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) px-6 py-12 text-center"
+      >
+        <span
+          class="flex h-16 w-16 items-center justify-center rounded-full bg-(--color-primary-tint) text-(--color-primary)"
+        >
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M6 2h12v20l-2-1.5L14 22l-2-1.5L10 22l-2-1.5L6 22V2z" />
+            <path d="M9 7h6M9 11h6" />
+          </svg>
+        </span>
+        <h2 class="mt-4 text-lg font-semibold text-(--color-ink)">
+          এখনও কোনো বিল নেই
+        </h2>
+        <p class="mt-1.5 max-w-60 text-sm text-(--color-ink-muted)">
+          প্রথম মাসের মিটার রিডিং দিয়ে বিল তৈরি শুরু করুন।
+        </p>
+        <button
+          class="mt-5 inline-flex items-center justify-center gap-2 rounded-(--radius-button) bg-(--color-primary) px-5 py-3 text-base font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active)"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+          প্রথম বিল তৈরি করুন
+        </button>
+      </div>
+    </main>
+  </body>
+</html>

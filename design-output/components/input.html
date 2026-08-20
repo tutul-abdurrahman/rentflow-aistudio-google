@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="bn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Component — Inputs | RentFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../design-system/tokens.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+      body {
+        font-family: var(--font-sans);
+        line-height: var(--line-height-body);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-(--color-surface) p-6 text-(--color-ink)">
+    <main class="mx-auto max-w-2xl">
+      <h1 class="text-xl font-bold">Inputs</h1>
+      <p class="mt-1 text-sm text-(--color-ink-faint)">
+        Shared field pattern: label (text-sm, medium) + control
+        (rounded-(--radius-input), 1px hairline, 14px/16px type) + helper/error
+        text. Error = vermillion border + message; success = green border +
+        message.
+      </p>
+
+      <!-- Text input -->
+      <section class="mt-10">
+        <h2 class="text-base font-semibold">টেক্সট ইনপুট</h2>
+        <div
+          class="mt-3 rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg)"
+        >
+          <label
+            for="demo-phone"
+            class="mb-1.5 block text-sm font-medium text-(--color-ink)"
+          >
+            মোবাইল নম্বর
+          </label>
+          <input
+            id="demo-phone"
+            type="tel"
+            inputmode="numeric"
+            placeholder="০১৭xxxxxxxx"
+            class="w-full rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) px-4 py-3 text-md text-(--color-ink) transition-colors placeholder:text-(--color-ink-faint) focus:border-(--color-border-focus)"
+          />
+          <p class="mt-1.5 text-xs text-(--color-ink-faint)">
+            হেল্পার টেক্সট — এই মাসের বিল আগস্ট ২০২৬-এর জন্য।
+          </p>
+        </div>
+      </section>
+
+      <!-- Number input with ৳ prefix -->
+      <section class="mt-8">
+        <h2 class="text-base font-semibold">সংখ্যা + ৳ প্রিফিক্স</h2>
+        <div
+          class="mt-3 rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg)"
+        >
+          <label
+            for="demo-rate"
+            class="mb-1.5 block text-sm font-medium text-(--color-ink)"
+          >
+            বিদ্যুৎ ইউনিট রেট (৳/ইউনিট)
+          </label>
+          <div class="relative">
+            <span
+              class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-md font-medium text-(--color-ink-faint)"
+              >৳</span
+            >
+            <input
+              id="demo-rate"
+              type="number"
+              inputmode="decimal"
+              value="৭.৫০"
+              class="w-full rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) py-3 pl-10 pr-4 text-md text-(--color-ink) transition-colors placeholder:text-(--color-ink-faint) focus:border-(--color-border-focus)"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- Number input with unit suffix -->
+      <section class="mt-8">
+        <h2 class="text-base font-semibold">সংখ্যা + ইউনিট সাফিক্স</h2>
+        <div
+          class="mt-3 rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg)"
+        >
+          <label
+            for="demo-water"
+            class="mb-1.5 block text-sm font-medium text-(--color-ink)"
+          >
+            মোট ওয়াটার ইউনিট (মেইন মিটার)
+          </label>
+          <div class="relative">
+            <input
+              id="demo-water"
+              type="number"
+              inputmode="numeric"
+              value="৫০০"
+              class="w-full rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) py-3 pl-4 pr-16 text-md text-(--color-ink) transition-colors placeholder:text-(--color-ink-faint) focus:border-(--color-border-focus)"
+            />
+            <span
+              class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm text-(--color-ink-faint)"
+              >ইউনিট</span
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- Select -->
+      <section class="mt-8">
+        <h2 class="text-base font-semibold">সিলেক্ট</h2>
+        <div
+          class="mt-3 rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg)"
+        >
+          <label
+            for="demo-month"
+            class="mb-1.5 block text-sm font-medium text-(--color-ink)"
+          >
+            বিলের মাস
+          </label>
+          <div class="relative">
+            <!-- Option hover/selected colors are tokenized globally in design-system/tokens.css (accent-color + option rules). -->
+            <select
+              id="demo-month"
+              class="w-full appearance-none rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) px-4 py-3 pr-10 text-md text-(--color-ink) transition-colors focus:border-(--color-border-focus)"
+            >
+              <option>আগস্ট ২০২৬</option>
+              <option>জুলাই ২০২৬</option>
+              <option>জুন ২০২৬</option>
+            </select>
+            <svg
+              class="pointer-events-none absolute inset-y-0 right-4 my-auto text-(--color-ink-faint)"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <!-- Textarea -->
+      <section class="mt-8">
+        <h2 class="text-base font-semibold">টেক্সট এরিয়া</h2>
+        <div
+          class="mt-3 rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg)"
+        >
+          <label
+            for="demo-note"
+            class="mb-1.5 block text-sm font-medium text-(--color-ink)"
+          >
+            নোট (ঐচ্ছিক)
+          </label>
+          <textarea
+            id="demo-note"
+            rows="3"
+            placeholder="বিলের সাথে কোনো নোট লিখুন…"
+            class="w-full resize-none rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) px-4 py-3 text-md text-(--color-ink) transition-colors placeholder:text-(--color-ink-faint) focus:border-(--color-border-focus)"
+          ></textarea>
+        </div>
+      </section>
+
+      <!-- Error + success states -->
+      <section class="mt-8">
+        <h2 class="text-base font-semibold">এরর ও সাকসেস স্টেট</h2>
+        <div class="mt-3 grid gap-4 sm:grid-cols-2">
+          <div
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg)"
+          >
+            <label
+              for="demo-err"
+              class="mb-1.5 block text-sm font-medium text-(--color-ink)"
+            >
+              বর্তমান রিডিং
+            </label>
+            <input
+              id="demo-err"
+              type="number"
+              inputmode="numeric"
+              value="২৫০০"
+              class="w-full rounded-(--radius-input) border border-(--color-danger) bg-(--color-surface-raised) px-4 py-3 text-md text-(--color-ink) transition-colors focus:border-(--color-danger)"
+            />
+            <p
+              class="mt-1.5 flex items-center gap-1.5 text-xs text-(--color-danger)"
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M12 3 1 21h22L12 3z" />
+                <path d="M12 10v5" />
+                <path d="M12 18h.01" />
+              </svg>
+              বর্তমান রিডিং পূর্ববর্তীর চেয়ে কম
+            </p>
+          </div>
+          <div
+            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg)"
+          >
+            <label
+              for="demo-ok"
+              class="mb-1.5 block text-sm font-medium text-(--color-ink)"
+            >
+              রিডিং
+            </label>
+            <input
+              id="demo-ok"
+              type="number"
+              inputmode="numeric"
+              value="৩৩৬৮"
+              class="w-full rounded-(--radius-input) border border-(--color-success) bg-(--color-surface-raised) px-4 py-3 text-md text-(--color-ink) transition-colors focus:border-(--color-success)"
+            />
+            <p
+              class="mt-1.5 flex items-center gap-1.5 text-xs text-(--color-success)"
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="m8 12 3 3 5-6" />
+              </svg>
+              রিডিং সংরক্ষিত হয়েছে
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

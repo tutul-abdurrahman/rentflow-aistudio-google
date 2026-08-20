@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="bn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>নতুন অ্যাকাউন্ট — RentFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../design-system/tokens.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+      body {
+        font-family: var(--font-sans);
+        line-height: var(--line-height-body);
+      }
+
+      /* OTP boxes — centered digits, focus ring, runtime error border */
+      .otp-box {
+        height: 3.25rem;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--color-border);
+        background: var(--color-surface-raised);
+        text-align: center;
+        font-size: var(--text-lg);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-ink);
+        caret-color: var(--color-primary);
+        transition:
+          border-color var(--motion-fast) var(--ease-standard),
+          box-shadow var(--motion-fast) var(--ease-standard);
+      }
+      .otp-box:focus {
+        border-color: var(--color-border-focus);
+        box-shadow: var(--focus-ring);
+        outline: none;
+      }
+      .otp-box.has-error {
+        border-color: var(--color-danger);
+      }
+      .otp-box.has-error:focus {
+        box-shadow:
+          0 0 0 2px var(--color-surface-raised),
+          0 0 0 4px var(--color-danger);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-(--color-surface) text-(--color-ink)">
+    <main class="flex min-h-screen flex-col justify-center px-5 py-12">
+      <div class="mx-auto w-full max-w-md">
+        <!-- Brand lockup (home-icon logo — see components/brand.html) -->
+        <div class="flex flex-col items-center text-center">
+          <span
+            class="flex h-11 w-11 items-center justify-center rounded-full bg-(--color-primary) text-(--color-on-primary)"
+          >
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 10.5 12 3l9 7.5" />
+              <path d="M5 9.5V21h14V9.5" />
+            </svg>
+          </span>
+          <p class="mt-3 text-xl font-bold tracking-tight text-(--color-ink)">
+            RentFlow
+          </p>
+          <p class="mt-0.5 text-sm text-(--color-ink-faint)">
+            ভাড়া ও বিল ব্যবস্থাপনা
+          </p>
+        </div>
+
+        <!-- Signup card -->
+        <div
+          class="mt-8 rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-xl)"
+        >
+          <!-- Step indicator (ধাপ ১/২) -->
+          <div id="stepper">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-medium text-(--color-ink-faint)"
+                >ধাপ <span id="step-num">১</span>/২</span
+              >
+              <span
+                id="step-label"
+                class="text-xs font-semibold text-(--color-ink)"
+                >মোবাইল নম্বর</span
+              >
+            </div>
+            <div class="mt-2 flex gap-1.5">
+              <span
+                id="seg-1"
+                class="h-1 flex-1 rounded-full bg-(--color-primary)"
+              ></span>
+              <span
+                id="seg-2"
+                class="h-1 flex-1 rounded-full bg-(--color-border)"
+              ></span>
+            </div>
+          </div>
+
+          <!-- ====== STEP 1 — মোবাইল নম্বর + OTP ====== -->
+          <section id="panel-1" class="mt-6">
+            <h1 class="text-lg font-semibold text-(--color-ink)">
+              নতুন অ্যাকাউন্ট
+            </h1>
+            <p class="mt-1 text-sm text-(--color-ink-muted)">
+              মোবাইল নম্বর দিয়ে শুরু করুন। ওটিপি দিয়ে যাচাই হবে।
+            </p>
+
+            <!-- phone form -->
+            <form id="phone-form" class="mt-5" onsubmit="return false">
+              <label
+                for="signup-phone"
+                class="mb-1.5 block text-sm font-medium text-(--color-ink)"
+              >
+                মোবাইল নম্বর
+              </label>
+              <input
+                id="signup-phone"
+                type="tel"
+                inputmode="numeric"
+                autocomplete="tel"
+                value="০১৭১১-২৩৪৫৬৭"
+                placeholder="০১৭xxxxxxxx"
+                class="w-full rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) px-4 py-3 text-md text-(--color-ink) transition-colors placeholder:text-(--color-ink-faint) focus:border-(--color-border-focus)"
+              />
+              <p class="mt-1.5 text-xs text-(--color-ink-faint)">
+                বাংলাদেশের যেকোনো মোবাইল নম্বর দিন।
+              </p>
+              <button
+                id="send-otp"
+                type="submit"
+                class="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) bg-(--color-primary) px-5 py-3.5 text-md font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active)"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                  />
+                </svg>
+                ওটিপি পাঠান
+              </button>
+            </form>
+
+            <!-- OTP form -->
+            <form id="otp-form" class="mt-5 hidden" onsubmit="return false">
+              <p class="text-sm text-(--color-ink-muted)">
+                <span id="otp-phone" class="font-semibold text-(--color-ink)"
+                  >০১৭১১-২৩৪৫৬৭</span
+                >
+                নম্বরে ৬ সংখ্যার ওটিপি পাঠানো হয়েছে।
+              </p>
+              <div id="otp-boxes" class="mt-4 grid grid-cols-6 gap-2">
+                <input
+                  class="otp-box"
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="1"
+                  aria-label="ওটিপি প্রথম অঙ্ক"
+                />
+                <input
+                  class="otp-box"
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="1"
+                  aria-label="ওটিপি দ্বিতীয় অঙ্ক"
+                />
+                <input
+                  class="otp-box"
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="1"
+                  aria-label="ওটিপি তৃতীয় অঙ্ক"
+                />
+                <input
+                  class="otp-box"
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="1"
+                  aria-label="ওটিপি চতুর্থ অঙ্ক"
+                />
+                <input
+                  class="otp-box"
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="1"
+                  aria-label="ওটিপি পঞ্চম অঙ্ক"
+                />
+                <input
+                  class="otp-box"
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="1"
+                  aria-label="ওটিপি ষষ্ঠ অঙ্ক"
+                />
+              </div>
+              <p
+                id="otp-error"
+                class="mt-2 hidden text-xs text-(--color-danger)"
+              >
+                ৬ সংখ্যার ওটিপি দিন।
+              </p>
+              <button
+                id="verify-otp"
+                type="submit"
+                class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) bg-(--color-primary) px-5 py-3.5 text-md font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active)"
+              >
+                ওটিপি যাচাই করুন
+              </button>
+              <p class="mt-4 text-center text-sm text-(--color-ink-muted)">
+                ওটিপি পাননি?
+                <button
+                  id="resend-otp"
+                  type="button"
+                  class="font-semibold text-(--color-primary) transition-colors hover:text-(--color-primary-hover)"
+                >
+                  আবার পাঠান
+                </button>
+              </p>
+              <p
+                id="resend-note"
+                class="mt-2 hidden text-center text-xs text-(--color-success)"
+              >
+                নতুন ওটিপি পাঠানো হয়েছে।
+              </p>
+            </form>
+          </section>
+
+          <!-- ====== STEP 2 — পাসওয়ার্ড ====== -->
+          <section id="panel-2" class="mt-6 hidden">
+            <h1 class="text-lg font-semibold text-(--color-ink)">
+              পাসওয়ার্ড সেট করুন
+            </h1>
+            <p class="mt-1 text-sm text-(--color-ink-muted)">
+              অ্যাকাউন্টে ঢোকার জন্য একটি পাসওয়ার্ড দিন।
+            </p>
+
+            <form class="mt-5" onsubmit="return false">
+              <label
+                for="signup-pass"
+                class="block text-sm font-medium text-(--color-ink)"
+              >
+                পাসওয়ার্ড
+              </label>
+              <div class="relative mt-1.5">
+                <input
+                  id="signup-pass"
+                  type="password"
+                  autocomplete="new-password"
+                  placeholder="********"
+                  class="w-full rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) py-3 pl-4 pr-12 text-md text-(--color-ink) transition-colors placeholder:text-(--color-ink-faint) focus:border-(--color-border-focus)"
+                />
+                <button
+                  id="toggle-pass-1"
+                  type="button"
+                  aria-label="পাসওয়ার্ড দেখান/লুকান"
+                  aria-pressed="false"
+                  class="absolute inset-y-0 right-3 flex items-center text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
+                >
+                  <svg
+                    id="eye-1"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                  <svg
+                    id="eye-off-1"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="hidden"
+                  >
+                    <path
+                      d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"
+                    />
+                    <path
+                      d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"
+                    />
+                    <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24" />
+                    <path d="m1 1 22 22" />
+                  </svg>
+                </button>
+              </div>
+
+              <label
+                for="signup-pass-2"
+                class="mt-4 block text-sm font-medium text-(--color-ink)"
+              >
+                পাসওয়ার্ড আবার দিন
+              </label>
+              <div class="relative mt-1.5">
+                <input
+                  id="signup-pass-2"
+                  type="password"
+                  autocomplete="new-password"
+                  placeholder="********"
+                  class="w-full rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) py-3 pl-4 pr-12 text-md text-(--color-ink) transition-colors placeholder:text-(--color-ink-faint) focus:border-(--color-border-focus)"
+                />
+                <button
+                  id="toggle-pass-2"
+                  type="button"
+                  aria-label="পাসওয়ার্ড দেখান/লুকান"
+                  aria-pressed="false"
+                  class="absolute inset-y-0 right-3 flex items-center text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
+                >
+                  <svg
+                    id="eye-2"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                  <svg
+                    id="eye-off-2"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="hidden"
+                  >
+                    <path
+                      d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"
+                    />
+                    <path
+                      d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"
+                    />
+                    <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24" />
+                    <path d="m1 1 22 22" />
+                  </svg>
+                </button>
+              </div>
+
+              <p class="mt-2 text-xs text-(--color-ink-faint)">
+                অন্তত ৬টি অক্ষর। সহজে মনে রাখা যায় এমন পাসওয়ার্ড দিন।
+              </p>
+              <p
+                id="pass-error"
+                class="mt-2 hidden text-xs text-(--color-danger)"
+              >
+                দুটো পাসওয়ার্ড এক নয়, আবার লিখুন।
+              </p>
+
+              <button
+                id="create-account"
+                type="submit"
+                class="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) bg-(--color-primary) px-5 py-3.5 text-md font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active)"
+              >
+                অ্যাকাউন্ট তৈরি করুন
+              </button>
+            </form>
+          </section>
+
+          <!-- ====== STEP 3 — সাকসেস (variant) ====== -->
+          <section id="panel-3" class="mt-2 hidden">
+            <div class="flex flex-col items-center pt-2 text-center">
+              <span
+                class="flex h-16 w-16 items-center justify-center rounded-full bg-(--color-primary-tint) text-(--color-primary)"
+              >
+                <svg
+                  width="30"
+                  height="30"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+              </span>
+              <h1 class="mt-4 text-lg font-semibold text-(--color-ink)">
+                অ্যাকাউন্ট তৈরি হয়েছে
+              </h1>
+              <p class="mt-1.5 text-sm text-(--color-ink-muted)">
+                স্বাগতম, রফিক ভাই! এক মিনিটেই আপনার বাড়ি সেটআপ করে নিন।
+              </p>
+              <a
+                href="07-onboarding.html"
+                class="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) bg-(--color-primary) px-5 py-3.5 text-md font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active)"
+              >
+                অনবোর্ডিং শুরু করুন
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </a>
+              <p class="mt-4 text-sm text-(--color-ink-muted)">
+                ইতিমধ্যে অ্যাকাউন্ট আছে?
+                <a
+                  href="01-login.html"
+                  class="font-semibold text-(--color-primary) transition-colors hover:text-(--color-primary-hover)"
+                >
+                  লগ ইন
+                </a>
+              </p>
+            </div>
+          </section>
+        </div>
+
+        <!-- Back to login -->
+        <p class="mt-6 text-center">
+          <a
+            href="01-login.html"
+            class="inline-flex items-center gap-1.5 text-sm text-(--color-ink-muted) transition-colors hover:text-(--color-ink)"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M19 12H5M11 18l-6-6 6-6" />
+            </svg>
+            লগ ইন এ ফিরে যান
+          </a>
+        </p>
+      </div>
+    </main>
+
+    <script>
+      // ---- Bengali numerals helper ----
+      const BN = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯']
+      const toBn = (n) => String(n).replace(/\d/g, (d) => BN[+d])
+
+      // ---- Step navigation (1=phone+otp, 2=password, 3=success) ----
+      const panels = [
+        document.getElementById('panel-1'),
+        document.getElementById('panel-2'),
+        document.getElementById('panel-3'),
+      ]
+      const segs = [
+        document.getElementById('seg-1'),
+        document.getElementById('seg-2'),
+      ]
+      const stepNum = document.getElementById('step-num')
+      const stepLabel = document.getElementById('step-label')
+      const stepper = document.getElementById('stepper')
+      const LABELS = { 1: 'মোবাইল নম্বর', 2: 'পাসওয়ার্ড' }
+
+      function goStep(n) {
+        panels.forEach((p, i) => p.classList.toggle('hidden', i + 1 !== n))
+        stepper.classList.toggle('hidden', n === 3)
+        if (n !== 3) {
+          stepNum.textContent = toBn(n)
+          stepLabel.textContent = LABELS[n] || ''
+          segs.forEach((s, i) => {
+            s.classList.toggle('bg-(--color-primary)', i + 1 <= n)
+            s.classList.toggle('bg-(--color-border)', i + 1 > n)
+          })
+        }
+      }
+
+      // ---- Phone -> OTP ----
+      const phoneForm = document.getElementById('phone-form')
+      const otpForm = document.getElementById('otp-form')
+      const otpPhone = document.getElementById('otp-phone')
+      const signupPhone = document.getElementById('signup-phone')
+      const boxes = Array.from(document.querySelectorAll('.otp-box'))
+      const otpError = document.getElementById('otp-error')
+
+      document.getElementById('send-otp').addEventListener('click', () => {
+        otpPhone.textContent = signupPhone.value.trim() || 'আপনার নম্বর'
+        phoneForm.classList.add('hidden')
+        otpForm.classList.remove('hidden')
+        boxes[0].focus()
+      })
+
+      // OTP boxes: auto-advance + backspace to previous
+      boxes.forEach((box, i) => {
+        box.addEventListener('input', () => {
+          box.value = box.value.replace(/[^\d]/g, '').slice(-1)
+          if (box.value && i < boxes.length - 1) boxes[i + 1].focus()
+          otpError.classList.add('hidden')
+          boxes.forEach((b) => b.classList.remove('has-error'))
+        })
+        box.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !box.value && i > 0) {
+            boxes[i - 1].focus()
+          }
+        })
+      })
+
+      document.getElementById('verify-otp').addEventListener('click', () => {
+        const filled = boxes.every((b) => b.value)
+        if (!filled) {
+          otpError.classList.remove('hidden')
+          boxes.forEach((b) => b.classList.add('has-error'))
+          return
+        }
+        goStep(2)
+      })
+
+      document.getElementById('resend-otp').addEventListener('click', () => {
+        boxes.forEach((b) => (b.value = ''))
+        boxes[0].focus()
+        document.getElementById('resend-note').classList.remove('hidden')
+      })
+
+      // ---- Password show/hide ----
+      function bindToggle(toggleId, inputId, eyeId, eyeOffId) {
+        const t = document.getElementById(toggleId)
+        const i = document.getElementById(inputId)
+        const e = document.getElementById(eyeId)
+        const eo = document.getElementById(eyeOffId)
+        t.addEventListener('click', () => {
+          const show = i.type === 'password'
+          i.type = show ? 'text' : 'password'
+          e.classList.toggle('hidden', show)
+          eo.classList.toggle('hidden', !show)
+          t.setAttribute('aria-pressed', String(show))
+        })
+      }
+      bindToggle('toggle-pass-1', 'signup-pass', 'eye-1', 'eye-off-1')
+      bindToggle('toggle-pass-2', 'signup-pass-2', 'eye-2', 'eye-off-2')
+
+      // ---- Create account -> success ----
+      const pass1 = document.getElementById('signup-pass')
+      const pass2 = document.getElementById('signup-pass-2')
+      const passError = document.getElementById('pass-error')
+      document
+        .getElementById('create-account')
+        .addEventListener('click', () => {
+          if (pass1.value.length < 6) {
+            passError.textContent = 'অন্তত ৬টি অক্ষরের পাসওয়ার্ড দিন।'
+            passError.classList.remove('hidden')
+            return
+          }
+          if (pass1.value !== pass2.value) {
+            passError.textContent = 'দুটো পাসওয়ার্ড এক নয়, আবার লিখুন।'
+            passError.classList.remove('hidden')
+            return
+          }
+          passError.classList.add('hidden')
+          goStep(3)
+        })
+
+      // initial state
+      goStep(1)
+    </script>
+  </body>
+</html>

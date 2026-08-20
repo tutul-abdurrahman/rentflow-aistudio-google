@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="bn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Component — Bottom Sheet | RentFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../design-system/tokens.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+      body {
+        font-family: var(--font-sans);
+        line-height: var(--line-height-body);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-(--color-surface) p-6 text-(--color-ink)">
+    <main class="mx-auto max-w-md">
+      <h1 class="text-xl font-bold">Bottom Sheet</h1>
+      <p class="mt-1 text-sm text-(--color-ink-faint)">
+        Semi-modal used for confirm / collect actions. Scrim + sheet, rounded
+        top, shadow-(--shadow-overlay), drag handle. Centered at max-w-md. The
+        demo toggle below is trivial show/hide only (no real app logic).
+      </p>
+
+      <button
+        id="open-sheet"
+        class="mt-8 inline-flex items-center justify-center gap-2 rounded-(--radius-button) bg-(--color-primary) px-5 py-3 text-base font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active)"
+      >
+        কালেকশন শিট খুলুন
+      </button>
+    </main>
+
+    <!-- Scrim -->
+    <div
+      id="scrim"
+      class="fixed inset-0 z-40 hidden bg-(--color-ink)/50"
+      aria-hidden="true"
+    ></div>
+
+    <!-- Sheet -->
+    <div
+      id="sheet"
+      class="fixed inset-x-0 bottom-0 z-50 mx-auto hidden w-full max-w-md rounded-t-(--radius-card) bg-(--color-surface-raised) px-6 pb-[max(env(safe-area-inset-bottom),1rem)] pt-3 shadow-(--shadow-overlay) md:inset-0 md:my-auto md:h-fit md:max-h-[90vh] md:overflow-y-auto md:rounded-(--radius-card) md:pb-6"
+      role="dialog"
+      aria-modal="true"
+      aria-label="কালেকশন নিশ্চিত করুন"
+    >
+      <div
+        class="mx-auto h-1.5 w-12 rounded-(--radius-pill) bg-(--color-border) md:hidden"
+      ></div>
+      <div class="mt-4 flex items-center gap-3">
+        <span
+          class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-(--color-success-tint) text-(--color-success)"
+        >
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M2 7h20v10H2V7z" />
+            <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+            <path d="M6 10h.01M18 14h.01" />
+          </svg>
+        </span>
+        <div>
+          <h2 class="text-lg font-semibold text-(--color-ink)">
+            ৳৪,২০০ আদায় নিশ্চিত করুন
+          </h2>
+          <p class="text-sm text-(--color-ink-muted)">
+            রুম ১০২ · রাহাত হোসেন · আগস্ট ২০২৬
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-4 flex gap-3">
+        <button
+          id="cancel-sheet"
+          class="inline-flex flex-1 items-center justify-center rounded-(--radius-button) border border-(--color-secondary) bg-transparent px-5 py-3 text-base font-semibold text-(--color-secondary) transition-colors hover:bg-(--color-secondary-hover) active:bg-(--color-secondary-active)"
+        >
+          বাতিল
+        </button>
+        <button
+          class="inline-flex flex-1 items-center justify-center gap-2 rounded-(--radius-button) bg-(--color-primary) px-5 py-3 text-base font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active)"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="m4 12 5 5L20 7" />
+          </svg>
+          নিশ্চিত করুন
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // Trivial demo toggle only — no real app logic.
+      const open = document.getElementById('open-sheet')
+      const close = document.getElementById('cancel-sheet')
+      const scrim = document.getElementById('scrim')
+      const sheet = document.getElementById('sheet')
+      open.addEventListener('click', () => {
+        scrim.classList.remove('hidden')
+        sheet.classList.remove('hidden')
+      })
+      const hide = () => {
+        scrim.classList.add('hidden')
+        sheet.classList.add('hidden')
+      }
+      close.addEventListener('click', hide)
+      scrim.addEventListener('click', hide)
+    </script>
+  </body>
+</html>
