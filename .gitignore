@@ -7,3 +7,6 @@
 
 # Windows reserved junk file
 Logo/nul
+
+# Local portfolio / social boards — never push
+showcase/
