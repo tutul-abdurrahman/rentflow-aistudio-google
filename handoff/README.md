@@ -21,7 +21,8 @@ RentFlow/
 │   ├── index.html          hub
 │   ├── screens/            01 … 33 — one responsive HTML per screen
 │   ├── components/         brand · bottom-nav · sidebar · button · input ·
-│   │                       kpi-card · sheet · status-chip · empty-state
+│   │                       kpi-card · sheet · status-chip · empty-state ·
+│   │                       page-header · radio-card
 │   └── assets/             empty (placeholder); icons are inline SVG
 ├── design-system/          tokens.css + README.md (Tailwind @theme mapping)
 └── handoff/README.md       this file
@@ -61,10 +62,18 @@ Screens link tokens via `../../design-system/tokens.css` (relative from `screens
 Content wrapper inside the sidebar-offset div:
 
 ```
-mx-auto w-full max-w-md pb-32 md:max-w-3xl lg:max-w-6xl lg:px-8 lg:pb-16 xl:max-w-7xl
+mx-auto w-full px-3 pb-32 sm:px-5 md:max-w-3xl lg:max-w-6xl lg:px-8 lg:pb-16 xl:max-w-7xl
 ```
 
-Dashboard chart + due list: stack until `xl`, then 2+1. Do not crush names at tablet.
+Do not lock app screens to `max-w-md` between 425px and 768px — that leaves a skinny phone column on tablet. Gutter is `px-3` / `sm:px-5` / `lg:px-8`. Phone stays tight; do not stack `mx-4` on cards on top of the main gutter.
+
+Page CTAs are `w-full` under `sm`, then `sm:w-auto` in a row. Do not stretch primary actions across desktop.
+
+Dashboard chart + due list: stack until `xl`, then 2+1. KPI stays 2-across until `lg`, then 4. Do not crush names at tablet.
+
+Two-column *card grids that grow* (error lines, accordion) stay one column. Two-column *form fields* may start at `md` inside a `max-w-3xl` column.
+
+Form pages (10, 12, 18, 24, 27, 31, 32) wrap in `mx-auto w-full max-w-3xl` so the desktop canvas does not stretch a short form across 7xl. Back control is the ghost 40×40 circle from `components/page-header.html`, not a bordered chip.
 
 ## 7. Sheet / modal recipe (copy exactly)
 
@@ -168,4 +177,4 @@ Grouped by flow (number = filename `NN-*.html`):
 - **Loan:** 23 list · 24 add · 25 detail
 - **Finance:** 26 income/expense list · 27 add · 28 cashflow summary
 - **Summary:** 22 monthly ledger (landscape print)
-- **Settings:** 29 hub · 30 rooms · 31 property · 32 profile (password change requires OTP)
+- **Settings:** 29 hub · 30 rooms · 31 property · 32 profile (password change requires OTP). On phone and tablet, loan (23) and finance (26) live under আরও (29), because the bottom nav has no loan/finance tab. Desktop keeps them in the sidebar. The টাকা group on 29 is `lg:hidden` so it does not duplicate the sidebar.

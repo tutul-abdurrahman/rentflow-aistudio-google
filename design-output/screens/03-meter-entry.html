@@ -39,21 +39,6 @@
       .meter-row.has-error .err-msg {
         display: flex;
       }
-
-      /* বিদ্যুৎ room rows: on tablet & desktop they become a 2-column
-         card grid. On phone (<768px) rows stay stacked with hairline
-         dividers (divide-y on the container). */
-      @media (min-width: 768px) {
-        .meter-rows {
-          display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 0.75rem;
-        }
-        .meter-rows .meter-row {
-          border: 1px solid var(--color-border);
-          border-radius: var(--radius-md);
-        }
-      }
     </style>
   </head>
   <body class="min-h-screen bg-(--color-surface) text-(--color-ink)">
@@ -265,39 +250,37 @@
 
     <div class="lg:pl-[264px]">
       <main
-        class="mx-auto w-full max-w-md pb-28 md:max-w-3xl lg:max-w-5xl lg:pb-16"
+        class="mx-auto w-full px-3 pb-32 sm:px-5 md:max-w-3xl lg:max-w-6xl lg:px-8 lg:pb-16 xl:max-w-7xl"
       >
-        <!-- ============ TOP BAR ============ -->
-        <header class="px-4 pt-5">
-          <div class="flex items-center justify-between">
-            <h1 class="text-xl font-bold text-(--color-ink)">মিটার রিডিং</h1>
-            <!-- save status -->
-            <span
-              class="inline-flex items-center gap-1.5 rounded-(--radius-pill) border border-(--color-border) bg-(--color-surface-raised) px-3 py-1.5 text-xs font-medium text-(--color-ink-muted)"
+        <header class="pt-5 md:flex md:items-start md:justify-between lg:pt-8">
+          <div class="flex items-start gap-2.5">
+            <a
+              href="02-dashboard.html"
+              class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft)"
+              aria-label="পেছনে যান"
             >
               <svg
-                width="14"
-                height="14"
+                width="22"
+                height="22"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
                 stroke-width="1.8"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="text-(--color-success)"
               >
-                <path d="m4 12 5 5L20 7" />
+                <path d="m15 18-6-6 6-6" />
               </svg>
-              খসড়া সংরক্ষিত · ১০:২৪
-            </span>
+            </a>
+            <div>
+              <h1 class="text-xl font-bold text-(--color-ink)">মিটার রিডিং</h1>
+              <p class="mt-0.5 text-sm text-(--color-ink-muted)">
+                আবাসিক ভবন — মিরপুর-১০ · খসড়া ১০:২৪
+              </p>
+            </div>
           </div>
-          <p class="mt-1 text-sm text-(--color-ink-muted)">
-            আবাসিক ভবন — মিরপুর-১০
-          </p>
-
-          <!-- cycle / month selector -->
           <button
-            class="mt-4 inline-flex items-center gap-1.5 rounded-(--radius-pill) border border-(--color-border) bg-(--color-surface-raised) px-3.5 py-2 text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-surface-soft)"
+            class="mt-3 inline-flex h-10 items-center gap-1.5 rounded-(--radius-pill) border border-(--color-border) bg-(--color-surface-raised) px-3.5 text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-surface-soft) md:mt-0"
             aria-label="বিলের মাস পরিবর্তন করুন"
           >
             <svg
@@ -329,47 +312,59 @@
           </button>
         </header>
 
-        <!-- ============ বিদ্যুৎ SECTION ============ -->
         <section
-          class="mt-4 rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) mx-4"
+          class="mt-4 overflow-hidden rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised)"
+          aria-label="বিদ্যুৎ সাব-মিটার"
         >
-          <div class="flex items-center justify-between px-5 pt-4">
-            <h2
-              class="flex items-center gap-2 text-base font-semibold text-(--color-ink)"
-            >
-              <svg
-                class="text-(--color-primary)"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z" />
-              </svg>
-              বিদ্যুৎ (সাব-মিটার)
+          <div class="flex items-center justify-between px-5 py-4">
+            <h2 class="text-base font-semibold text-(--color-ink)">
+              বিদ্যুৎ সাব-মিটার
             </h2>
             <span class="text-xs text-(--color-ink-faint)"
-              >পূর্ববর্তী স্বয়ংক্রিয়</span
+              >পূর্ববর্তী আপনি লিখবেন না</span
             >
           </div>
 
-          <div class="meter-rows mt-2 divide-y divide-(--color-border)">
-            <!-- রুম ১০২ -->
-            <div id="row-102" class="meter-row px-5 py-4">
-              <div class="flex items-center justify-between gap-3">
+          <div
+            class="hidden border-t border-(--color-border) bg-(--color-surface-soft) px-5 py-2.5 lg:grid lg:grid-cols-[4.5rem_minmax(0,1fr)_7rem_8rem_5rem] lg:gap-3"
+          >
+            <p class="text-xs font-semibold text-(--color-ink)">রুম</p>
+            <p class="text-xs font-semibold text-(--color-ink)">নাম</p>
+            <p
+              class="text-right text-xs font-semibold text-(--color-ink-muted)"
+            >
+              পূর্ববর্তী
+            </p>
+            <p
+              class="text-right text-xs font-semibold text-(--color-ink-muted)"
+            >
+              বর্তমান
+            </p>
+            <p class="text-right text-xs font-semibold text-(--color-ink)">
+              ব্যবহৃত
+            </p>
+          </div>
+
+          <div class="meter-rows divide-y divide-(--color-border)">
+            <div id="row-102" class="meter-row px-5 py-3.5">
+              <div
+                class="flex items-center justify-between gap-3 lg:grid lg:grid-cols-[4.5rem_minmax(0,1fr)_7rem_8rem_5rem] lg:gap-3"
+              >
                 <div class="min-w-0">
-                  <p class="text-sm font-semibold text-(--color-ink)">
-                    রুম ১০২
-                  </p>
-                  <p class="mt-0.5 text-xs text-(--color-ink-faint)">
-                    পূর্ববর্তী: ৩,২৪৫
+                  <p class="text-sm font-semibold text-(--color-ink)">১০২</p>
+                  <p class="mt-0.5 text-xs text-(--color-ink-faint) lg:hidden">
+                    রাহাত · পূর্ববর্তী ৩,২৪৫
                   </p>
                 </div>
-                <div class="flex items-center gap-3">
+                <p class="hidden truncate text-sm text-(--color-ink) lg:block">
+                  রাহাত হোসেন
+                </p>
+                <p
+                  class="hidden text-right text-sm text-(--color-ink-muted) lg:block"
+                >
+                  ৩,২৪৫
+                </p>
+                <div class="flex items-center gap-3 lg:contents">
                   <label class="sr-only" for="curr-102"
                     >বর্তমান রিডিং — রুম ১০২</label
                   >
@@ -378,10 +373,12 @@
                     type="number"
                     inputmode="numeric"
                     value="3368"
-                    class="w-24 rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) px-3 py-2 text-right text-md font-medium text-(--color-ink) outline-none focus:border-(--color-border-focus)"
+                    class="w-24 rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) px-3 py-2 text-right text-md font-medium text-(--color-ink) outline-none focus:border-(--color-border-focus) lg:w-full"
                   />
-                  <div class="w-14 text-right">
-                    <p class="text-xs text-(--color-ink-faint)">ব্যবহৃত</p>
+                  <div class="w-14 text-right lg:w-auto">
+                    <p class="text-xs text-(--color-ink-faint) lg:hidden">
+                      ব্যবহৃত
+                    </p>
                     <p
                       id="used-102"
                       class="text-sm font-semibold text-(--color-ink)"
@@ -393,18 +390,25 @@
               </div>
             </div>
 
-            <!-- রুম ১০৩ -->
-            <div id="row-103" class="meter-row px-5 py-4">
-              <div class="flex items-center justify-between gap-3">
+            <div id="row-103" class="meter-row px-5 py-3.5">
+              <div
+                class="flex items-center justify-between gap-3 lg:grid lg:grid-cols-[4.5rem_minmax(0,1fr)_7rem_8rem_5rem] lg:gap-3"
+              >
                 <div class="min-w-0">
-                  <p class="text-sm font-semibold text-(--color-ink)">
-                    রুম ১০৩
-                  </p>
-                  <p class="mt-0.5 text-xs text-(--color-ink-faint)">
-                    পূর্ববর্তী: ২,৮৯০
+                  <p class="text-sm font-semibold text-(--color-ink)">১০৩</p>
+                  <p class="mt-0.5 text-xs text-(--color-ink-faint) lg:hidden">
+                    সাব্বির · পূর্ববর্তী ২,৮৯০
                   </p>
                 </div>
-                <div class="flex items-center gap-3">
+                <p class="hidden truncate text-sm text-(--color-ink) lg:block">
+                  সাব্বির আহমেদ
+                </p>
+                <p
+                  class="hidden text-right text-sm text-(--color-ink-muted) lg:block"
+                >
+                  ২,৮৯০
+                </p>
+                <div class="flex items-center gap-3 lg:contents">
                   <label class="sr-only" for="curr-103"
                     >বর্তমান রিডিং — রুম ১০৩</label
                   >
@@ -413,10 +417,12 @@
                     type="number"
                     inputmode="numeric"
                     value="2970"
-                    class="w-24 rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) px-3 py-2 text-right text-md font-medium text-(--color-ink) outline-none focus:border-(--color-border-focus)"
+                    class="w-24 rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) px-3 py-2 text-right text-md font-medium text-(--color-ink) outline-none focus:border-(--color-border-focus) lg:w-full"
                   />
-                  <div class="w-14 text-right">
-                    <p class="text-xs text-(--color-ink-faint)">ব্যবহৃত</p>
+                  <div class="w-14 text-right lg:w-auto">
+                    <p class="text-xs text-(--color-ink-faint) lg:hidden">
+                      ব্যবহৃত
+                    </p>
                     <p
                       id="used-103"
                       class="text-sm font-semibold text-(--color-ink)"
@@ -428,18 +434,25 @@
               </div>
             </div>
 
-            <!-- রুম ১০৪ — negative-guard demo: current < previous -->
-            <div id="row-104" class="meter-row has-error px-5 py-4">
-              <div class="flex items-center justify-between gap-3">
+            <div id="row-104" class="meter-row has-error px-5 py-3.5">
+              <div
+                class="flex items-center justify-between gap-3 lg:grid lg:grid-cols-[4.5rem_minmax(0,1fr)_7rem_8rem_5rem] lg:gap-3"
+              >
                 <div class="min-w-0">
-                  <p class="text-sm font-semibold text-(--color-ink)">
-                    রুম ১০৪
-                  </p>
-                  <p class="mt-0.5 text-xs text-(--color-ink-faint)">
-                    পূর্ববর্তী: ২,৫৬০
+                  <p class="text-sm font-semibold text-(--color-ink)">১০৪</p>
+                  <p class="mt-0.5 text-xs text-(--color-ink-faint) lg:hidden">
+                    তানভীর · পূর্ববর্তী ২,৫৬০
                   </p>
                 </div>
-                <div class="flex items-center gap-3">
+                <p class="hidden truncate text-sm text-(--color-ink) lg:block">
+                  তানভীর ইসলাম
+                </p>
+                <p
+                  class="hidden text-right text-sm text-(--color-ink-muted) lg:block"
+                >
+                  ২,৫৬০
+                </p>
+                <div class="flex items-center gap-3 lg:contents">
                   <label class="sr-only" for="curr-104"
                     >বর্তমান রিডিং — রুম ১০৪</label
                   >
@@ -448,10 +461,12 @@
                     type="number"
                     inputmode="numeric"
                     value="2500"
-                    class="w-24 rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) px-3 py-2 text-right text-md font-medium text-(--color-ink) outline-none focus:border-(--color-border-focus)"
+                    class="w-24 rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) px-3 py-2 text-right text-md font-medium text-(--color-ink) outline-none focus:border-(--color-border-focus) lg:w-full"
                   />
-                  <div class="w-14 text-right">
-                    <p class="text-xs text-(--color-ink-faint)">ব্যবহৃত</p>
+                  <div class="w-14 text-right lg:w-auto">
+                    <p class="text-xs text-(--color-ink-faint) lg:hidden">
+                      ব্যবহৃত
+                    </p>
                     <p
                       id="used-104"
                       class="text-sm font-semibold text-(--color-danger)"
@@ -462,7 +477,6 @@
                 </div>
               </div>
               <p
-                id="err-104"
                 class="err-msg mt-2 items-center gap-1.5 text-xs text-(--color-danger)"
               >
                 <svg
@@ -483,18 +497,25 @@
               </p>
             </div>
 
-            <!-- রুম ১০৫ -->
-            <div id="row-105" class="meter-row px-5 py-4">
-              <div class="flex items-center justify-between gap-3">
+            <div id="row-105" class="meter-row px-5 py-3.5">
+              <div
+                class="flex items-center justify-between gap-3 lg:grid lg:grid-cols-[4.5rem_minmax(0,1fr)_7rem_8rem_5rem] lg:gap-3"
+              >
                 <div class="min-w-0">
-                  <p class="text-sm font-semibold text-(--color-ink)">
-                    রুম ১০৫
-                  </p>
-                  <p class="mt-0.5 text-xs text-(--color-ink-faint)">
-                    পূর্ববর্তী: ১,৯৮০
+                  <p class="text-sm font-semibold text-(--color-ink)">১০৫</p>
+                  <p class="mt-0.5 text-xs text-(--color-ink-faint) lg:hidden">
+                    মেহেদী · পূর্ববর্তী ১,৯৮০
                   </p>
                 </div>
-                <div class="flex items-center gap-3">
+                <p class="hidden truncate text-sm text-(--color-ink) lg:block">
+                  মেহেদী হাসান
+                </p>
+                <p
+                  class="hidden text-right text-sm text-(--color-ink-muted) lg:block"
+                >
+                  ১,৯৮০
+                </p>
+                <div class="flex items-center gap-3 lg:contents">
                   <label class="sr-only" for="curr-105"
                     >বর্তমান রিডিং — রুম ১০৫</label
                   >
@@ -503,10 +524,12 @@
                     type="number"
                     inputmode="numeric"
                     value="2050"
-                    class="w-24 rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) px-3 py-2 text-right text-md font-medium text-(--color-ink) outline-none focus:border-(--color-border-focus)"
+                    class="w-24 rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) px-3 py-2 text-right text-md font-medium text-(--color-ink) outline-none focus:border-(--color-border-focus) lg:w-full"
                   />
-                  <div class="w-14 text-right">
-                    <p class="text-xs text-(--color-ink-faint)">ব্যবহৃত</p>
+                  <div class="w-14 text-right lg:w-auto">
+                    <p class="text-xs text-(--color-ink-faint) lg:hidden">
+                      ব্যবহৃত
+                    </p>
                     <p
                       id="used-105"
                       class="text-sm font-semibold text-(--color-ink)"
@@ -517,106 +540,106 @@
                 </div>
               </div>
             </div>
-          </div>
-        </section>
 
-        <!-- ============ পানি + রেট (side-by-side on md+) ============ -->
-        <div class="mt-3 mx-4 md:grid md:grid-cols-2 md:items-start md:gap-3">
-          <!-- ============ পানি SECTION ============ -->
-          <section
-            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg)"
-          >
-            <h2
-              class="flex items-center gap-2 text-base font-semibold text-(--color-ink)"
-            >
-              <svg
-                class="text-(--color-info)"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+            <div id="row-107" class="meter-row px-5 py-3.5">
+              <div
+                class="flex items-center justify-between gap-3 lg:grid lg:grid-cols-[4.5rem_minmax(0,1fr)_7rem_8rem_5rem] lg:gap-3"
               >
-                <path d="M12 2s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z" />
-              </svg>
-              পানি (মেইন মিটার)
-            </h2>
-
-            <div id="water-row" class="meter-row mt-4">
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label
-                    for="water-prev"
-                    class="block text-sm font-medium text-(--color-ink)"
-                  >
-                    পূর্ববর্তী রিডিং
-                  </label>
-                  <div class="relative mt-1.5">
-                    <input
-                      id="water-prev"
-                      type="number"
-                      inputmode="numeric"
-                      value="4500"
-                      readonly
-                      aria-label="পূর্ববর্তী রিডিং — স্বয়ংক্রিয়"
-                      class="w-full cursor-not-allowed rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-sunken) py-3 pl-4 pr-11 text-md font-medium text-(--color-ink-muted) outline-none"
-                    />
-                    <span
-                      class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-(--color-ink-faint)"
-                    >
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <path d="M21 12a9 9 0 1 1-2.64-6.36" />
-                        <path d="M21 3v6h-6" />
-                      </svg>
-                    </span>
-                  </div>
+                <div class="min-w-0">
+                  <p class="text-sm font-semibold text-(--color-ink)">১০৭</p>
+                  <p class="mt-0.5 text-xs text-(--color-ink-faint) lg:hidden">
+                    নাফিসা · পূর্ববর্তী ২,৮০০
+                  </p>
                 </div>
-                <div>
-                  <label
-                    for="water-curr"
-                    class="block text-sm font-medium text-(--color-ink)"
+                <p class="hidden truncate text-sm text-(--color-ink) lg:block">
+                  নাফিসা আক্তার
+                </p>
+                <p
+                  class="hidden text-right text-sm text-(--color-ink-muted) lg:block"
+                >
+                  ২,৮০০
+                </p>
+                <div class="flex items-center gap-3 lg:contents">
+                  <label class="sr-only" for="curr-107"
+                    >বর্তমান রিডিং — রুম ১০৭</label
                   >
-                    বর্তমান রিডিং
-                  </label>
-                  <div class="relative mt-1.5">
-                    <input
-                      id="water-curr"
-                      type="number"
-                      inputmode="numeric"
-                      value="5000"
-                      class="w-full rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) py-3 pl-4 pr-4 text-md font-medium text-(--color-ink) outline-none transition-colors placeholder:text-(--color-ink-faint) focus:border-(--color-border-focus)"
-                    />
+                  <input
+                    id="curr-107"
+                    type="number"
+                    inputmode="numeric"
+                    value="3010"
+                    class="w-24 rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) px-3 py-2 text-right text-md font-medium text-(--color-ink) outline-none focus:border-(--color-border-focus) lg:w-full"
+                  />
+                  <div class="w-14 text-right lg:w-auto">
+                    <p class="text-xs text-(--color-ink-faint) lg:hidden">
+                      ব্যবহৃত
+                    </p>
+                    <p
+                      id="used-107"
+                      class="text-sm font-semibold text-(--color-ink)"
+                    >
+                      ২১০
+                    </p>
                   </div>
                 </div>
               </div>
-
-              <!-- ব্যবহৃত readout (বর্তমান − পূর্ববর্তী, live) -->
-              <div
-                class="mt-3 flex items-center justify-between rounded-(--radius-md) bg-(--color-surface-sunken) px-4 py-2.5"
-              >
-                <span class="text-sm text-(--color-ink-muted)">ব্যবহৃত</span>
-                <span
-                  id="water-used"
-                  class="text-sm font-semibold text-(--color-ink)"
+            </div>
+          </div>
+          <p
+            class="border-t border-(--color-border) px-5 py-3 text-xs text-(--color-ink-faint)"
+          >
+            রুম ১০৬ খালি — সাব-মিটার নেই, অটো বিদ্যুৎও নেই।
+          </p>
+        </section>
+        <div class="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2 md:items-stretch">
+          <section
+            class="flex flex-col rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) px-5 py-4"
+            aria-label="পানি মেইন মিটার"
+          >
+            <h2 class="text-base font-semibold text-(--color-ink)">
+              পানি · মেইন মিটার
+            </h2>
+            <p class="mt-0.5 text-xs text-(--color-ink-muted)">
+              সক্রিয় রুমে ভাগ। খালি রুম বাদ।
+            </p>
+            <div
+              id="water-row"
+              class="meter-row mt-4 flex flex-wrap items-end gap-x-6 gap-y-3"
+            >
+              <div>
+                <p class="text-xs text-(--color-ink-faint)">পূর্ববর্তী</p>
+                <p
+                  class="mt-1 text-lg font-semibold tabular-nums text-(--color-ink)"
                 >
-                  ৫০০ ইউনিট
-                </span>
+                  ৪,৫০০
+                </p>
+              </div>
+              <div>
+                <label
+                  for="water-curr"
+                  class="block text-xs font-medium text-(--color-ink-muted)"
+                  >বর্তমান</label
+                >
+                <input
+                  id="water-curr"
+                  type="number"
+                  inputmode="numeric"
+                  value="5000"
+                  class="mt-1 w-28 rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) px-3 py-2 text-right text-md font-medium text-(--color-ink) outline-none focus:border-(--color-border-focus)"
+                />
+              </div>
+              <div>
+                <p class="text-xs text-(--color-ink-faint)">ব্যবহৃত</p>
+                <p
+                  id="water-used"
+                  class="mt-1 text-lg font-semibold tabular-nums text-(--color-ink)"
+                >
+                  ৫০০
+                </p>
               </div>
               <p
                 id="water-err"
-                class="err-msg mt-2 items-center gap-1.5 text-xs text-(--color-danger)"
+                class="err-msg basis-full items-center gap-1.5 text-xs text-(--color-danger)"
               >
                 <svg
                   width="14"
@@ -635,88 +658,57 @@
                 বর্তমান রিডিং পূর্ববর্তীর চেয়ে কম
               </p>
             </div>
-
-            <!-- split formula note -->
-            <div
-              class="mt-3 rounded-(--radius-md) bg-(--color-surface-sunken) px-4 py-3"
-            >
-              <p class="text-xs leading-relaxed text-(--color-ink-muted)">
-                <span class="font-semibold text-(--color-ink)"
-                  >ভাগের নিয়ম:</span
-                >
-                প্রতি রুমের পানির অংশ = মোট ইউনিট ÷ (সক্রিয় রুম + ১)। এখানে +১
-                হলো মালিকের অংশ (বিলের বাইরে) — এই অংশ প্রতিটি রেন্টির বিদ্যুৎ
-                ইউনিটের সাথে যোগ হয়ে রেটে গুণ হয়।
-              </p>
-            </div>
           </section>
 
-          <!-- ============ রেট SECTION ============ -->
           <section
-            class="mt-3 rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) md:mt-0"
+            class="flex flex-col rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) px-5 py-4"
+            aria-label="রেট ও ফি"
           >
-            <h2
-              class="flex items-center gap-2 text-base font-semibold text-(--color-ink)"
-            >
-              <svg
-                class="text-(--color-ink-muted)"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path
-                  d="M20.59 13.41 12 22l-9-9V3h10l7.59 7.59a2 2 0 0 1 0 2.82z"
-                />
-                <path d="M8 8h.01" />
-              </svg>
-              রেট
-            </h2>
+            <h2 class="text-base font-semibold text-(--color-ink)">রেট ও ফি</h2>
+            <p class="mt-0.5 text-xs text-(--color-ink-muted)">
+              বদলালে এই মাস থেকেই বিলে বসবে।
+            </p>
             <div class="mt-4 grid grid-cols-2 gap-3">
               <div>
                 <label
-                  for="rate"
-                  class="block text-sm font-medium text-(--color-ink)"
+                  for="prop-rate"
+                  class="mb-1 block text-xs font-medium text-(--color-ink-muted)"
                 >
-                  বিদ্যুৎ রেট (৳/ইউনিট)
+                  বিদ্যুৎ (৳/ইউনিট)
                 </label>
-                <div class="relative mt-1.5">
+                <div class="relative">
                   <span
-                    class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-md font-medium text-(--color-ink-faint)"
+                    class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-sm font-medium text-(--color-ink-faint)"
                     >৳</span
                   >
                   <input
-                    id="rate"
+                    id="prop-rate"
                     type="number"
                     inputmode="decimal"
                     step="0.01"
                     value="7.5"
-                    class="w-full rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) py-3 pl-10 pr-4 text-md text-(--color-ink) transition-colors placeholder:text-(--color-ink-faint) focus:border-(--color-border-focus)"
+                    class="w-full rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) py-2 pl-8 pr-3 text-md font-medium text-(--color-ink) outline-none focus:border-(--color-border-focus)"
                   />
                 </div>
               </div>
               <div>
                 <label
-                  for="waste"
-                  class="block text-sm font-medium text-(--color-ink)"
+                  for="prop-waste"
+                  class="mb-1 block text-xs font-medium text-(--color-ink-muted)"
                 >
-                  ওয়েস্ট ফি (৳/রুম/মাস)
+                  ওয়েস্ট (৳/রুম)
                 </label>
-                <div class="relative mt-1.5">
+                <div class="relative">
                   <span
-                    class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-md font-medium text-(--color-ink-faint)"
+                    class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-sm font-medium text-(--color-ink-faint)"
                     >৳</span
                   >
                   <input
-                    id="waste"
+                    id="prop-waste"
                     type="number"
                     inputmode="numeric"
                     value="200"
-                    class="w-full rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) py-3 pl-10 pr-4 text-md text-(--color-ink) transition-colors placeholder:text-(--color-ink-faint) focus:border-(--color-border-focus)"
+                    class="w-full rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) py-2 pl-8 pr-3 text-md font-medium text-(--color-ink) outline-none focus:border-(--color-border-focus)"
                   />
                 </div>
               </div>
@@ -724,50 +716,25 @@
           </section>
         </div>
 
-        <!-- ============ SAVE ACTIONS (in normal page flow, end of content) ============ -->
-        <div class="mt-4 mx-4 pb-1">
+        <div
+          class="mt-5 flex flex-col-reverse gap-2 pb-1 sm:flex-row sm:items-center sm:justify-end"
+        >
+          <button
+            type="button"
+            class="inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) border border-(--color-secondary) bg-(--color-surface-raised) px-5 py-3 text-base font-semibold text-(--color-secondary) transition-colors hover:bg-(--color-secondary-hover) active:bg-(--color-secondary-active) sm:w-auto"
+          >
+            খসড়া রাখুন
+          </button>
           <a
             href="17-bill-preview.html"
-            class="inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) border border-transparent bg-(--color-primary) px-5 py-3 text-base font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active)"
+            class="inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) border border-transparent bg-(--color-primary) px-5 py-3 text-base font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active) sm:w-auto"
           >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.8"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="m4 12 5 5L20 7" />
-            </svg>
-            সংরক্ষণ করুন ও রিভিউ দেখুন
+            রিভিউ দেখুন
           </a>
-          <p class="mt-2 text-center text-xs text-(--color-ink-faint)">
-            রিভিউয়ের পর কাগজ ছাপাবেন। টাকা পরে লেজারে লেখা হবে।
-          </p>
-
-          <button
-            class="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) border border-(--color-secondary) bg-(--color-surface-raised) px-5 py-3 text-base font-semibold text-(--color-secondary) transition-colors hover:bg-(--color-secondary-hover) active:bg-(--color-secondary-active)"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.8"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M12 2v12" />
-              <path d="m8 10 4 4 4-4" />
-              <path d="M4 20h16" />
-            </svg>
-            খসড়া সংরক্ষণ
-          </button>
         </div>
+        <p class="mt-2 text-xs text-(--color-ink-faint) sm:text-right">
+          রিভিউয়ের পর কাগজ ছাপাবেন। টাকা পরে লেজারে লেখা হবে।
+        </p>
       </main>
     </div>
 
@@ -777,31 +744,25 @@
       aria-label="প্রধান নেভিগেশন"
     >
       <div class="grid grid-cols-5 items-end">
-        <!-- বিল (active) -->
         <a
           href="17-bill-preview.html"
-          class="flex flex-col items-center gap-1 pb-1 text-(--color-primary)"
+          class="flex flex-col items-center gap-1 pb-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
           aria-label="বিল"
-          aria-current="page"
         >
-          <span
-            class="flex h-9 w-14 items-center justify-center rounded-(--radius-pill) bg-(--color-primary-tint)"
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
           >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.8"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M6 2h12v20l-2-1.5L14 22l-2-1.5L10 22l-2-1.5L6 22V2z" />
-              <path d="M9 7h6M9 11h6M9 15h4" />
-            </svg>
-          </span>
-          <span class="text-xs font-semibold">বিল</span>
+            <path d="M6 2h12v20l-2-1.5L14 22l-2-1.5L10 22l-2-1.5L6 22V2z" />
+            <path d="M9 7h6M9 11h6M9 15h4" />
+          </svg>
+          <span class="text-xs">বিল</span>
         </a>
 
         <!-- রেন্টি -->
@@ -915,12 +876,12 @@
           .toLocaleString('en-IN')
           .replace(/\d/g, (d) => BN[+d])
       }
-      // ----- বিদ্যুৎ: 4 room sub-meters (no common/main row) -----
       const rows = [
         { prev: 3245, curr: 'curr-102', used: 'used-102', row: 'row-102' },
         { prev: 2890, curr: 'curr-103', used: 'used-103', row: 'row-103' },
         { prev: 2560, curr: 'curr-104', used: 'used-104', row: 'row-104' },
         { prev: 1980, curr: 'curr-105', used: 'used-105', row: 'row-105' },
+        { prev: 2800, curr: 'curr-107', used: 'used-107', row: 'row-107' },
       ]
 
       // ----- পানি: previous (auto) + current reading → units -----
@@ -955,7 +916,7 @@
           !isNaN(waterCur) &&
           waterCur >= waterPrev
         if (waterValid) {
-          waterUsedEl.textContent = bnInt(waterCur - waterPrev) + ' ইউনিট'
+          waterUsedEl.textContent = bnInt(waterCur - waterPrev)
           waterUsedEl.classList.remove('text-(--color-danger)')
         } else {
           waterUsedEl.textContent = '—'
