@@ -250,7 +250,7 @@
 
     <div class="lg:pl-[264px]">
       <main
-        class="mx-auto w-full px-3 pb-32 sm:px-5 md:max-w-3xl lg:max-w-6xl lg:px-8 lg:pb-16 xl:max-w-7xl"
+        class="mx-auto w-full px-5 pb-32 md:max-w-3xl lg:max-w-6xl lg:px-8 lg:pb-16 xl:max-w-7xl"
       >
         <header class="pt-5 md:flex md:items-start md:justify-between lg:pt-8">
           <div class="flex items-start gap-2.5">
@@ -729,46 +729,52 @@
             href="17-bill-preview.html"
             class="inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) border border-transparent bg-(--color-primary) px-5 py-3 text-base font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active) sm:w-auto"
           >
-            রিভিউ দেখুন
+            বিল দেখুন
           </a>
         </div>
         <p class="mt-2 text-xs text-(--color-ink-faint) sm:text-right">
-          রিভিউয়ের পর কাগজ ছাপাবেন। টাকা পরে লেজারে লেখা হবে।
+          বিল দেখার পর কাগজ ছাপাবেন। টাকা পরে লেজারে লেখা হবে।
         </p>
       </main>
     </div>
 
     <!-- ============ BOTTOM NAV (active: বিল; হোম raised center) ============ -->
     <nav
-      class="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md md:max-w-3xl border-t border-(--color-border) bg-(--color-surface-raised) px-3 pt-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] lg:hidden"
+      class="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md md:max-w-3xl border-t border-(--color-border) bg-(--color-surface-raised) px-2 pt-2 pb-[max(env(safe-area-inset-bottom),0.75rem)] lg:hidden"
       aria-label="প্রধান নেভিগেশন"
     >
-      <div class="grid grid-cols-5 items-end">
+      <div class="grid grid-cols-5">
+        <!-- বিল (active) -->
         <a
           href="17-bill-preview.html"
-          class="flex flex-col items-center gap-1 pb-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
+          class="flex flex-col items-center gap-1 pb-1 text-(--color-primary)"
           aria-label="বিল"
+          aria-current="page"
         >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+          <span
+            class="flex h-9 w-14 items-center justify-center rounded-(--radius-pill) bg-(--color-primary-tint)"
           >
-            <path d="M6 2h12v20l-2-1.5L14 22l-2-1.5L10 22l-2-1.5L6 22V2z" />
-            <path d="M9 7h6M9 11h6M9 15h4" />
-          </svg>
-          <span class="text-xs">বিল</span>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M6 2h12v20l-2-1.5L14 22l-2-1.5L10 22l-2-1.5L6 22V2z" />
+              <path d="M9 7h6M9 11h6M9 15h4" />
+            </svg>
+          </span>
+          <span class="text-xs font-semibold">বিল</span>
         </a>
 
         <!-- রেন্টি -->
         <a
           href="09-tenant-list.html"
-          class="flex flex-col items-center gap-1 pb-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
+          class="flex flex-col items-center gap-1 py-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
           aria-label="রেন্টি"
         >
           <svg
@@ -789,14 +795,14 @@
           <span class="text-xs">রেন্টি</span>
         </a>
 
-        <!-- হোম (center, raised) -->
+        <!-- Home (center, raised, inactive) -->
         <a
           href="02-dashboard.html"
-          class="-mt-5 flex flex-col items-center gap-1 pb-1 text-(--color-ink)"
+          class="flex flex-col items-center pt-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
           aria-label="হোম"
         >
           <span
-            class="flex h-14 w-14 items-center justify-center rounded-full bg-(--color-primary) shadow-(--shadow-float)"
+            class="-mt-6 flex h-14 w-14 items-center justify-center rounded-full border-2 border-(--color-border-strong) bg-(--color-surface-raised) text-(--color-ink) shadow-(--shadow-float)"
           >
             <svg
               width="28"
@@ -804,7 +810,7 @@
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
+              stroke-width="1.8"
               stroke-linecap="round"
               stroke-linejoin="round"
             >
@@ -812,13 +818,13 @@
               <path d="M5 9.5V21h14V9.5" />
             </svg>
           </span>
-          <span class="text-xs font-medium">হোম</span>
+          <span class="mt-1 text-xs">হোম</span>
         </a>
 
         <!-- সারাংশ -->
         <a
           href="22-monthly-summary-ledger.html"
-          class="flex flex-col items-center gap-1 pb-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
+          class="flex flex-col items-center gap-1 py-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
           aria-label="সারাংশ"
         >
           <svg
@@ -842,7 +848,7 @@
         <!-- আরও -->
         <a
           href="29-settings-hub.html"
-          class="flex flex-col items-center gap-1 pb-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
+          class="flex flex-col items-center gap-1 py-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
           aria-label="আরও"
         >
           <svg

@@ -228,10 +228,10 @@
 
     <div class="lg:pl-[264px]">
       <main
-        class="mx-auto w-full px-3 pb-32 sm:px-5 md:max-w-3xl lg:max-w-6xl lg:px-8 lg:pb-16 xl:max-w-7xl"
+        class="mx-auto w-full px-5 pb-32 md:max-w-3xl lg:max-w-6xl lg:px-8 lg:pb-16 xl:max-w-7xl"
       >
         <!-- ============ TOP BAR ============ -->
-        <header class="px-4 pt-5 lg:px-0 lg:pt-8">
+        <header class="pt-5 lg:pt-8">
           <div class="flex items-center justify-between gap-3">
             <div class="flex min-w-0 items-center gap-2.5">
               <a
@@ -284,7 +284,7 @@
 
         <!-- ============ SUMMARY CHIPS ============ -->
         <section
-          class="mt-4 grid grid-cols-3 gap-3 px-4 lg:px-0"
+          class="mt-4 grid grid-cols-3 gap-3"
           aria-label="লোন সারসংক্ষেপ"
         >
           <div
@@ -318,7 +318,7 @@
         </section>
 
         <!-- ============ FILTER CHIPS ============ -->
-        <div class="mt-3 flex flex-wrap gap-2 px-4 lg:px-0">
+        <div class="mt-3 flex flex-wrap gap-2">
           <!-- সব (active) -->
           <button
             class="inline-flex items-center gap-1 rounded-(--radius-pill) border border-(--color-primary) bg-(--color-primary-tint) px-3.5 py-1.5 text-sm font-semibold text-(--color-ink)"
@@ -342,7 +342,7 @@
 
         <!-- ============ LOAN LIST (cards on mobile / 2-col grid on desktop) ============ -->
         <section
-          class="mt-4 grid gap-3 px-4 lg:grid-cols-2 lg:gap-4 lg:px-0"
+          class="mt-4 grid gap-3 lg:grid-cols-2 lg:gap-4"
           aria-label="লোন তালিকা"
         >
           <!-- নাফিসা আক্তার — চলমান লোন -->
@@ -528,11 +528,11 @@
           aria-label="খালি অবস্থা প্রিভিউ"
         >
           <p
-            class="px-4 text-center text-xs font-semibold uppercase tracking-wide text-(--color-ink-faint) lg:px-0"
+            class="text-center text-xs font-semibold uppercase tracking-wide text-(--color-ink-faint)"
           >
             — কোনো লোন নেই / empty state —
           </p>
-          <div class="mt-4 px-4 lg:px-0">
+          <div class="mt-4">
             <div
               class="flex flex-col items-center rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) px-6 py-12 text-center"
             >
@@ -592,12 +592,12 @@
           aria-label="লোডিং প্রিভিউ"
         >
           <p
-            class="px-4 text-center text-xs font-semibold uppercase tracking-wide text-(--color-ink-faint) lg:px-0"
+            class="text-center text-xs font-semibold uppercase tracking-wide text-(--color-ink-faint)"
           >
             — লোডিং / loading —
           </p>
           <div
-            class="mt-4 grid gap-3 px-4 lg:grid-cols-2 lg:gap-4 lg:px-0"
+          class="mt-4 grid gap-3 lg:grid-cols-2 lg:gap-4"
             aria-hidden="true"
           >
             <!-- skeleton loan card 1 -->
@@ -736,14 +736,14 @@
           </svg>
           <span class="text-xs">রেন্টি</span>
         </a>
-        <!-- হোম (center, raised) -->
+        <!-- হোম (center, raised, inactive) -->
         <a
           href="02-dashboard.html"
           class="flex flex-col items-center pt-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
           aria-label="হোম"
         >
           <span
-            class="-mt-6 flex h-14 w-14 items-center justify-center rounded-full bg-(--color-primary) text-(--color-on-primary) shadow-(--shadow-float)"
+            class="-mt-6 flex h-14 w-14 items-center justify-center rounded-full border-2 border-(--color-border-strong) bg-(--color-surface-raised) text-(--color-ink) shadow-(--shadow-float)"
           >
             <svg
               width="28"

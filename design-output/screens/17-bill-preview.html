@@ -221,7 +221,7 @@
 
     <div class="lg:pl-[264px]">
       <main
-        class="mx-auto w-full px-3 pb-32 sm:px-5 md:max-w-3xl lg:max-w-6xl lg:px-8 lg:pb-16 xl:max-w-7xl"
+        class="mx-auto w-full px-5 pb-32 md:max-w-3xl lg:max-w-6xl lg:px-8 lg:pb-16 xl:max-w-7xl"
       >
         <header
           class="pt-5 md:flex md:items-start md:justify-between lg:pt-8"
@@ -769,12 +769,12 @@
           </div>
         </section>
 
-        <p class="mt-2 px-4 text-xs text-(--color-ink-faint) lg:px-0">
+        <p class="mt-2 text-xs text-(--color-ink-faint)">
           রুম ১০৬ খালি — এই মাসে কাগজ নেই। ওয়েস্ট, পানির ভাগ বা অটো বিদ্যুৎ যোগ
           হয়নি।
         </p>
 
-        <div class="mt-4 px-4 pb-1 md:mt-6 lg:px-0">
+        <div class="mt-4 pb-1 md:mt-6">
           <div class="flex flex-col gap-2 md:flex-row md:items-stretch">
             <a
               href="04-receipt-grid-print.html"
@@ -832,7 +832,7 @@
           aria-label="লোডিং অবস্থা প্রিভিউ"
         >
           <p
-            class="px-4 text-center text-xs font-semibold uppercase tracking-wide text-(--color-ink-faint) lg:px-0"
+            class="text-center text-xs font-semibold uppercase tracking-wide text-(--color-ink-faint)"
           >
             — লোডিং / loading —
           </p>
@@ -1041,10 +1041,10 @@
     </div>
 
     <nav
-      class="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md border-t border-(--color-border) bg-(--color-surface-raised) px-3 pt-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] md:max-w-3xl lg:hidden"
+      class="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md md:max-w-3xl border-t border-(--color-border) bg-(--color-surface-raised) px-2 pt-2 pb-[max(env(safe-area-inset-bottom),0.75rem)] lg:hidden"
       aria-label="প্রধান নেভিগেশন"
     >
-      <div class="grid grid-cols-5 items-end">
+      <div class="grid grid-cols-5">
         <a
           href="17-bill-preview.html"
           class="flex flex-col items-center gap-1 pb-1 text-(--color-primary)"
@@ -1072,7 +1072,7 @@
         </a>
         <a
           href="09-tenant-list.html"
-          class="flex flex-col items-center gap-1 pb-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
+          class="flex flex-col items-center gap-1 py-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
           aria-label="রেন্টি"
         >
           <svg
@@ -1094,11 +1094,11 @@
         </a>
         <a
           href="02-dashboard.html"
-          class="-mt-5 flex flex-col items-center gap-1 pb-1 text-(--color-ink)"
+          class="flex flex-col items-center pt-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
           aria-label="হোম"
         >
           <span
-            class="flex h-14 w-14 items-center justify-center rounded-full bg-(--color-primary) shadow-(--shadow-float)"
+            class="-mt-6 flex h-14 w-14 items-center justify-center rounded-full border-2 border-(--color-border-strong) bg-(--color-surface-raised) text-(--color-ink) shadow-(--shadow-float)"
           >
             <svg
               width="28"
@@ -1106,7 +1106,7 @@
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
+              stroke-width="1.8"
               stroke-linecap="round"
               stroke-linejoin="round"
             >
@@ -1114,11 +1114,11 @@
               <path d="M5 9.5V21h14V9.5" />
             </svg>
           </span>
-          <span class="text-xs font-medium">হোম</span>
+          <span class="mt-1 text-xs">হোম</span>
         </a>
         <a
           href="22-monthly-summary-ledger.html"
-          class="flex flex-col items-center gap-1 pb-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
+          class="flex flex-col items-center gap-1 py-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
           aria-label="সারাংশ"
         >
           <svg
@@ -1140,7 +1140,7 @@
         </a>
         <a
           href="29-settings-hub.html"
-          class="flex flex-col items-center gap-1 pb-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
+          class="flex flex-col items-center gap-1 py-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
           aria-label="আরও"
         >
           <svg

@@ -237,11 +237,11 @@
 
     <div class="lg:pl-[264px]">
       <main
-        class="mx-auto w-full px-3 pb-32 sm:px-5 md:max-w-3xl lg:max-w-6xl lg:px-8 lg:pb-16 xl:max-w-7xl"
+        class="mx-auto w-full px-5 pb-32 md:max-w-3xl lg:max-w-6xl lg:px-8 lg:pb-16 xl:max-w-7xl"
       >
         <!-- ============ TOP BAR ============ -->
         <header
-          class="px-4 pt-5 lg:flex lg:items-center lg:justify-between lg:px-0 lg:pt-8"
+          class="pt-5 lg:flex lg:items-center lg:justify-between lg:pt-8"
         >
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2.5">
@@ -335,7 +335,7 @@
 
         <!-- ============ KPI 2×2 (mobile) / 4-across (desktop) ============ -->
         <section
-          class="mt-4 grid grid-cols-2 gap-3 px-4 md:mt-6 lg:grid-cols-4 md:gap-4 lg:px-0"
+          class="mt-4 grid grid-cols-2 gap-3 md:mt-6 lg:grid-cols-4 md:gap-4"
         >
           <div
             class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg)"
@@ -380,7 +380,7 @@
         <!-- ============ INCOME / EXPENSE CHART (xl: spans 2 of 3; stacked full-width on tablet) ============ -->
         <div class="xl:mt-4 xl:grid xl:grid-cols-3 xl:gap-4">
           <section
-            class="mt-3 rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) mx-4 xl:col-span-2 md:mx-0 xl:mt-0"
+            class="mt-3 rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) xl:col-span-2 xl:mt-0"
             aria-label="গত ৬ মাসের আয়-ব্যয় চার্ট"
           >
             <div class="flex items-center justify-between gap-3">
@@ -559,7 +559,7 @@
           </section>
 
           <!-- ============ DUE ALERTS (xl: col 3 of chart row; stacked below chart on tablet) ============ -->
-          <section class="mt-3 px-4 xl:col-span-1 md:px-0 xl:mt-0">
+          <section class="mt-3 xl:col-span-1 xl:mt-0">
             <div class="flex items-center justify-between">
               <h2 class="text-base font-semibold text-(--color-ink)">
                 বকেয়া তালিকা
@@ -706,7 +706,7 @@
         <!-- ============ MONTHLY CYCLE — bento 2×2 ============ -->
         <div class="lg:mt-4 lg:grid lg:grid-cols-2 lg:gap-4">
           <section
-            class="mt-3 rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) mx-4 lg:mx-0 lg:mt-0"
+            class="mt-3 rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) lg:mt-0"
             aria-label="এই মাসের কাজ"
           >
             <div class="flex items-center justify-between">
@@ -857,7 +857,7 @@
           </section>
 
           <!-- ============ RECENT ACTIVITY ============ -->
-          <section class="mt-4 px-4 lg:mt-0 lg:px-0">
+          <section class="mt-4 lg:mt-0">
             <h2 class="text-base font-semibold text-(--color-ink)">
               সাম্প্রতিক কার্যক্রম
             </h2>
@@ -964,11 +964,11 @@
           aria-label="খালি অবস্থা প্রিভিউ"
         >
           <p
-            class="px-4 text-center text-xs font-semibold uppercase tracking-wide text-(--color-ink-faint) lg:px-0"
+            class="text-center text-xs font-semibold uppercase tracking-wide text-(--color-ink-faint)"
           >
             — প্রথম মাস / empty state —
           </p>
-          <div class="mt-4 px-4 lg:px-0">
+          <div class="mt-4">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2.5">
                 <svg
@@ -1061,11 +1061,11 @@
           aria-label="লোডিং অবস্থা প্রিভিউ"
         >
           <p
-            class="px-4 text-center text-xs font-semibold uppercase tracking-wide text-(--color-ink-faint) lg:px-0"
+            class="text-center text-xs font-semibold uppercase tracking-wide text-(--color-ink-faint)"
           >
             — লোডিং / loading —
           </p>
-          <div class="mt-4 px-4 lg:px-0">
+          <div class="mt-4">
             <!-- skeleton KPI 2×2 (4-across on desktop) -->
             <div
               class="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4"
@@ -1206,15 +1206,15 @@
           </svg>
           <span class="text-xs">রেন্টি</span>
         </a>
-        <!-- হোম (center, raised) -->
+        <!-- হোম (center, raised) — ACTIVE: saffron circle + tint ring -->
         <a
           href="02-dashboard.html"
-          class="flex flex-col items-center pt-1 text-(--color-primary)"
+          class="flex flex-col items-center pt-1 text-(--color-ink)"
           aria-label="হোম"
           aria-current="page"
         >
           <span
-            class="-mt-6 flex h-14 w-14 items-center justify-center rounded-full bg-(--color-primary) text-(--color-on-primary) shadow-(--shadow-float)"
+            class="-mt-6 flex h-14 w-14 items-center justify-center rounded-full bg-(--color-primary) text-(--color-on-primary) shadow-(--shadow-float) ring-4 ring-(--color-primary-tint)"
           >
             <svg
               width="28"

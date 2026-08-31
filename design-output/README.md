@@ -34,9 +34,13 @@ Full package: 33 screens (01–33), components, and the design system — see
 - **Typography:** Noto Sans Bengali (Google Fonts) via `var(--font-sans)`; body font set
   in each screen head.
 - **Bottom nav:** 5 tabs — বিল · রেন্টি · হোম (center, raised) · সারাংশ · আরও.
-  Fixed, centered at `max-w-md`, top hairline, safe-area padding. Active tab =
-  saffron icon + label inside a saffron-tint pill; the center হোম tab is a raised
-  saffron circle. Hidden at `lg:` where the sidebar takes over (see
+  Fixed, centered at `max-w-md`, top hairline, safe-area padding. Active
+  non-home tab = saffron icon + label inside a saffron-tint pill. The center
+  হোম tab is a raised circle with two states: **inactive** (raised paper
+  circle, 2px `--color-border-strong` border, ink house, faint label — every
+  screen except the dashboard) and **active** (raised saffron circle +
+  `ring-4 ring-(--color-primary-tint)` + semibold label — dashboard only).
+  Hidden at `lg:` where the sidebar takes over (see
   Conventions (v2) below). Standalone flows (login, print) have no bottom nav.
 - **Buttons:** saffron solid primary with ink text; ink outline secondary. 5 states
   (default / hover / focus / active / disabled). Focus ring is global in tokens.css.
@@ -79,7 +83,16 @@ Latest shared-shell patterns — apply these to every new screen.
   auth screens (login/signup).
 - **Bottom nav:** center-raised হোম; order বিল | রেন্টি | হোম | সারাংশ | আরও.
   Fixed at bottom, centered at `max-w-md`, hidden at `lg:` where the sidebar
-  shows instead.
+  shows instead. States: active non-home tab = saffron-tint pill behind the
+  icon + `font-semibold` label + `aria-current="page"`; inactive tabs =
+  faint icon + label. হোম inactive = raised paper circle, 2px
+  `--color-border-strong`, ink house, faint label. হোম active (dashboard
+  only) = raised saffron circle + `ring-4 ring-(--color-primary-tint)` +
+  semibold label.
+- **Page gutter:** the mobile x-padding lives on `main` only — canonical
+  `mx-auto w-full px-5 pb-32 md:max-w-3xl lg:max-w-6xl lg:px-8 lg:pb-16
+  xl:max-w-7xl`. Do **not** also put `px-4` on headers or sections that sit
+  directly in main (keep `px-4` inside cards).
 - **Desktop / sidebar:** the admin sidebar (`components/sidebar.html`) shows at
   `lg:`+ and the bottom nav hides; the content area clears it with
   `lg:pl-[264px]`. One responsive file per screen — no separate desktop copies.

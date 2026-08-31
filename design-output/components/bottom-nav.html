@@ -21,19 +21,153 @@
   </head>
   <body class="min-h-screen bg-(--color-surface) text-(--color-ink)">
     <!-- Demo scaffold: on real app screens this nav is mounted fixed at the
-         viewport bottom, centered at max-w-md (md:max-w-3xl on tablet), with a
-         top hairline + safe-area padding. At lg: and up the bottom nav is
-         hidden (lg:hidden) and a left sidebar takes over — see
-         components/sidebar.html. -->
-    <main class="mx-auto max-w-md px-6 pb-32 pt-16">
+          viewport bottom, centered at max-w-md (md:max-w-3xl on tablet), with a
+          top hairline + safe-area padding. At lg: and up the bottom nav is
+          hidden (lg:hidden) and a left sidebar takes over — see
+          components/sidebar.html. -->
+    <main class="mx-auto max-w-md px-5 pb-32 pt-16">
       <p class="text-sm text-(--color-ink-faint)">
         Component demo — bottom navigation, “বিল” tab active. Order: বিল |
-        রেন্টি | হোম | সারাংশ | আরও. Center tab “হোম” is a raised saffron
-        circle; other active tabs show a saffron-tint pill behind the icon.
-        Hidden at lg: — sidebar shows instead.
+        রেন্টি | হোম | সারাংশ | আরও. Center tab “হোম” has two states: INACTIVE
+        here (raised paper circle with a strong border, ink house, faint label)
+        and ACTIVE on the dashboard only (saffron circle with a saffron-tint
+        ring) — see the second demo below. Other active tabs show a
+        saffron-tint pill behind the icon. Hidden at lg: — sidebar shows
+        instead.
       </p>
+
+      <!-- Second demo: হোম ACTIVE (dashboard only) -->
+      <section class="mt-8">
+        <p
+          class="text-xs font-semibold uppercase tracking-wide text-(--color-ink-faint)"
+        >
+          হোম ACTIVE — শুধু ড্যাশবোর্ডে (dashboard only)
+        </p>
+        <nav
+          class="mx-auto mt-2 w-full max-w-md border-t border-(--color-border) bg-(--color-surface-raised) px-2 pt-2 pb-[max(env(safe-area-inset-bottom),0.75rem)]"
+          aria-label="ডেমো — হোম অ্যাক্টিভ"
+        >
+          <div class="grid grid-cols-5">
+            <!-- Tab: বিল (inactive) -->
+            <a
+              href="#"
+              class="flex flex-col items-center gap-1 py-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
+              aria-label="বিল"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M6 2h12v20l-2-1.5L14 22l-2-1.5L10 22l-2-1.5L6 22V2z" />
+                <path d="M9 7h6M9 11h6M9 15h4" />
+              </svg>
+              <span class="text-xs">বিল</span>
+            </a>
+            <!-- Tab: রেন্টি (inactive) -->
+            <a
+              href="#"
+              class="flex flex-col items-center gap-1 py-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
+              aria-label="রেন্টি"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+              <span class="text-xs">রেন্টি</span>
+            </a>
+            <!-- Tab: হোম (center, raised) — ACTIVE: saffron circle + tint ring -->
+            <a
+              href="02-dashboard.html"
+              class="flex flex-col items-center pt-1 text-(--color-ink)"
+              aria-label="হোম"
+              aria-current="page"
+            >
+              <span
+                class="-mt-6 flex h-14 w-14 items-center justify-center rounded-full bg-(--color-primary) text-(--color-on-primary) shadow-(--shadow-float) ring-4 ring-(--color-primary-tint)"
+              >
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 10.5 12 3l9 7.5" />
+                  <path d="M5 9.5V21h14V9.5" />
+                </svg>
+              </span>
+              <span class="mt-1 text-xs font-semibold">হোম</span>
+            </a>
+            <!-- Tab: সারাংশ (inactive) -->
+            <a
+              href="#"
+              class="flex flex-col items-center gap-1 py-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
+              aria-label="সারাংশ"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M3 3v18h18" />
+                <path d="M8 17v-5" />
+                <path d="M13 17V7" />
+                <path d="M18 17v-8" />
+              </svg>
+              <span class="text-xs">সারাংশ</span>
+            </a>
+            <!-- Tab: আরও (inactive) -->
+            <a
+              href="#"
+              class="flex flex-col items-center gap-1 py-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
+              aria-label="আরও"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+              >
+                <circle cx="5" cy="12" r="1.4" />
+                <circle cx="12" cy="12" r="1.4" />
+                <circle cx="19" cy="12" r="1.4" />
+              </svg>
+              <span class="text-xs">আরও</span>
+            </a>
+          </div>
+        </nav>
+      </section>
     </main>
 
+    <!-- Primary demo: বিল ACTIVE, হোম INACTIVE (the common case on every non-dashboard screen) -->
     <nav
       class="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md md:max-w-3xl border-t border-(--color-border) bg-(--color-surface-raised) px-2 pt-2 pb-[max(env(safe-area-inset-bottom),0.75rem)] lg:hidden"
       aria-label="প্রধান নেভিগেশন"
@@ -90,14 +224,14 @@
           <span class="text-xs">রেন্টি</span>
         </a>
 
-        <!-- Tab: হোম (center, raised) -->
+        <!-- Tab: হোম (center, raised) — INACTIVE: paper circle + strong border -->
         <a
-          href="#"
-          class="flex flex-col items-center gap-1 pt-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
+          href="02-dashboard.html"
+          class="flex flex-col items-center pt-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
           aria-label="হোম"
         >
           <span
-            class="flex h-14 w-14 -translate-y-3 items-center justify-center rounded-full bg-(--color-primary) text-(--color-on-primary) shadow-(--shadow-float)"
+            class="-mt-6 flex h-14 w-14 items-center justify-center rounded-full border-2 border-(--color-border-strong) bg-(--color-surface-raised) text-(--color-ink) shadow-(--shadow-float)"
           >
             <svg
               width="28"
@@ -113,7 +247,7 @@
               <path d="M5 9.5V21h14V9.5" />
             </svg>
           </span>
-          <span class="text-xs">হোম</span>
+          <span class="mt-1 text-xs">হোম</span>
         </a>
 
         <!-- Tab: সারাংশ (inactive) -->
