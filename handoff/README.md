@@ -47,7 +47,7 @@ Screens link tokens via `../../design-system/tokens.css` (relative from `screens
 **Bottom nav** order: বিল | রেন্টি | হোম | সারাংশ | আরও
 
 - বিল → `17-bill-preview` · রেন্টি → `09-tenant-list` · হোম → `02-dashboard` (raised 56px saffron circle, shadow-float) · সারাংশ → `22-monthly-summary-ledger` · আরও → `29-settings-hub`
-- `lg:hidden`. Centered `max-w-md`. Active tab = saffron-tint pill.
+- `lg:hidden`. Centered `max-w-md`, and `md:max-w-3xl` so the bar matches the tablet content column instead of floating as a phone-width island. Active tab = saffron-tint pill.
 
 **Sidebar** `lg+`, 264px. Content `lg:pl-[264px]`.
 
@@ -76,13 +76,13 @@ fixed inset-x-0 bottom-0 z-50 mx-auto hidden w-full max-w-md rounded-t-(--radius
 
 - Handle pill: `md:hidden`. Scrim: `fixed inset-0 z-40 hidden bg-(--color-ink)/50`.
 - **Never use `md:bottom-auto`** — it pins the sheet to the top.
-- Used on: 11, 13, 14, 15, 18, 19, 25, 26, 29, 30, 32.
+- Used on: 11, 13, 14, 15, 17, 18, 19, 25, 26, 29, 30, 32.
 
 ## 8. Key flows
 
-- **Auth:** 01 ↔ 05 ↔ 06. Login error is an annotated variant on 01, not the default card.
-- **Onboarding:** 07 (language → property → 6 rooms + rates 7.5 / 200) → 08 → 02.
-- **Monthly cycle:** 03 → 17 → 33 bill created → 19 collect → 20 success → 21 single receipt and/or 04 grid print. 17 also links 18.
+- **Auth:** 01 ↔ 05 ↔ 06. Login (01) is mobile number + password only. OTP is required on signup (05), forgot password (06), and password change on profile (32); without OTP those cannot be confirmed. Login error is an annotated variant on 01, not the default card.
+- **Onboarding:** 07 (language → property → 6 rooms + rates 7.5 / 200) → 08 → 02. Mid-month move-in rent uses the property setting, default day-wise; onboarding shows the rule, it is not a per-tenant quiz.
+- **Monthly cycle:** 03 meter → 17 review → 04 print the monthly papers (and/or 21 reprint one lost slip) → during the month, 19 collection → 20 payment recorded in the ledger only. 17 still links 18. Next month, leftover due comes from the ledger; if nothing is leftover that line is absent. Print happens before collection, not after. 33 is off the happy path — 17 goes straight to 04. Keep 33 only as an optional “papers ready, print now” beat; it must not send the owner to collect.
 - **Tenants:** 09 → 10 add / 11 profile → 12 edit · 13 shift · 14 move-out → 15 archive → 16 history. 09 chip প্রাক্তন ৩ → 15. Active tenant delete is blocked (must move-out).
 - **Loan:** 23 list → 24 add → 25 detail. Toggle "মাসিক বিলে যোগ" default on. Cancel loan → confirm → 23.
 - **Finance:** 26 list → 27 add, 28 cashflow. আরও tab, not a 5th primary.
@@ -107,16 +107,23 @@ fixed inset-x-0 bottom-0 z-50 mx-auto hidden w-full max-w-md rounded-t-(--radius
 HTML JS on 03/18/24/25 is demo only. The real engine must:
 
 - Per-room elec: current − previous, reject negative.
-- Water: building current − previous; share = units ÷ (occupied + 1).
+- Water: building current − previous; share = units ÷ (occupied + 1). Occupied rooms only — vacant rooms are excluded from the water split.
 - Bill line: rent + (elec + waterShare) × 7.5 + waste 200 + adjustments + prev due + optional loan installment.
-- After bill create, shift previous ← current readings.
+- Vacant rooms (demo: ১০৬) get no waste bill, no water share, and no auto electricity. Manual adjustment only if someone used a vacant room.
+- After papers are calculated, shift previous ← current readings.
+- A wrong month entry is corrected in place. Update the ledger wherever the numbers break. Do not regenerate bills as the correction path. Extra paper is a manual print of 04 or 21, not a regenerate.
+- Print-first: at month start the owner calculates last month, prints one set of papers, and gives them to every occupied-room tenant. Tenants pay from that paper. The owner may tick “পেয়েছি” by hand on the paper. In the app he only records what came in. The ledger stores that. Next month leftover due is added; if nothing is leftover that line is absent.
+- No new receipt on every payment. Screen 20 must not offer a payment receipt. Screen 21 is a reprint of one tenant’s monthly paper (lost slip), not payment proof. Loan installments have no separate receipt — track in the app, or fold into the monthly paper when “মাসিক বিলে যোগ” is on.
+- Each monthly paper has a unique reference number.
+- Rent for a mid-month move-in uses the property setting, default day-wise.
 - Move-out: due vs advance → refund / hold / adjust; archive 2 years.
 - Do not invent a different water-split rule without Tutul.
+- Do not silently “fix” the known demo number debts in §13.
 
 ## 11. Print
 
-- **04:** A4 portrait, margin 0, 2×3 = 6 slips, dashed `#bbb` cut, `.no-print` toolbar. Property name/address/phone in **each** slip header. Signature: আদায়কারী only (right).
-- **21:** thermal-ish single slip, A4 print view.
+- **04:** Monthly papers for tenants, printed **before** collection. A4 portrait, margin 0, 2×3 = 6 slips, dashed `#bbb` cut, `.no-print` toolbar. Unique reference on each slip. Blank hand-collection fields (signature). Property name/address/phone in **each** slip header. Signature: আদায়কারী only (right). Do not change 6 slips to 8.
+- **21:** Reprint of one tenant’s monthly paper (lost slip), not a payment receipt. Thermal-ish single slip, A4 print view. Entry from 17, not from 20.
 - **22:** A4 landscape, margin 10mm, hide chrome, sticky first column on screen.
 - Browser design tools cannot reliably preview `@media print` — test in a real browser.
 
@@ -139,22 +146,26 @@ HTML JS on 03/18/24/25 is demo only. The real engine must:
 
 ## 14. What developers should watch
 
+- Monthly click order is print-then-collect: 03 → 17 → 04 (print) → later 19 → 20. Do not implement 17 → 33 → 19 → 20 → 21 as the happy path.
+- Do not add a payment-receipt button on 20. Do not treat 21 as proof of payment.
+- Do not regenerate all bills as the correction path; 18 updates the ledger in place.
+- Vacant rooms get no waste, no water share, and no auto electricity.
 - Do not add a second typeface, or a cool-gray / terracotta restyle.
 - Do not build separate mobile/desktop apps from duplicated HTML.
 - Do not put বিল tab on 03, or আরও tab on 26.
-- Auth, authorization, D1 schema, meter persistence, print PDF vs browser print = engineering decisions — flag for Salim.
+- Auth implementation, authorization, D1 schema, meter persistence, print PDF vs browser print, and stack choice = engineering decisions — flag for Salim.
 - Tenant portal is future. Multi-property is future (keep the settings slot).
 
 ## 15. Screen index
 
 Grouped by flow (number = filename `NN-*.html`):
 
-- **Auth:** 01 login · 05 signup · 06 forgot password
+- **Auth:** 01 login (password only) · 05 signup (OTP) · 06 forgot password (OTP)
 - **Onboarding:** 07 setup (language → property → rooms/rates) · 08 success
 - **Home:** 02 dashboard
-- **Monthly cycle:** 03 meter entry · 17 bill preview · 33 bill created · 19 collection due · 20 payment success · 21 single receipt · 04 receipt grid (print) · 18 manual adjustment
+- **Monthly cycle:** 03 meter entry · 17 bill preview · 04 monthly paper grid (print, before collection) · 21 reprint one paper · 19 collection due · 20 payment success (ledger only) · 18 manual adjustment · 33 papers ready (optional, not on the happy path)
 - **Tenants:** 09 list · 10 add · 11 profile · 12 edit · 13 shift room · 14 move out · 15 vacated archive · 16 history
 - **Loan:** 23 list · 24 add · 25 detail
 - **Finance:** 26 income/expense list · 27 add · 28 cashflow summary
 - **Summary:** 22 monthly ledger (landscape print)
-- **Settings:** 29 hub · 30 rooms · 31 property · 32 profile
+- **Settings:** 29 hub · 30 rooms · 31 property · 32 profile (password change requires OTP)

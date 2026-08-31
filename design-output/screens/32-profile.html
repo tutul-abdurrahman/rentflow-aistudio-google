@@ -17,6 +17,34 @@
         font-family: var(--font-sans);
         line-height: var(--line-height-body);
       }
+
+      .otp-box {
+        height: 3.25rem;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--color-border);
+        background: var(--color-surface-raised);
+        text-align: center;
+        font-size: var(--text-lg);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-ink);
+        caret-color: var(--color-primary);
+        transition:
+          border-color var(--motion-fast) var(--ease-standard),
+          box-shadow var(--motion-fast) var(--ease-standard);
+      }
+      .otp-box:focus {
+        border-color: var(--color-border-focus);
+        box-shadow: var(--focus-ring);
+        outline: none;
+      }
+      .otp-box.has-error {
+        border-color: var(--color-danger);
+      }
+      .otp-box.has-error:focus {
+        box-shadow:
+          0 0 0 2px var(--color-surface-raised),
+          0 0 0 4px var(--color-danger);
+      }
     </style>
   </head>
   <body class="min-h-screen bg-(--color-surface) text-(--color-ink)">
@@ -514,10 +542,58 @@
                 </div>
               </div>
               <button
+                id="pw-change-btn"
+                type="button"
                 class="inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) bg-(--color-primary) px-5 py-3 text-base font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active)"
               >
                 বদলান
               </button>
+              <p class="text-xs text-(--color-ink-faint)">
+                ওটিপি ছাড়া পাসওয়ার্ড বদলাবে না।
+              </p>
+            </div>
+
+            <div id="pw-otp-panel" class="mt-5 hidden border-t border-(--color-border) pt-4">
+              <h3 class="text-sm font-semibold text-(--color-ink)">ওটিপি দিন</h3>
+              <p class="mt-1 text-sm text-(--color-ink-muted)">
+                <span class="font-semibold text-(--color-ink)">০১৭১১-২৩৪৫৬৭</span>
+                নম্বরে পাঠানো ৬ সংখ্যার ওটিপি লিখুন। নিশ্চিত না হওয়া পর্যন্ত
+                পাসওয়ার্ড বদলাবে না।
+              </p>
+              <div id="otp-boxes" class="mt-4 grid grid-cols-6 gap-2">
+                <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="ওটিপি প্রথম অঙ্ক" />
+                <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="ওটিপি দ্বিতীয় অঙ্ক" />
+                <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="ওটিপি তৃতীয় অঙ্ক" />
+                <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="ওটিপি চতুর্থ অঙ্ক" />
+                <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="ওটিপি পঞ্চম অঙ্ক" />
+                <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="ওটিপি ষষ্ঠ অঙ্ক" />
+              </div>
+              <p id="otp-error" class="mt-2 hidden text-xs text-(--color-danger)">
+                ৬ সংখ্যার ওটিপি দিন।
+              </p>
+              <button
+                id="verify-otp"
+                type="button"
+                class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) bg-(--color-primary) px-5 py-3 text-base font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active)"
+              >
+                ওটিপি যাচাই করুন
+              </button>
+              <p class="mt-3 text-center text-sm text-(--color-ink-muted)">
+                ওটিপি পাননি?
+                <button
+                  id="resend-otp"
+                  type="button"
+                  class="font-semibold text-(--color-primary) transition-colors hover:text-(--color-primary-hover)"
+                >
+                  আবার পাঠান
+                </button>
+              </p>
+              <p id="resend-note" class="mt-2 hidden text-center text-xs text-(--color-success)">
+                নতুন ওটিপি পাঠানো হয়েছে।
+              </p>
+              <p id="pw-success" class="mt-3 hidden text-center text-sm font-semibold text-(--color-success)">
+                পাসওয়ার্ড বদলানো হয়েছে।
+              </p>
             </div>
           </section>
 
@@ -740,7 +816,7 @@
 
     <!-- ============ BOTTOM NAV (order: বিল | রেন্টি | হোম | সারাংশ | আরও) — আরও active ============ -->
     <nav
-      class="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md border-t border-(--color-border) bg-(--color-surface-raised) px-2 pt-2 pb-[max(env(safe-area-inset-bottom),0.75rem)] lg:hidden"
+      class="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md md:max-w-3xl border-t border-(--color-border) bg-(--color-surface-raised) px-2 pt-2 pb-[max(env(safe-area-inset-bottom),0.75rem)] lg:hidden"
       aria-label="প্রধান নেভিগেশন"
     >
       <div class="grid grid-cols-5">
@@ -1002,6 +1078,42 @@
       }
       cancelSheet.addEventListener('click', hide)
       scrim.addEventListener('click', hide)
+
+      // Demo only — password change requires OTP confirm.
+      const pwChangeBtn = document.getElementById('pw-change-btn')
+      const pwOtpPanel = document.getElementById('pw-otp-panel')
+      const otpBoxes = Array.from(document.querySelectorAll('.otp-box'))
+      const otpError = document.getElementById('otp-error')
+      const pwSuccess = document.getElementById('pw-success')
+      const resendNote = document.getElementById('resend-note')
+      pwChangeBtn.addEventListener('click', () => {
+        pwOtpPanel.classList.remove('hidden')
+        pwSuccess.classList.add('hidden')
+        otpBoxes[0].focus()
+      })
+      otpBoxes.forEach((box, i) => {
+        box.addEventListener('input', () => {
+          otpError.classList.add('hidden')
+          box.classList.remove('has-error')
+          if (box.value && i < otpBoxes.length - 1) otpBoxes[i + 1].focus()
+        })
+        box.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !box.value && i > 0) otpBoxes[i - 1].focus()
+        })
+      })
+      document.getElementById('verify-otp').addEventListener('click', () => {
+        const code = otpBoxes.map((b) => b.value.trim()).join('')
+        if (code.length !== 6) {
+          otpError.classList.remove('hidden')
+          otpBoxes.forEach((b) => b.classList.add('has-error'))
+          return
+        }
+        otpBoxes.forEach((b) => b.classList.remove('has-error'))
+        pwSuccess.classList.remove('hidden')
+      })
+      document.getElementById('resend-otp').addEventListener('click', () => {
+        resendNote.classList.remove('hidden')
+      })
     </script>
   </body>
 </html>

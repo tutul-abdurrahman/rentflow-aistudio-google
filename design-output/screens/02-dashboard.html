@@ -785,7 +785,42 @@
                   ৫টি বিল প্রস্তুত
                 </p>
               </a>
-              <!-- tile ৩ — কালেকশন (pending) -->
+              <!-- tile ৩ — কাগজ ছাপুন (pending) -->
+              <a
+                href="04-receipt-grid-print.html"
+                class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
+              >
+                <div class="flex items-start justify-between">
+                  <span
+                    class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--color-surface-soft) text-xs font-bold text-(--color-ink-muted)"
+                    >৩</span
+                  >
+                  <svg
+                    class="shrink-0 text-(--color-ink-faint)"
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M6 9V3h12v6" />
+                    <path
+                      d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
+                    />
+                    <rect x="6" y="14" width="12" height="8" rx="1" />
+                  </svg>
+                </div>
+                <p class="mt-4 text-sm font-semibold text-(--color-ink)">
+                  কাগজ ছাপুন
+                </p>
+                <p class="mt-0.5 text-xs text-(--color-ink-muted)">
+                  ভাড়াটেদের মাসিক কাগজ
+                </p>
+              </a>
+              <!-- tile ৪ — কালেকশন (pending) -->
               <a
                 href="19-collection-due-list.html"
                 class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
@@ -793,7 +828,7 @@
                 <div class="flex items-start justify-between">
                   <span
                     class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--color-surface-soft) text-xs font-bold text-(--color-ink-muted)"
-                    >৩</span
+                    >৪</span
                   >
                   <svg
                     class="shrink-0 text-(--color-ink-faint)"
@@ -816,41 +851,6 @@
                 </p>
                 <p class="mt-0.5 text-xs text-(--color-ink-muted)">
                   ৩ জনের বাকি
-                </p>
-              </a>
-              <!-- tile ৪ — প্রিন্ট (pending) -->
-              <a
-                href="04-receipt-grid-print.html"
-                class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-(--space-lg) transition-colors hover:bg-(--color-surface-soft)"
-              >
-                <div class="flex items-start justify-between">
-                  <span
-                    class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--color-surface-soft) text-xs font-bold text-(--color-ink-muted)"
-                    >৪</span
-                  >
-                  <svg
-                    class="shrink-0 text-(--color-ink-faint)"
-                    width="22"
-                    height="22"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path d="M6 9V3h12v6" />
-                    <path
-                      d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
-                    />
-                    <rect x="6" y="14" width="12" height="8" rx="1" />
-                  </svg>
-                </div>
-                <p class="mt-4 text-sm font-semibold text-(--color-ink)">
-                  প্রিন্ট
-                </p>
-                <p class="mt-0.5 text-xs text-(--color-ink-muted)">
-                  A4 রিসিট শিট
                 </p>
               </a>
             </div>
@@ -1160,7 +1160,7 @@
 
     <!-- ============ BOTTOM NAV (order: বিল | রেন্টি | হোম | সারাংশ | আরও) ============ -->
     <nav
-      class="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md border-t border-(--color-border) bg-(--color-surface-raised) px-2 pt-2 pb-[max(env(safe-area-inset-bottom),0.75rem)] lg:hidden"
+      class="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md md:max-w-3xl border-t border-(--color-border) bg-(--color-surface-raised) px-2 pt-2 pb-[max(env(safe-area-inset-bottom),0.75rem)] lg:hidden"
       aria-label="প্রধান নেভিগেশন"
     >
       <div class="grid grid-cols-5">

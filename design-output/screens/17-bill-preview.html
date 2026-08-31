@@ -49,7 +49,6 @@
       </div>
 
       <nav class="flex-1 space-y-1 overflow-y-auto px-3 py-2">
-        <!-- ড্যাশবোর্ড -->
         <a
           href="02-dashboard.html"
           class="flex items-center gap-3 rounded-(--radius-md) px-3 py-2.5 text-sm font-medium text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft) hover:text-(--color-ink)"
@@ -70,7 +69,6 @@
           </svg>
           ড্যাশবোর্ড
         </a>
-        <!-- বিল ও মিটার (active) -->
         <a
           href="03-meter-entry.html"
           class="flex items-center gap-3 rounded-(--radius-md) bg-(--color-primary-tint) px-3 py-2.5 text-sm font-semibold text-(--color-ink)"
@@ -92,7 +90,6 @@
           </svg>
           বিল ও মিটার
         </a>
-        <!-- রেন্টি -->
         <a
           href="09-tenant-list.html"
           class="flex items-center gap-3 rounded-(--radius-md) px-3 py-2.5 text-sm font-medium text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft) hover:text-(--color-ink)"
@@ -115,7 +112,6 @@
           </svg>
           রেন্টি
         </a>
-        <!-- সারাংশ -->
         <a
           href="22-monthly-summary-ledger.html"
           class="flex items-center gap-3 rounded-(--radius-md) px-3 py-2.5 text-sm font-medium text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft) hover:text-(--color-ink)"
@@ -138,7 +134,6 @@
           </svg>
           সারাংশ
         </a>
-        <!-- লোন -->
         <a
           href="23-loan-list.html"
           class="flex items-center gap-3 rounded-(--radius-md) px-3 py-2.5 text-sm font-medium text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft) hover:text-(--color-ink)"
@@ -159,7 +154,6 @@
           </svg>
           লোন
         </a>
-        <!-- ফিনান্স -->
         <a
           href="26-income-expense-list.html"
           class="flex items-center gap-3 rounded-(--radius-md) px-3 py-2.5 text-sm font-medium text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft) hover:text-(--color-ink)"
@@ -181,7 +175,6 @@
           </svg>
           ফিনান্স
         </a>
-        <!-- সেটিংস -->
         <a
           href="29-settings-hub.html"
           class="flex items-center gap-3 rounded-(--radius-md) px-3 py-2.5 text-sm font-medium text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft) hover:text-(--color-ink)"
@@ -230,9 +223,8 @@
       <main
         class="mx-auto w-full max-w-md pb-32 md:max-w-3xl lg:max-w-6xl lg:px-8 lg:pb-16 xl:max-w-7xl"
       >
-        <!-- ============ TOP BAR ============ -->
         <header
-          class="px-4 pt-5 lg:flex lg:items-start lg:justify-between lg:px-0 lg:pt-8"
+          class="px-4 pt-5 md:flex md:items-start md:justify-between lg:px-0 lg:pt-8"
         >
           <div>
             <h1 class="text-xl font-bold text-(--color-ink)">
@@ -243,11 +235,10 @@
             </p>
           </div>
           <div
-            class="mt-3 flex flex-wrap items-center gap-2 lg:mt-0 lg:shrink-0"
+            class="mt-3 flex flex-wrap items-center gap-2 md:mt-0 md:shrink-0"
           >
-            <!-- month selector chip -->
             <button
-              class="inline-flex items-center gap-1.5 rounded-(--radius-pill) border border-(--color-border) bg-(--color-surface-raised) px-3.5 py-2 text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-surface-soft)"
+              class="inline-flex h-10 items-center gap-1.5 rounded-(--radius-pill) border border-(--color-border) bg-(--color-surface-raised) px-3.5 text-sm font-semibold text-(--color-ink) transition-colors hover:bg-(--color-surface-soft)"
               aria-label="বিলের মাস পরিবর্তন করুন"
             >
               <svg
@@ -277,10 +268,9 @@
                 <path d="m6 9 6 6 6-6" />
               </svg>
             </button>
-            <!-- create bills primary -->
             <a
-              href="33-bill-created.html"
-              class="inline-flex items-center justify-center gap-2 rounded-(--radius-button) bg-(--color-primary) px-4 py-2.5 text-sm font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active)"
+              href="04-receipt-grid-print.html"
+              class="inline-flex h-10 items-center justify-center gap-2 rounded-(--radius-button) border border-transparent bg-(--color-primary) px-4 text-sm font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active)"
             >
               <svg
                 width="16"
@@ -292,17 +282,19 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
               >
-                <path d="M6 2h12v20l-2-1.5L14 22l-2-1.5L10 22l-2-1.5L6 22V2z" />
-                <path d="M9 7h6M9 11h6M9 15h4" />
+                <path d="M6 9V2h12v7" />
+                <path
+                  d="M6 18H4a1 1 0 0 1-1-1v-5a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v5a1 1 0 0 1-1 1h-2"
+                />
+                <path d="M6 14h12v8H6z" />
               </svg>
-              বিল তৈরি করুন
+              কাগজ ছাপুন
             </a>
           </div>
         </header>
 
-        <!-- ============ SUMMARY STRIP ============ -->
         <section
-          class="mt-4 overflow-hidden rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) mx-4 md:mx-0"
+          class="mt-4 mx-4 overflow-hidden rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) lg:mx-0"
           aria-label="আগস্ট ২০২৬ বিলের সারসংক্ষেপ"
         >
           <div class="grid grid-cols-3 divide-x divide-(--color-border)">
@@ -338,472 +330,440 @@
               <span
                 class="h-1.5 w-1.5 rounded-full bg-(--color-primary)"
               ></span>
-              ৫টি বিল তৈরি · ১০৬ খালি
+              ৫টি কাগজ প্রস্তুত · ১০৬ খালি
             </span>
             <span>বিদ্যুৎ ৳৭.৫/ইউনিট · ওয়েস্ট ৳২০০/রুম</span>
           </div>
         </section>
 
-        <!-- ============ PER-TENANT BILL CARDS (2-col on md+) ============ -->
-        <section
-          class="mt-4 px-4 md:grid md:grid-cols-2 md:gap-4 md:px-0"
-          aria-label="রেন্টি অনুযায়ী বিল"
-        >
-          <!-- রুম ১০২ · রাহাত হোসেন (default expanded) -->
-          <article
-            class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) md:mt-0"
-          >
-            <button
-              class="bill-toggle flex w-full items-center justify-between gap-3 px-5 py-4 text-left"
-              data-bill="bill-102"
-              aria-expanded="true"
-              aria-controls="bill-102"
-            >
-              <div class="flex min-w-0 items-center gap-3">
-                <span
-                  class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-(--color-primary-tint) text-sm font-bold text-(--color-ink)"
-                  >রা</span
-                >
-                <div class="min-w-0">
-                  <p class="truncate text-sm font-semibold text-(--color-ink)">
-                    রাহাত হোসেন
-                  </p>
-                  <p class="text-xs text-(--color-ink-muted)">রুম ১০২</p>
-                </div>
-              </div>
-              <div class="flex shrink-0 items-center gap-3">
-                <div class="text-right">
-                  <p class="text-lg font-bold leading-none text-(--color-ink)">
-                    ৳১০,৮৭৩
-                  </p>
-                  <span
-                    class="mt-1 inline-flex items-center gap-1 rounded-(--radius-pill) bg-(--color-primary-tint) px-2 py-0.5 text-xs font-medium text-(--color-primary)"
-                  >
-                    <span
-                      class="h-1.5 w-1.5 rounded-full bg-(--color-primary)"
-                    ></span>
-                    বিল তৈরি
-                  </span>
-                </div>
-                <svg
-                  class="chevron shrink-0 rotate-180 text-(--color-ink-faint) transition-transform duration-(--motion-base)"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </div>
-            </button>
-            <div
-              id="bill-102"
-              class="border-t border-(--color-border) px-5 py-4"
-            >
-              <div class="flex items-baseline justify-between text-sm">
-                <span class="text-(--color-ink-muted)">ভাড়া</span>
-                <span class="font-semibold text-(--color-ink)">৳৯,০০০</span>
-              </div>
-              <div class="mt-2.5">
-                <div class="flex items-baseline justify-between text-sm">
-                  <span class="text-(--color-ink-muted)">বিদ্যুৎ ও পানি</span>
-                  <span class="font-semibold text-(--color-ink)">৳১,৬৭৩</span>
-                </div>
-                <p class="mt-1 text-xs text-(--color-ink-faint)">
-                  বিদ্যুৎ ১২৩ + পানি ভাগ ১০০ = ২২৩ ইউনিট × ৳৭.৫
-                </p>
-              </div>
-              <div
-                class="mt-2.5 flex items-baseline justify-between border-t border-(--color-border) pt-2.5 text-sm"
-              >
-                <span class="text-(--color-ink-muted)">ওয়েস্ট</span>
-                <span class="font-semibold text-(--color-ink)">৳২০০</span>
-              </div>
-              <div class="mt-2.5 flex items-baseline justify-between text-sm">
-                <span class="text-(--color-ink-muted)">আগের বাকি</span>
-                <span class="font-semibold text-(--color-ink)">৳০</span>
-              </div>
-              <div
-                class="mt-3 flex items-baseline justify-between border-t-2 border-(--color-border-strong) pt-2.5 text-sm font-bold text-(--color-ink)"
-              >
-                <span>মোট</span>
-                <span class="text-base">৳১০,৮৭৩</span>
-              </div>
-            </div>
-          </article>
-
-          <!-- রুম ১০৩ · সাব্বির আহমেদ -->
-          <article
-            class="mt-3 rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) md:mt-0"
-          >
-            <button
-              class="bill-toggle flex w-full items-center justify-between gap-3 px-5 py-4 text-left"
-              data-bill="bill-103"
-              aria-expanded="false"
-              aria-controls="bill-103"
-            >
-              <div class="flex min-w-0 items-center gap-3">
-                <span
-                  class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-(--color-primary-tint) text-sm font-bold text-(--color-ink)"
-                  >সা</span
-                >
-                <div class="min-w-0">
-                  <p class="truncate text-sm font-semibold text-(--color-ink)">
-                    সাব্বির আহমেদ
-                  </p>
-                  <p class="text-xs text-(--color-ink-muted)">রুম ১০৩</p>
-                </div>
-              </div>
-              <div class="flex shrink-0 items-center gap-3">
-                <div class="text-right">
-                  <p class="text-lg font-bold leading-none text-(--color-ink)">
-                    ৳১১,৫০০
-                  </p>
-                  <span
-                    class="mt-1 inline-flex items-center gap-1 rounded-(--radius-pill) bg-(--color-primary-tint) px-2 py-0.5 text-xs font-medium text-(--color-primary)"
-                  >
-                    <span
-                      class="h-1.5 w-1.5 rounded-full bg-(--color-primary)"
-                    ></span>
-                    বিল তৈরি
-                  </span>
-                </div>
-                <svg
-                  class="chevron shrink-0 text-(--color-ink-faint) transition-transform duration-(--motion-base)"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </div>
-            </button>
-            <div
-              id="bill-103"
-              class="hidden border-t border-(--color-border) px-5 py-4"
-            >
-              <div class="flex items-baseline justify-between text-sm">
-                <span class="text-(--color-ink-muted)">ভাড়া</span>
-                <span class="font-semibold text-(--color-ink)">৳৯,৫০০</span>
-              </div>
-              <div class="mt-2.5">
-                <div class="flex items-baseline justify-between text-sm">
-                  <span class="text-(--color-ink-muted)">বিদ্যুৎ ও পানি</span>
-                  <span class="font-semibold text-(--color-ink)">৳১,৩৫০</span>
-                </div>
-                <p class="mt-1 text-xs text-(--color-ink-faint)">
-                  বিদ্যুৎ ৮০ + পানি ভাগ ১০০ = ১৮০ ইউনিট × ৳৭.৫
-                </p>
-              </div>
-              <div
-                class="mt-2.5 flex items-baseline justify-between border-t border-(--color-border) pt-2.5 text-sm"
-              >
-                <span class="text-(--color-ink-muted)">ওয়েস্ট</span>
-                <span class="font-semibold text-(--color-ink)">৳২০০</span>
-              </div>
-              <div class="mt-2.5 flex items-baseline justify-between text-sm">
-                <span class="text-(--color-ink-muted)">আগের বাকি</span>
-                <span class="font-semibold text-(--color-danger)">৳৪৫০</span>
-              </div>
-              <div
-                class="mt-3 flex items-baseline justify-between border-t-2 border-(--color-border-strong) pt-2.5 text-sm font-bold text-(--color-ink)"
-              >
-                <span>মোট</span>
-                <span class="text-base">৳১১,৫০০</span>
-              </div>
-            </div>
-          </article>
-
-          <!-- রুম ১০৪ · তানভীর ইসলাম -->
-          <article
-            class="mt-3 rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) md:mt-0"
-          >
-            <button
-              class="bill-toggle flex w-full items-center justify-between gap-3 px-5 py-4 text-left"
-              data-bill="bill-104"
-              aria-expanded="false"
-              aria-controls="bill-104"
-            >
-              <div class="flex min-w-0 items-center gap-3">
-                <span
-                  class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-(--color-primary-tint) text-sm font-bold text-(--color-ink)"
-                  >তা</span
-                >
-                <div class="min-w-0">
-                  <p class="truncate text-sm font-semibold text-(--color-ink)">
-                    তানভীর ইসলাম
-                  </p>
-                  <p class="text-xs text-(--color-ink-muted)">রুম ১০৪</p>
-                </div>
-              </div>
-              <div class="flex shrink-0 items-center gap-3">
-                <div class="text-right">
-                  <p class="text-lg font-bold leading-none text-(--color-ink)">
-                    ৳১১,৬২৫
-                  </p>
-                  <span
-                    class="mt-1 inline-flex items-center gap-1 rounded-(--radius-pill) bg-(--color-primary-tint) px-2 py-0.5 text-xs font-medium text-(--color-primary)"
-                  >
-                    <span
-                      class="h-1.5 w-1.5 rounded-full bg-(--color-primary)"
-                    ></span>
-                    বিল তৈরি
-                  </span>
-                </div>
-                <svg
-                  class="chevron shrink-0 text-(--color-ink-faint) transition-transform duration-(--motion-base)"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </div>
-            </button>
-            <div
-              id="bill-104"
-              class="hidden border-t border-(--color-border) px-5 py-4"
-            >
-              <div class="flex items-baseline justify-between text-sm">
-                <span class="text-(--color-ink-muted)">ভাড়া</span>
-                <span class="font-semibold text-(--color-ink)">৳১০,০০০</span>
-              </div>
-              <div class="mt-2.5">
-                <div class="flex items-baseline justify-between text-sm">
-                  <span class="text-(--color-ink-muted)">বিদ্যুৎ ও পানি</span>
-                  <span class="font-semibold text-(--color-ink)">৳১,৪২৫</span>
-                </div>
-                <p class="mt-1 text-xs text-(--color-ink-faint)">
-                  বিদ্যুৎ ৯০ + পানি ভাগ ১০০ = ১৯০ ইউনিট × ৳৭.৫
-                </p>
-              </div>
-              <div
-                class="mt-2.5 flex items-baseline justify-between border-t border-(--color-border) pt-2.5 text-sm"
-              >
-                <span class="text-(--color-ink-muted)">ওয়েস্ট</span>
-                <span class="font-semibold text-(--color-ink)">৳২০০</span>
-              </div>
-              <div class="mt-2.5 flex items-baseline justify-between text-sm">
-                <span class="text-(--color-ink-muted)">আগের বাকি</span>
-                <span class="font-semibold text-(--color-ink)">৳০</span>
-              </div>
-              <div
-                class="mt-3 flex items-baseline justify-between border-t-2 border-(--color-border-strong) pt-2.5 text-sm font-bold text-(--color-ink)"
-              >
-                <span>মোট</span>
-                <span class="text-base">৳১১,৬২৫</span>
-              </div>
-            </div>
-          </article>
-
-          <!-- রুম ১০৫ · মেহেদী হাসান -->
-          <article
-            class="mt-3 rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) md:mt-0"
-          >
-            <button
-              class="bill-toggle flex w-full items-center justify-between gap-3 px-5 py-4 text-left"
-              data-bill="bill-105"
-              aria-expanded="false"
-              aria-controls="bill-105"
-            >
-              <div class="flex min-w-0 items-center gap-3">
-                <span
-                  class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-(--color-primary-tint) text-sm font-bold text-(--color-ink)"
-                  >মে</span
-                >
-                <div class="min-w-0">
-                  <p class="truncate text-sm font-semibold text-(--color-ink)">
-                    মেহেদী হাসান
-                  </p>
-                  <p class="text-xs text-(--color-ink-muted)">রুম ১০৫</p>
-                </div>
-              </div>
-              <div class="flex shrink-0 items-center gap-3">
-                <div class="text-right">
-                  <p class="text-lg font-bold leading-none text-(--color-ink)">
-                    ৳১০,৭২৫
-                  </p>
-                  <span
-                    class="mt-1 inline-flex items-center gap-1 rounded-(--radius-pill) bg-(--color-primary-tint) px-2 py-0.5 text-xs font-medium text-(--color-primary)"
-                  >
-                    <span
-                      class="h-1.5 w-1.5 rounded-full bg-(--color-primary)"
-                    ></span>
-                    বিল তৈরি
-                  </span>
-                </div>
-                <svg
-                  class="chevron shrink-0 text-(--color-ink-faint) transition-transform duration-(--motion-base)"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </div>
-            </button>
-            <div
-              id="bill-105"
-              class="hidden border-t border-(--color-border) px-5 py-4"
-            >
-              <div class="flex items-baseline justify-between text-sm">
-                <span class="text-(--color-ink-muted)">ভাড়া</span>
-                <span class="font-semibold text-(--color-ink)">৳৮,৫০০</span>
-              </div>
-              <div class="mt-2.5">
-                <div class="flex items-baseline justify-between text-sm">
-                  <span class="text-(--color-ink-muted)">বিদ্যুৎ ও পানি</span>
-                  <span class="font-semibold text-(--color-ink)">৳১,২৭৫</span>
-                </div>
-                <p class="mt-1 text-xs text-(--color-ink-faint)">
-                  বিদ্যুৎ ৭০ + পানি ভাগ ১০০ = ১৭০ ইউনিট × ৳৭.৫
-                </p>
-              </div>
-              <div
-                class="mt-2.5 flex items-baseline justify-between border-t border-(--color-border) pt-2.5 text-sm"
-              >
-                <span class="text-(--color-ink-muted)">ওয়েস্ট</span>
-                <span class="font-semibold text-(--color-ink)">৳২০০</span>
-              </div>
-              <div class="mt-2.5 flex items-baseline justify-between text-sm">
-                <span class="text-(--color-ink-muted)">আগের বাকি</span>
-                <span class="font-semibold text-(--color-danger)">৳৭৫০</span>
-              </div>
-              <div
-                class="mt-3 flex items-baseline justify-between border-t-2 border-(--color-border-strong) pt-2.5 text-sm font-bold text-(--color-ink)"
-              >
-                <span>মোট</span>
-                <span class="text-base">৳১০,৭২৫</span>
-              </div>
-            </div>
-          </article>
-
-          <!-- রুম ১০৭ · নাফিসা আক্তার -->
-          <article
-            class="mt-3 rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) md:mt-0"
-          >
-            <button
-              class="bill-toggle flex w-full items-center justify-between gap-3 px-5 py-4 text-left"
-              data-bill="bill-107"
-              aria-expanded="false"
-              aria-controls="bill-107"
-            >
-              <div class="flex min-w-0 items-center gap-3">
-                <span
-                  class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-(--color-primary-tint) text-sm font-bold text-(--color-ink)"
-                  >না</span
-                >
-                <div class="min-w-0">
-                  <p class="truncate text-sm font-semibold text-(--color-ink)">
-                    নাফিসা আক্তার
-                  </p>
-                  <p class="text-xs text-(--color-ink-muted)">রুম ১০৭</p>
-                </div>
-              </div>
-              <div class="flex shrink-0 items-center gap-3">
-                <div class="text-right">
-                  <p class="text-lg font-bold leading-none text-(--color-ink)">
-                    ৳১৩,২৭৫
-                  </p>
-                  <span
-                    class="mt-1 inline-flex items-center gap-1 rounded-(--radius-pill) bg-(--color-primary-tint) px-2 py-0.5 text-xs font-medium text-(--color-primary)"
-                  >
-                    <span
-                      class="h-1.5 w-1.5 rounded-full bg-(--color-primary)"
-                    ></span>
-                    বিল তৈরি
-                  </span>
-                </div>
-                <svg
-                  class="chevron shrink-0 text-(--color-ink-faint) transition-transform duration-(--motion-base)"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </div>
-            </button>
-            <div
-              id="bill-107"
-              class="hidden border-t border-(--color-border) px-5 py-4"
-            >
-              <div class="flex items-baseline justify-between text-sm">
-                <span class="text-(--color-ink-muted)">ভাড়া</span>
-                <span class="font-semibold text-(--color-ink)">৳১০,৫০০</span>
-              </div>
-              <div class="mt-2.5">
-                <div class="flex items-baseline justify-between text-sm">
-                  <span class="text-(--color-ink-muted)">বিদ্যুৎ ও পানি</span>
-                  <span class="font-semibold text-(--color-ink)">৳১,৫৭৫</span>
-                </div>
-                <p class="mt-1 text-xs text-(--color-ink-faint)">
-                  বিদ্যুৎ ১১০ + পানি ভাগ ১০০ = ২১০ ইউনিট × ৳৭.৫
-                </p>
-              </div>
-              <div
-                class="mt-2.5 flex items-baseline justify-between border-t border-(--color-border) pt-2.5 text-sm"
-              >
-                <span class="text-(--color-ink-muted)">ওয়েস্ট</span>
-                <span class="font-semibold text-(--color-ink)">৳২০০</span>
-              </div>
-              <div class="mt-2.5 flex items-baseline justify-between text-sm">
-                <span class="text-(--color-ink-muted)">আগের বাকি</span>
-                <span class="font-semibold text-(--color-ink)">৳০</span>
-              </div>
-              <div class="mt-2.5">
-                <div class="flex items-baseline justify-between text-sm">
-                  <span class="text-(--color-ink-muted)">লোন কিস্তি</span>
-                  <span class="font-semibold text-(--color-ink)">৳১,০০০</span>
-                </div>
-                <p class="mt-1 text-xs text-(--color-ink-faint)">
-                  নাফিসার চলমান লোন · কিস্তি ২/৫ · মাসিক বিলে যোগ
-                </p>
-              </div>
-              <div
-                class="mt-3 flex items-baseline justify-between border-t-2 border-(--color-border-strong) pt-2.5 text-sm font-bold text-(--color-ink)"
-              >
-                <span>মোট</span>
-                <span class="text-base">৳১৩,২৭৫</span>
-              </div>
-            </div>
-          </article>
-
-          <!-- রুম ১০৬ — vacant, no bill -->
+        <!-- Phone + tablet: compact rows. lg+: dense table. No two-column cards. -->
+        <section class="mt-4 px-4 lg:hidden" aria-label="রেন্টি অনুযায়ী বিল">
           <div
-            class="mt-3 flex flex-col items-center justify-center rounded-(--radius-card) border border-dashed border-(--color-border) bg-(--color-surface-raised) px-5 py-6 text-center md:mt-0"
-            aria-label="রুম ১০৬ খালি"
+            class="divide-y divide-(--color-border) overflow-hidden rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised)"
           >
-            <span
-              class="flex h-10 w-10 items-center justify-center rounded-full bg-(--color-surface-soft) text-(--color-ink-faint)"
+            <button
+              type="button"
+              class="bill-row flex min-h-14 w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-(--color-surface-soft)"
+              data-room="১০২"
+              data-name="রাহাত হোসেন"
+              data-rent="৳৯,০০০"
+              data-utility="৳১,৬৭৩"
+              data-note="বিদ্যুৎ ১২৩ + পানি ভাগ ১০০ = ২২৩ ইউনিট × ৳৭.৫"
+              data-waste="৳২০০"
+              data-prev="৳০"
+              data-loan=""
+              data-total="৳১০,৮৭৩"
+            >
+              <span class="w-10 shrink-0 text-sm font-bold text-(--color-ink)"
+                >১০২</span
+              >
+              <span class="min-w-0 flex-1 truncate text-sm text-(--color-ink)"
+                >রাহাত হোসেন</span
+              >
+              <span class="shrink-0 text-base font-bold text-(--color-ink)"
+                >৳১০,৮৭৩</span
+              >
+            </button>
+            <button
+              type="button"
+              class="bill-row flex min-h-14 w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-(--color-surface-soft)"
+              data-room="১০৩"
+              data-name="সাব্বির আহমেদ"
+              data-rent="৳৯,৫০০"
+              data-utility="৳১,৩৫০"
+              data-note="বিদ্যুৎ ৮০ + পানি ভাগ ১০০ = ১৮০ ইউনিট × ৳৭.৫"
+              data-waste="৳২০০"
+              data-prev="৳৪৫০"
+              data-loan=""
+              data-total="৳১১,৫০০"
+            >
+              <span class="w-10 shrink-0 text-sm font-bold text-(--color-ink)"
+                >১০৩</span
+              >
+              <span class="min-w-0 flex-1 truncate text-sm text-(--color-ink)"
+                >সাব্বির আহমেদ</span
+              >
+              <span class="shrink-0 text-base font-bold text-(--color-ink)"
+                >৳১১,৫০০</span
+              >
+            </button>
+            <button
+              type="button"
+              class="bill-row flex min-h-14 w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-(--color-surface-soft)"
+              data-room="১০৪"
+              data-name="তানভীর ইসলাম"
+              data-rent="৳১০,০০০"
+              data-utility="৳১,৪২৫"
+              data-note="বিদ্যুৎ ৯০ + পানি ভাগ ১০০ = ১৯০ ইউনিট × ৳৭.৫"
+              data-waste="৳২০০"
+              data-prev="৳০"
+              data-loan=""
+              data-total="৳১১,৬২৫"
+            >
+              <span class="w-10 shrink-0 text-sm font-bold text-(--color-ink)"
+                >১০৪</span
+              >
+              <span class="min-w-0 flex-1 truncate text-sm text-(--color-ink)"
+                >তানভীর ইসলাম</span
+              >
+              <span class="shrink-0 text-base font-bold text-(--color-ink)"
+                >৳১১,৬২৫</span
+              >
+            </button>
+            <button
+              type="button"
+              class="bill-row flex min-h-14 w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-(--color-surface-soft)"
+              data-room="১০৫"
+              data-name="মেহেদী হাসান"
+              data-rent="৳৮,৫০০"
+              data-utility="৳১,২৭৫"
+              data-note="বিদ্যুৎ ৭০ + পানি ভাগ ১০০ = ১৭০ ইউনিট × ৳৭.৫"
+              data-waste="৳২০০"
+              data-prev="৳৭৫০"
+              data-loan=""
+              data-total="৳১০,৭২৫"
+            >
+              <span class="w-10 shrink-0 text-sm font-bold text-(--color-ink)"
+                >১০৫</span
+              >
+              <span class="min-w-0 flex-1 truncate text-sm text-(--color-ink)"
+                >মেহেদী হাসান</span
+              >
+              <span class="shrink-0 text-base font-bold text-(--color-ink)"
+                >৳১০,৭২৫</span
+              >
+            </button>
+            <button
+              type="button"
+              class="bill-row flex min-h-14 w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-(--color-surface-soft)"
+              data-room="১০৭"
+              data-name="নাফিসা আক্তার"
+              data-rent="৳১০,৫০০"
+              data-utility="৳১,৫৭৫"
+              data-note="বিদ্যুৎ ১১০ + পানি ভাগ ১০০ = ২১০ ইউনিট × ৳৭.৫"
+              data-waste="৳২০০"
+              data-prev="৳০"
+              data-loan="৳১,০০০"
+              data-loannote="নাফিসার চলমান লোন · কিস্তি ২/৫ · মাসিক বিলে যোগ"
+              data-total="৳১৩,২৭৫"
+            >
+              <span class="w-10 shrink-0 text-sm font-bold text-(--color-ink)"
+                >১০৭</span
+              >
+              <span class="min-w-0 flex-1 truncate text-sm text-(--color-ink)"
+                >নাফিসা আক্তার</span
+              >
+              <span class="shrink-0 text-base font-bold text-(--color-ink)"
+                >৳১৩,২৭৫</span
+              >
+            </button>
+          </div>
+        </section>
+
+        <section
+          class="mt-4 hidden lg:block lg:px-0"
+          aria-label="রেন্টি অনুযায়ী বিল টেবিল"
+        >
+          <div
+            class="overflow-x-auto rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised)"
+          >
+            <table
+              class="w-full min-w-[720px] border-collapse text-left text-sm"
+            >
+              <thead>
+                <tr>
+                  <th
+                    class="border-b-2 border-(--color-border-strong) bg-(--color-surface-soft) px-3 py-2.5 text-xs font-semibold whitespace-nowrap text-(--color-ink)"
+                  >
+                    রুম
+                  </th>
+                  <th
+                    class="border-b-2 border-(--color-border-strong) bg-(--color-surface-soft) px-3 py-2.5 text-xs font-semibold whitespace-nowrap text-(--color-ink)"
+                  >
+                    নাম
+                  </th>
+                  <th
+                    class="border-b-2 border-(--color-border-strong) bg-(--color-surface-soft) px-3 py-2.5 text-right text-xs font-semibold whitespace-nowrap text-(--color-ink-muted)"
+                  >
+                    ভাড়া
+                  </th>
+                  <th
+                    class="border-b-2 border-(--color-border-strong) bg-(--color-surface-soft) px-3 py-2.5 text-right text-xs font-semibold whitespace-nowrap text-(--color-ink-muted)"
+                  >
+                    ইউটিলিটি
+                  </th>
+                  <th
+                    class="border-b-2 border-(--color-border-strong) bg-(--color-surface-soft) px-3 py-2.5 text-right text-xs font-semibold whitespace-nowrap text-(--color-ink-muted)"
+                  >
+                    ওয়েস্ট
+                  </th>
+                  <th
+                    class="border-b-2 border-(--color-border-strong) bg-(--color-surface-soft) px-3 py-2.5 text-right text-xs font-semibold whitespace-nowrap text-(--color-ink-muted)"
+                  >
+                    আগের বাকি
+                  </th>
+                  <th
+                    class="border-b-2 border-(--color-border-strong) bg-(--color-surface-soft) px-3 py-2.5 text-right text-xs font-semibold whitespace-nowrap text-(--color-ink-muted)"
+                  >
+                    লোন
+                  </th>
+                  <th
+                    class="border-b-2 border-(--color-border-strong) bg-(--color-surface-soft) px-3 py-2.5 text-right text-xs font-semibold whitespace-nowrap text-(--color-ink)"
+                  >
+                    মোট
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-(--color-border)">
+                <tr>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 font-bold whitespace-nowrap text-(--color-ink)"
+                  >
+                    ১০২
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 whitespace-nowrap text-(--color-ink)"
+                  >
+                    রাহাত হোসেন
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap text-(--color-ink)"
+                  >
+                    ৳৯,০০০
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap"
+                  >
+                    <span class="block text-(--color-ink)">৳১,৬৭৩</span>
+                    <span class="block text-[10px] text-(--color-ink-faint)"
+                      >২২৩ ইউনিট</span
+                    >
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap text-(--color-ink-muted)"
+                  >
+                    ৳২০০
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap text-(--color-ink-faint)"
+                  >
+                    ৳০
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap text-(--color-ink-faint)"
+                  >
+                    —
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right font-bold whitespace-nowrap text-(--color-ink)"
+                  >
+                    ৳১০,৮৭৩
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 font-bold whitespace-nowrap text-(--color-ink)"
+                  >
+                    ১০৩
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 whitespace-nowrap text-(--color-ink)"
+                  >
+                    সাব্বির আহমেদ
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap text-(--color-ink)"
+                  >
+                    ৳৯,৫০০
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap"
+                  >
+                    <span class="block text-(--color-ink)">৳১,৩৫০</span>
+                    <span class="block text-[10px] text-(--color-ink-faint)"
+                      >১৮০ ইউনিট</span
+                    >
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap text-(--color-ink-muted)"
+                  >
+                    ৳২০০
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap font-semibold text-(--color-danger)"
+                  >
+                    ৳৪৫০
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap text-(--color-ink-faint)"
+                  >
+                    —
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right font-bold whitespace-nowrap text-(--color-ink)"
+                  >
+                    ৳১১,৫০০
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 font-bold whitespace-nowrap text-(--color-ink)"
+                  >
+                    ১০৪
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 whitespace-nowrap text-(--color-ink)"
+                  >
+                    তানভীর ইসলাম
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap text-(--color-ink)"
+                  >
+                    ৳১০,০০০
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap"
+                  >
+                    <span class="block text-(--color-ink)">৳১,৪২৫</span>
+                    <span class="block text-[10px] text-(--color-ink-faint)"
+                      >১৯০ ইউনিট</span
+                    >
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap text-(--color-ink-muted)"
+                  >
+                    ৳২০০
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap text-(--color-ink-faint)"
+                  >
+                    ৳০
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap text-(--color-ink-faint)"
+                  >
+                    —
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right font-bold whitespace-nowrap text-(--color-ink)"
+                  >
+                    ৳১১,৬২৫
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 font-bold whitespace-nowrap text-(--color-ink)"
+                  >
+                    ১০৫
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 whitespace-nowrap text-(--color-ink)"
+                  >
+                    মেহেদী হাসান
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap text-(--color-ink)"
+                  >
+                    ৳৮,৫০০
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap"
+                  >
+                    <span class="block text-(--color-ink)">৳১,২৭৫</span>
+                    <span class="block text-[10px] text-(--color-ink-faint)"
+                      >১৭০ ইউনিট</span
+                    >
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap text-(--color-ink-muted)"
+                  >
+                    ৳২০০
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap font-semibold text-(--color-danger)"
+                  >
+                    ৳৭৫০
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap text-(--color-ink-faint)"
+                  >
+                    —
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right font-bold whitespace-nowrap text-(--color-ink)"
+                  >
+                    ৳১০,৭২৫
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 font-bold whitespace-nowrap text-(--color-ink)"
+                  >
+                    ১০৭
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 whitespace-nowrap text-(--color-ink)"
+                  >
+                    নাফিসা আক্তার
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap text-(--color-ink)"
+                  >
+                    ৳১০,৫০০
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap"
+                  >
+                    <span class="block text-(--color-ink)">৳১,৫৭৫</span>
+                    <span class="block text-[10px] text-(--color-ink-faint)"
+                      >২১০ ইউনিট</span
+                    >
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap text-(--color-ink-muted)"
+                  >
+                    ৳২০০
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap text-(--color-ink-faint)"
+                  >
+                    ৳০
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right whitespace-nowrap"
+                  >
+                    <span class="block font-semibold text-(--color-ink)"
+                      >৳১,০০০</span
+                    >
+                    <span class="block text-[10px] text-(--color-ink-faint)"
+                      >কিস্তি ২/৫</span
+                    >
+                  </td>
+                  <td
+                    class="border-b border-(--color-border) px-3 py-2.5 text-right font-bold whitespace-nowrap text-(--color-ink)"
+                  >
+                    ৳১৩,২৭৫
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <p class="mt-2 px-4 text-xs text-(--color-ink-faint) lg:px-0">
+          রুম ১০৬ খালি — এই মাসে কাগজ নেই। ওয়েস্ট, পানির ভাগ বা অটো বিদ্যুৎ যোগ
+          হয়নি।
+        </p>
+
+        <div class="mt-4 px-4 pb-1 md:mt-6 lg:px-0">
+          <div class="flex flex-col gap-2 md:flex-row md:items-stretch">
+            <a
+              href="04-receipt-grid-print.html"
+              class="inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) border border-transparent bg-(--color-primary) px-5 py-3 text-base font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active) md:flex-1"
             >
               <svg
-                width="20"
-                height="20"
+                width="18"
+                height="18"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -811,49 +771,21 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
               >
+                <path d="M6 9V2h12v7" />
                 <path
-                  d="M3 9 12 3l9 6v12a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V9z"
+                  d="M6 18H4a1 1 0 0 1-1-1v-5a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v5a1 1 0 0 1-1 1h-2"
                 />
+                <path d="M6 14h12v8H6z" />
               </svg>
-            </span>
-            <p class="mt-2 text-sm font-semibold text-(--color-ink-muted)">
-              রুম ১০৬ খালি
-            </p>
-            <p class="text-xs text-(--color-ink-faint)">এই মাসে বিল নেই</p>
-          </div>
-        </section>
-
-        <!-- ============ BOTTOM ACTIONS ============ -->
-        <div class="mt-4 px-4 pb-1 md:mt-6 md:px-0">
-          <a
-            href="33-bill-created.html"
-            class="inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) border border-(--color-secondary) bg-(--color-surface-raised) px-5 py-3 text-md font-semibold text-(--color-secondary) transition-colors hover:bg-(--color-secondary-hover) active:bg-(--color-secondary-active)"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.8"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M6 2h12v20l-2-1.5L14 22l-2-1.5L10 22l-2-1.5L6 22V2z" />
-              <path d="M9 7h6M9 11h6M9 15h4" />
-            </svg>
-            সব বিল তৈরি করুন
-          </a>
-
-          <!-- quick links: adjustment + collection -->
-          <div class="mt-2 grid grid-cols-2 gap-2">
+              কাগজ ছাপুন
+            </a>
             <a
               href="18-manual-adjustment.html"
-              class="inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) border border-(--color-secondary) bg-(--color-surface-raised) px-4 py-2.5 text-sm font-semibold text-(--color-secondary) transition-colors hover:bg-(--color-secondary-hover) active:bg-(--color-secondary-active)"
+              class="inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) border border-(--color-secondary) bg-(--color-surface-raised) px-5 py-3 text-base font-semibold text-(--color-secondary) transition-colors hover:bg-(--color-secondary-hover) active:bg-(--color-secondary-active) md:flex-1"
             >
               <svg
-                width="16"
-                height="16"
+                width="18"
+                height="18"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -865,36 +797,16 @@
               </svg>
               অ্যাডজাস্টমেন্ট
             </a>
-            <a
-              href="19-collection-due-list.html"
-              class="inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) px-4 py-2.5 text-sm font-semibold text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft) hover:text-(--color-ink)"
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M2 7h20v10H2V7z" />
-                <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-                <path d="M6 10h.01M18 14h.01" />
-              </svg>
-              কালেকশন
-            </a>
           </div>
           <p class="mt-2 text-center text-xs text-(--color-ink-faint)">
-            বিল তৈরির পর রিসিট ছাপানো যাবে।
+            এই কাগজগুলো এখন ভাড়াটেদের হাতে দিন। টাকা এলে কালেকশনে লেজারে লেখা
+            হবে — নতুন রিসিট ছাপতে হবে না।
           </p>
         </div>
 
         <!-- ============================================================
            — লোডিং / loading —
-           Annotated LOADING VARIANT: skeleton bill cards shown while the
-           month's bills are being generated. Static demo, no JS.
+           Annotated LOADING VARIANT. Static demo, no JS.
            ============================================================ -->
         <section
           class="mt-10 border-t border-(--color-border-strong) pt-8"
@@ -906,101 +818,121 @@
             — লোডিং / loading —
           </p>
           <div
-            class="mt-4 space-y-3 px-4 md:grid md:grid-cols-2 md:gap-3 md:px-0"
+            class="mx-4 mt-4 divide-y divide-(--color-border) overflow-hidden rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) lg:hidden"
           >
-            <!-- skeleton card ১ -->
-            <div
-              class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-5"
-            >
-              <div class="flex items-center gap-3">
-                <span
-                  class="h-10 w-10 shrink-0 rounded-full bg-(--color-surface-soft)"
-                ></span>
-                <div class="min-w-0 flex-1 space-y-2">
-                  <div
-                    class="h-3.5 w-32 max-w-full rounded bg-(--color-surface-soft)"
-                  ></div>
-                  <div class="h-3 w-20 rounded bg-(--color-surface-soft)"></div>
-                </div>
-                <div class="shrink-0 space-y-2 text-right">
-                  <div
-                    class="ml-auto h-4 w-16 rounded bg-(--color-surface-soft)"
-                  ></div>
-                  <div
-                    class="ml-auto h-5 w-12 rounded-full bg-(--color-surface-soft)"
-                  ></div>
-                </div>
-              </div>
-              <div
-                class="mt-4 space-y-2.5 border-t border-(--color-border) pt-4"
-              >
-                <div class="h-3 w-full rounded bg-(--color-surface-soft)"></div>
-                <div class="h-3 w-2/3 rounded bg-(--color-surface-soft)"></div>
-                <div class="h-3 w-1/2 rounded bg-(--color-surface-soft)"></div>
-              </div>
+            <div class="flex items-center gap-3 px-4 py-3">
+              <span class="h-4 w-10 rounded bg-(--color-surface-soft)"></span>
+              <span class="h-4 flex-1 rounded bg-(--color-surface-soft)"></span>
+              <span class="h-4 w-16 rounded bg-(--color-surface-soft)"></span>
             </div>
-
-            <!-- skeleton card ২ -->
-            <div
-              class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-5"
-            >
-              <div class="flex items-center gap-3">
-                <span
-                  class="h-10 w-10 shrink-0 rounded-full bg-(--color-surface-soft)"
-                ></span>
-                <div class="min-w-0 flex-1 space-y-2">
-                  <div
-                    class="h-3.5 w-32 max-w-full rounded bg-(--color-surface-soft)"
-                  ></div>
-                  <div class="h-3 w-20 rounded bg-(--color-surface-soft)"></div>
-                </div>
-                <div class="shrink-0 space-y-2 text-right">
-                  <div
-                    class="ml-auto h-4 w-16 rounded bg-(--color-surface-soft)"
-                  ></div>
-                  <div
-                    class="ml-auto h-5 w-12 rounded-full bg-(--color-surface-soft)"
-                  ></div>
-                </div>
-              </div>
-              <div
-                class="mt-4 space-y-2.5 border-t border-(--color-border) pt-4"
-              >
-                <div class="h-3 w-full rounded bg-(--color-surface-soft)"></div>
-                <div class="h-3 w-2/3 rounded bg-(--color-surface-soft)"></div>
-                <div class="h-3 w-1/2 rounded bg-(--color-surface-soft)"></div>
-              </div>
+            <div class="flex items-center gap-3 px-4 py-3">
+              <span class="h-4 w-10 rounded bg-(--color-surface-soft)"></span>
+              <span class="h-4 w-2/3 rounded bg-(--color-surface-soft)"></span>
+              <span class="h-4 w-14 rounded bg-(--color-surface-soft)"></span>
             </div>
-
-            <!-- skeleton card ৩ -->
+            <div class="flex items-center gap-3 px-4 py-3">
+              <span class="h-4 w-10 rounded bg-(--color-surface-soft)"></span>
+              <span class="h-4 w-1/2 rounded bg-(--color-surface-soft)"></span>
+              <span class="h-4 w-16 rounded bg-(--color-surface-soft)"></span>
+            </div>
+          </div>
+          <div
+            class="mt-4 hidden overflow-hidden rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) lg:block"
+          >
             <div
-              class="rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) p-5"
+              class="grid grid-cols-8 gap-3 border-b-2 border-(--color-border-strong) bg-(--color-surface-soft) px-3 py-2.5"
             >
-              <div class="flex items-center gap-3">
+              <span class="h-3 w-8 rounded bg-(--color-border)"></span>
+              <span class="h-3 w-16 rounded bg-(--color-border)"></span>
+              <span
+                class="h-3 w-10 justify-self-end rounded bg-(--color-border)"
+              ></span>
+              <span
+                class="h-3 w-12 justify-self-end rounded bg-(--color-border)"
+              ></span>
+              <span
+                class="h-3 w-10 justify-self-end rounded bg-(--color-border)"
+              ></span>
+              <span
+                class="h-3 w-12 justify-self-end rounded bg-(--color-border)"
+              ></span>
+              <span
+                class="h-3 w-8 justify-self-end rounded bg-(--color-border)"
+              ></span>
+              <span
+                class="h-3 w-12 justify-self-end rounded bg-(--color-border)"
+              ></span>
+            </div>
+            <div class="space-y-0">
+              <div
+                class="grid grid-cols-8 gap-3 border-b border-(--color-border) px-3 py-3"
+              >
+                <span class="h-3 w-8 rounded bg-(--color-surface-soft)"></span>
+                <span class="h-3 w-24 rounded bg-(--color-surface-soft)"></span>
                 <span
-                  class="h-10 w-10 shrink-0 rounded-full bg-(--color-surface-soft)"
+                  class="h-3 w-12 justify-self-end rounded bg-(--color-surface-soft)"
                 ></span>
-                <div class="min-w-0 flex-1 space-y-2">
-                  <div
-                    class="h-3.5 w-32 max-w-full rounded bg-(--color-surface-soft)"
-                  ></div>
-                  <div class="h-3 w-20 rounded bg-(--color-surface-soft)"></div>
-                </div>
-                <div class="shrink-0 space-y-2 text-right">
-                  <div
-                    class="ml-auto h-4 w-16 rounded bg-(--color-surface-soft)"
-                  ></div>
-                  <div
-                    class="ml-auto h-5 w-12 rounded-full bg-(--color-surface-soft)"
-                  ></div>
-                </div>
+                <span
+                  class="h-3 w-12 justify-self-end rounded bg-(--color-surface-soft)"
+                ></span>
+                <span
+                  class="h-3 w-8 justify-self-end rounded bg-(--color-surface-soft)"
+                ></span>
+                <span
+                  class="h-3 w-8 justify-self-end rounded bg-(--color-surface-soft)"
+                ></span>
+                <span
+                  class="h-3 w-6 justify-self-end rounded bg-(--color-surface-soft)"
+                ></span>
+                <span
+                  class="h-3 w-14 justify-self-end rounded bg-(--color-surface-soft)"
+                ></span>
               </div>
               <div
-                class="mt-4 space-y-2.5 border-t border-(--color-border) pt-4"
+                class="grid grid-cols-8 gap-3 border-b border-(--color-border) px-3 py-3"
               >
-                <div class="h-3 w-full rounded bg-(--color-surface-soft)"></div>
-                <div class="h-3 w-2/3 rounded bg-(--color-surface-soft)"></div>
-                <div class="h-3 w-1/2 rounded bg-(--color-surface-soft)"></div>
+                <span class="h-3 w-8 rounded bg-(--color-surface-soft)"></span>
+                <span class="h-3 w-20 rounded bg-(--color-surface-soft)"></span>
+                <span
+                  class="h-3 w-12 justify-self-end rounded bg-(--color-surface-soft)"
+                ></span>
+                <span
+                  class="h-3 w-12 justify-self-end rounded bg-(--color-surface-soft)"
+                ></span>
+                <span
+                  class="h-3 w-8 justify-self-end rounded bg-(--color-surface-soft)"
+                ></span>
+                <span
+                  class="h-3 w-10 justify-self-end rounded bg-(--color-surface-soft)"
+                ></span>
+                <span
+                  class="h-3 w-6 justify-self-end rounded bg-(--color-surface-soft)"
+                ></span>
+                <span
+                  class="h-3 w-14 justify-self-end rounded bg-(--color-surface-soft)"
+                ></span>
+              </div>
+              <div class="grid grid-cols-8 gap-3 px-3 py-3">
+                <span class="h-3 w-8 rounded bg-(--color-surface-soft)"></span>
+                <span class="h-3 w-28 rounded bg-(--color-surface-soft)"></span>
+                <span
+                  class="h-3 w-12 justify-self-end rounded bg-(--color-surface-soft)"
+                ></span>
+                <span
+                  class="h-3 w-12 justify-self-end rounded bg-(--color-surface-soft)"
+                ></span>
+                <span
+                  class="h-3 w-8 justify-self-end rounded bg-(--color-surface-soft)"
+                ></span>
+                <span
+                  class="h-3 w-8 justify-self-end rounded bg-(--color-surface-soft)"
+                ></span>
+                <span
+                  class="h-3 w-10 justify-self-end rounded bg-(--color-surface-soft)"
+                ></span>
+                <span
+                  class="h-3 w-14 justify-self-end rounded bg-(--color-surface-soft)"
+                ></span>
               </div>
             </div>
           </div>
@@ -1008,13 +940,92 @@
       </main>
     </div>
 
-    <!-- ============ BOTTOM NAV (active: বিল; হোম raised center) ============ -->
+    <!-- Sheet: phone bottom, md+ centered card -->
+    <div
+      id="scrim"
+      class="fixed inset-0 z-40 hidden bg-(--color-ink)/50"
+      aria-hidden="true"
+    ></div>
+    <div
+      id="sheet"
+      class="fixed inset-x-0 bottom-0 z-50 mx-auto hidden w-full max-w-md rounded-t-(--radius-card) bg-(--color-surface-raised) px-6 pb-[max(env(safe-area-inset-bottom),1rem)] pt-3 shadow-(--shadow-overlay) md:inset-0 md:my-auto md:h-fit md:max-h-[90vh] md:overflow-y-auto md:rounded-(--radius-card) md:pb-6"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="sheet-title"
+    >
+      <div
+        class="mx-auto h-1.5 w-12 rounded-(--radius-pill) bg-(--color-border) md:hidden"
+      ></div>
+      <div class="mt-4">
+        <h2 id="sheet-title" class="text-lg font-semibold text-(--color-ink)">
+          রুম ১০২ · রাহাত হোসেন
+        </h2>
+        <p class="text-sm text-(--color-ink-muted)">আগস্ট ২০২৬</p>
+      </div>
+      <div class="mt-4 space-y-2.5">
+        <div class="flex items-baseline justify-between text-sm">
+          <span class="text-(--color-ink-muted)">ভাড়া</span>
+          <span id="sheet-rent" class="font-semibold text-(--color-ink)"
+            >৳৯,০০০</span
+          >
+        </div>
+        <div>
+          <div class="flex items-baseline justify-between text-sm">
+            <span class="text-(--color-ink-muted)">বিদ্যুৎ ও পানি</span>
+            <span id="sheet-utility" class="font-semibold text-(--color-ink)"
+              >৳১,৬৭৩</span
+            >
+          </div>
+          <p id="sheet-note" class="mt-1 text-xs text-(--color-ink-faint)">
+            বিদ্যুৎ ১২৩ + পানি ভাগ ১০০ = ২২৩ ইউনিট × ৳৭.৫
+          </p>
+        </div>
+        <div
+          class="flex items-baseline justify-between border-t border-(--color-border) pt-2.5 text-sm"
+        >
+          <span class="text-(--color-ink-muted)">ওয়েস্ট</span>
+          <span id="sheet-waste" class="font-semibold text-(--color-ink)"
+            >৳২০০</span
+          >
+        </div>
+        <div class="flex items-baseline justify-between text-sm">
+          <span class="text-(--color-ink-muted)">আগের বাকি</span>
+          <span id="sheet-prev" class="font-semibold text-(--color-ink)"
+            >৳০</span
+          >
+        </div>
+        <div id="sheet-loan-wrap" class="hidden">
+          <div class="flex items-baseline justify-between text-sm">
+            <span class="text-(--color-ink-muted)">লোন কিস্তি</span>
+            <span id="sheet-loan" class="font-semibold text-(--color-ink)"
+              >৳১,০০০</span
+            >
+          </div>
+          <p
+            id="sheet-loannote"
+            class="mt-1 text-xs text-(--color-ink-faint)"
+          ></p>
+        </div>
+        <div
+          class="flex items-baseline justify-between border-t-2 border-(--color-border-strong) pt-2.5 text-sm font-bold text-(--color-ink)"
+        >
+          <span>মোট</span>
+          <span id="sheet-total" class="text-base">৳১০,৮৭৩</span>
+        </div>
+      </div>
+      <button
+        id="close-sheet"
+        class="mt-5 inline-flex w-full items-center justify-center rounded-(--radius-button) border border-(--color-secondary) bg-(--color-surface-raised) px-5 py-3 text-base font-semibold text-(--color-secondary) transition-colors hover:bg-(--color-secondary-hover) active:bg-(--color-secondary-active)"
+      >
+        বন্ধ করুন
+      </button>
+    </div>
+
     <nav
-      class="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md border-t border-(--color-border) bg-(--color-surface-raised) px-3 pt-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] lg:hidden"
+      class="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md border-t border-(--color-border) bg-(--color-surface-raised) px-3 pt-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] md:max-w-3xl lg:hidden"
       aria-label="প্রধান নেভিগেশন"
     >
       <div class="grid grid-cols-5 items-end">
-        <!-- বিল (active) -->
         <a
           href="17-bill-preview.html"
           class="flex flex-col items-center gap-1 pb-1 text-(--color-primary)"
@@ -1040,8 +1051,6 @@
           </span>
           <span class="text-xs font-semibold">বিল</span>
         </a>
-
-        <!-- রেন্টি -->
         <a
           href="09-tenant-list.html"
           class="flex flex-col items-center gap-1 pb-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
@@ -1064,8 +1073,6 @@
           </svg>
           <span class="text-xs">রেন্টি</span>
         </a>
-
-        <!-- হোম (center, raised) -->
         <a
           href="02-dashboard.html"
           class="-mt-5 flex flex-col items-center gap-1 pb-1 text-(--color-ink)"
@@ -1090,8 +1097,6 @@
           </span>
           <span class="text-xs font-medium">হোম</span>
         </a>
-
-        <!-- সারাংশ -->
         <a
           href="22-monthly-summary-ledger.html"
           class="flex flex-col items-center gap-1 pb-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
@@ -1114,8 +1119,6 @@
           </svg>
           <span class="text-xs">সারাংশ</span>
         </a>
-
-        <!-- আরও -->
         <a
           href="29-settings-hub.html"
           class="flex flex-col items-center gap-1 pb-1 text-(--color-ink-faint) transition-colors hover:text-(--color-ink-muted)"
@@ -1139,17 +1142,49 @@
     </nav>
 
     <script>
-      // Demo: expand / collapse bill breakdown (presentation only).
-      document.querySelectorAll('.bill-toggle').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const panel = document.getElementById(btn.dataset.bill)
-          const chevron = btn.querySelector('.chevron')
-          const open = btn.getAttribute('aria-expanded') === 'true'
-          btn.setAttribute('aria-expanded', String(!open))
-          panel.classList.toggle('hidden', open)
-          chevron.classList.toggle('rotate-180', !open)
-        })
+      // Demo: open line-item sheet from a compact row (presentation only).
+      const scrim = document.getElementById('scrim')
+      const sheet = document.getElementById('sheet')
+      const loanWrap = document.getElementById('sheet-loan-wrap')
+
+      function openSheet(btn) {
+        document.getElementById('sheet-title').textContent =
+          'রুম ' + btn.dataset.room + ' · ' + btn.dataset.name
+        document.getElementById('sheet-rent').textContent = btn.dataset.rent
+        document.getElementById('sheet-utility').textContent =
+          btn.dataset.utility
+        document.getElementById('sheet-note').textContent = btn.dataset.note
+        document.getElementById('sheet-waste').textContent = btn.dataset.waste
+        const prev = document.getElementById('sheet-prev')
+        prev.textContent = btn.dataset.prev
+        prev.classList.toggle(
+          'text-(--color-danger)',
+          btn.dataset.prev !== '৳০',
+        )
+        prev.classList.toggle('text-(--color-ink)', btn.dataset.prev === '৳০')
+        if (btn.dataset.loan) {
+          loanWrap.classList.remove('hidden')
+          document.getElementById('sheet-loan').textContent = btn.dataset.loan
+          document.getElementById('sheet-loannote').textContent =
+            btn.dataset.loannote || ''
+        } else {
+          loanWrap.classList.add('hidden')
+        }
+        document.getElementById('sheet-total').textContent = btn.dataset.total
+        scrim.classList.remove('hidden')
+        sheet.classList.remove('hidden')
+      }
+      function closeSheet() {
+        scrim.classList.add('hidden')
+        sheet.classList.add('hidden')
+      }
+      document.querySelectorAll('.bill-row').forEach((btn) => {
+        btn.addEventListener('click', () => openSheet(btn))
       })
+      document
+        .getElementById('close-sheet')
+        .addEventListener('click', closeSheet)
+      scrim.addEventListener('click', closeSheet)
     </script>
   </body>
 </html>

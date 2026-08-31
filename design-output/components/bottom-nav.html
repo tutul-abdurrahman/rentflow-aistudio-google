@@ -21,9 +21,10 @@
   </head>
   <body class="min-h-screen bg-(--color-surface) text-(--color-ink)">
     <!-- Demo scaffold: on real app screens this nav is mounted fixed at the
-         viewport bottom, centered at max-w-md, with a top hairline + safe-area
-         padding. At lg: and up the bottom nav is hidden (lg:hidden) and a left
-         sidebar takes over — see components/sidebar.html. -->
+         viewport bottom, centered at max-w-md (md:max-w-3xl on tablet), with a
+         top hairline + safe-area padding. At lg: and up the bottom nav is
+         hidden (lg:hidden) and a left sidebar takes over — see
+         components/sidebar.html. -->
     <main class="mx-auto max-w-md px-6 pb-32 pt-16">
       <p class="text-sm text-(--color-ink-faint)">
         Component demo — bottom navigation, “বিল” tab active. Order: বিল |
@@ -34,7 +35,7 @@
     </main>
 
     <nav
-      class="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md border-t border-(--color-border) bg-(--color-surface-raised) px-2 pt-2 pb-[max(env(safe-area-inset-bottom),0.75rem)] lg:hidden"
+      class="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md md:max-w-3xl border-t border-(--color-border) bg-(--color-surface-raised) px-2 pt-2 pb-[max(env(safe-area-inset-bottom),0.75rem)] lg:hidden"
       aria-label="প্রধান নেভিগেশন"
     >
       <div class="grid grid-cols-5">

@@ -728,7 +728,7 @@
         <div class="mt-4 mx-4 pb-1">
           <a
             href="17-bill-preview.html"
-            class="inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) bg-(--color-primary) px-5 py-3.5 text-md font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active)"
+            class="inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) border border-transparent bg-(--color-primary) px-5 py-3 text-base font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active)"
           >
             <svg
               width="18"
@@ -742,15 +742,18 @@
             >
               <path d="m4 12 5 5L20 7" />
             </svg>
-            সংরক্ষণ ও বিল তৈরি করুন
+            সংরক্ষণ করুন ও রিভিউ দেখুন
           </a>
+          <p class="mt-2 text-center text-xs text-(--color-ink-faint)">
+            রিভিউয়ের পর কাগজ ছাপাবেন। টাকা পরে লেজারে লেখা হবে।
+          </p>
 
           <button
-            class="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) border border-(--color-secondary) bg-(--color-surface-raised) px-5 py-3 text-md font-semibold text-(--color-secondary) transition-colors hover:bg-(--color-secondary-hover) active:bg-(--color-secondary-active)"
+            class="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) border border-(--color-secondary) bg-(--color-surface-raised) px-5 py-3 text-base font-semibold text-(--color-secondary) transition-colors hover:bg-(--color-secondary-hover) active:bg-(--color-secondary-active)"
           >
             <svg
-              width="16"
-              height="16"
+              width="18"
+              height="18"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -770,7 +773,7 @@
 
     <!-- ============ BOTTOM NAV (active: বিল; হোম raised center) ============ -->
     <nav
-      class="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md border-t border-(--color-border) bg-(--color-surface-raised) px-3 pt-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] lg:hidden"
+      class="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md md:max-w-3xl border-t border-(--color-border) bg-(--color-surface-raised) px-3 pt-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] lg:hidden"
       aria-label="প্রধান নেভিগেশন"
     >
       <div class="grid grid-cols-5 items-end">

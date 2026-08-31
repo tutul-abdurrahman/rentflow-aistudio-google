@@ -25,7 +25,6 @@
     <main
       class="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center px-6 py-12"
     >
-      <!-- success mark -->
       <span
         class="flex h-24 w-24 items-center justify-center rounded-full bg-(--color-primary-tint)"
       >
@@ -45,7 +44,7 @@
       </span>
 
       <h1 class="mt-6 text-2xl font-bold text-(--color-ink)">
-        আদায় সম্পন্ন হয়েছে!
+        লেজারে আদায় লেখা হয়েছে
       </h1>
       <p class="mt-1.5 text-sm text-(--color-ink-muted)">
         রুম ১০২ · রাহাত হোসেন · নগদে
@@ -60,78 +59,32 @@
         আগস্ট ২০২৬ · দশ হাজার আটশ তিয়াত্তর টাকা মাত্র
       </p>
 
-      <!-- receipt preview link -->
-      <a
-        href="21-single-receipt.html"
-        class="mt-6 flex w-full items-center gap-3 rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) px-4 py-3 transition-colors hover:bg-(--color-surface-soft)"
+      <div
+        class="mt-6 w-full rounded-(--radius-card) border border-(--color-border) bg-(--color-surface-raised) px-4 py-3"
       >
-        <span
-          class="flex h-10 w-10 shrink-0 items-center justify-center rounded-(--radius-md) bg-(--color-surface-soft) text-(--color-ink-muted)"
+        <div class="flex items-baseline justify-between text-sm">
+          <span class="text-(--color-ink-muted)">এই মাসের মোট</span>
+          <span class="font-semibold text-(--color-ink)">৳১০,৮৭৩</span>
+        </div>
+        <div class="mt-2 flex items-baseline justify-between text-sm">
+          <span class="text-(--color-ink-muted)">এখন আদায়</span>
+          <span class="font-semibold text-(--color-ink)">৳১০,৮৭৩</span>
+        </div>
+        <div
+          class="mt-2 flex items-baseline justify-between border-t border-(--color-border) pt-2 text-sm"
         >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M6 2h12v20l-2-1.5L14 22l-2-1.5L10 22l-2-1.5L6 22V2z" />
-            <path d="M9 7h6M9 11h6M9 15h4" />
-          </svg>
-        </span>
-        <span class="min-w-0 flex-1">
-          <span class="block text-sm font-semibold text-(--color-ink)"
-            >রিসিট ০০১ · রুম ১০২</span
-          >
-          <span class="block text-xs text-(--color-ink-muted)"
-            >রাহাত হোসেন · আগস্ট ২০২৬ · ৳১০,৮৭৩</span
-          >
-        </span>
-        <svg
-          class="shrink-0 text-(--color-ink-faint)"
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="m9 18 6-6-6-6" />
-        </svg>
-      </a>
+          <span class="text-(--color-ink-muted)">বাকি</span>
+          <span class="font-bold text-(--color-success)">৳০</span>
+        </div>
+        <p class="mt-2 text-xs text-(--color-ink-faint)">
+          কাগজ আগেই ছাপানো। নতুন রিসিট লাগবে না।
+        </p>
+      </div>
 
-      <!-- actions -->
       <div class="mt-5 w-full space-y-2.5">
         <a
-          href="21-single-receipt.html"
-          class="inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) bg-(--color-primary) px-5 py-3.5 text-md font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active)"
-        >
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M6 9V2h12v7" />
-            <path
-              d="M6 18H4a1 1 0 0 1-1-1v-5a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v5a1 1 0 0 1-1 1h-2"
-            />
-            <path d="M6 14h12v8H6z" />
-          </svg>
-          রিসিট দেখুন / প্রিন্ট
-        </a>
-        <a
           href="19-collection-due-list.html"
-          class="inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) border border-(--color-secondary) bg-(--color-surface-raised) px-5 py-3.5 text-md font-semibold text-(--color-secondary) transition-colors hover:bg-(--color-secondary-hover) active:bg-(--color-secondary-active)"
+          class="inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) border border-transparent bg-(--color-primary) px-5 py-3 text-base font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active)"
         >
           <svg
             width="18"
@@ -151,7 +104,7 @@
         </a>
         <a
           href="02-dashboard.html"
-          class="inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) px-5 py-3 text-md font-semibold text-(--color-ink-muted) transition-colors hover:bg-(--color-surface-soft) hover:text-(--color-ink)"
+          class="inline-flex w-full items-center justify-center gap-2 rounded-(--radius-button) border border-(--color-secondary) bg-(--color-surface-raised) px-5 py-3 text-base font-semibold text-(--color-secondary) transition-colors hover:bg-(--color-secondary-hover) active:bg-(--color-secondary-active)"
         >
           <svg
             width="18"

@@ -454,7 +454,7 @@
                 />
               </div>
               <p class="mt-1.5 text-xs text-(--color-ink-faint)">
-                এই টাকা চলতি মাসের বিলের সঙ্গে যোগ হবে
+                এই টাকা লেজারে যোগ হবে — বিল আবার তৈরি করতে হবে না
               </p>
             </div>
 
@@ -475,7 +475,7 @@
                 class="w-full resize-none rounded-(--radius-input) border border-(--color-border) bg-(--color-surface-raised) px-4 py-3 text-md text-(--color-ink) transition-colors placeholder:text-(--color-ink-faint) focus:border-(--color-border-focus)"
               ></textarea>
               <p class="mt-1.5 text-xs text-(--color-ink-faint)">
-                নোট আবশ্যক — রিসিটে দেখানো হবে
+                নোট আবশ্যক — লেজারে থাকবে; কাগজ আবার ছাপালে তখন দেখাবে
               </p>
             </div>
 
@@ -498,8 +498,9 @@
                 <path d="M12 8h.01M12 11v5" />
               </svg>
               <p class="text-xs leading-relaxed text-(--color-ink-muted)">
-                অ্যাডজাস্টমেন্ট শুধু এই মাসের বিলে যোগ হয়। এতে রুমের অবস্থা বা
-                লিজের শর্ত পরিবর্তন হয় না।
+                ভুল এন্ট্রি এখানেই সারাবেন। লেজার যেখানে ভাঙে সেখানে আপডেট হবে।
+                বিল আবার জেনারেট করা এই পথ নয়। খালি রুমে কেউ বিদ্যুৎ নিলে
+                ম্যানুয়ালি যোগ করুন।
               </p>
             </div>
           </section>
@@ -510,12 +511,12 @@
           >
             <a
               href="17-bill-preview.html"
-              class="inline-flex w-full items-center justify-center rounded-(--radius-button) border border-(--color-secondary) bg-(--color-surface-raised) px-5 py-3 text-md font-semibold text-(--color-secondary) transition-colors hover:bg-(--color-secondary-hover) active:bg-(--color-secondary-active) md:w-40"
+              class="inline-flex w-full items-center justify-center rounded-(--radius-button) border border-(--color-secondary) bg-(--color-surface-raised) px-5 py-3 text-base font-semibold text-(--color-secondary) transition-colors hover:bg-(--color-secondary-hover) active:bg-(--color-secondary-active) md:w-40"
             >
               বাতিল
             </a>
             <button
-              class="inline-flex w-full flex-1 items-center justify-center gap-2 rounded-(--radius-button) bg-(--color-primary) px-5 py-3 text-md font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active)"
+              class="inline-flex w-full flex-1 items-center justify-center gap-2 rounded-(--radius-button) border border-transparent bg-(--color-primary) px-5 py-3 text-base font-semibold text-(--color-on-primary) transition-colors hover:bg-(--color-primary-hover) active:bg-(--color-primary-active)"
             >
               <svg
                 width="18"
@@ -688,7 +689,7 @@
 
     <!-- ============ BOTTOM NAV (active: বিল; হোম raised center) ============ -->
     <nav
-      class="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md border-t border-(--color-border) bg-(--color-surface-raised) px-3 pt-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] lg:hidden"
+      class="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md md:max-w-3xl border-t border-(--color-border) bg-(--color-surface-raised) px-3 pt-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] lg:hidden"
       aria-label="প্রধান নেভিগেশন"
     >
       <div class="grid grid-cols-5 items-end">
