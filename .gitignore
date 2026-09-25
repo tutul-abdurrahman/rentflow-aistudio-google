@@ -19,4 +19,4 @@ dist/
 !.env.example
 
 # Supabase secrets file from Tutul — never commit
-supabaseInfo.txt
+supabaseInfo.txt*.log
