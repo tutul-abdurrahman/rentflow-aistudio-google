@@ -388,9 +388,17 @@ export default function Dashboard() {
   }
 
   /* ---- KPI numbers ---- */
+  /** Below this base a Δ% is noise (৳1 base → +2,58,200%); show taka instead. */
+  const MIN_TREND_BASE = 1000;
   let dueTrend: KpiTrend;
   if (previous.dueTotal <= 0) {
     dueTrend = { text: 'গত মাসে বকেয়া ছিল না', tone: 'muted' };
+  } else if (previous.dueTotal < MIN_TREND_BASE) {
+    const delta = dashboard.dueTotal - previous.dueTotal;
+    dueTrend = {
+      text: `গত মাসের চেয়ে ${delta >= 0 ? '+' : '−'}${bnTaka(Math.abs(delta))}`,
+      tone: delta >= 0 ? 'warning' : 'success',
+    };
   } else {
     const change = Math.round(
       ((dashboard.dueTotal - previous.dueTotal) / previous.dueTotal) * 100,
@@ -528,7 +536,7 @@ export default function Dashboard() {
         <KpiCard
           label="আদায় হয়েছে"
           value={bnTaka(dashboard.collectedTotal)}
-          trend={{ text: `${bnNumber(collectionPct)}% আদায়`, tone: 'success' }}
+          trend={{ text: `বিলের ${bnNumber(collectionPct)}% আদায়`, tone: 'success' }}
         />
         <KpiCard
           label="এই মাসের ব্যয়"

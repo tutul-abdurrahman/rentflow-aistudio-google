@@ -254,14 +254,14 @@ export default function CollectionDueList() {
             </p>
           </div>
           <div className="px-3 py-4 text-center sm:px-4">
-            <p className="text-xs text-ink-faint">বাকি</p>
+            <p className="text-xs text-ink-faint">নিট বাকি</p>
             <p className="mt-1 text-lg leading-none font-bold text-warning sm:text-xl">
               {bnTaka(remaining)}
             </p>
           </div>
         </div>
         <div className="flex items-center justify-between border-t border-border bg-surface-soft px-4 py-2 text-xs text-ink-muted">
-          <span>{bnDigits(percent)}% আদায়</span>
+          <span>এই মাসের বিলের {bnDigits(percent)}% আদায়</span>
           <span>
             {bnDigits(openCount)} জনের বাকি · {bnDigits(paidCount)} জন পরিশোধিত
           </span>

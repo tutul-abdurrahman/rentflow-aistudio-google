@@ -168,7 +168,11 @@ export default function LoanList() {
             const paid = Math.min(loan.paidInstallments * loan.installmentAmount, loan.totalAmount);
             const balance = Math.max(0, loan.totalAmount - paid);
             const isActive = loan.status === 'active';
-            const percent = loan.totalAmount > 0 ? Math.round((paid / loan.totalAmount) * 100) : 0;
+            // Progress tracks installments paid (matches the '২/৫ কিস্তি' label).
+            const percent =
+              loan.installmentCount > 0
+                ? Math.round((loan.paidInstallments / loan.installmentCount) * 100)
+                : 0;
 
             return (
               <Link

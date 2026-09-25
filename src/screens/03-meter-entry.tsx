@@ -412,7 +412,11 @@ export default function MeterEntry() {
           aria-label="রেট ও ফি"
         >
           <h2 className="text-base font-semibold text-ink">রেট ও ফি</h2>
-          <p className="mt-0.5 text-xs text-ink-muted">বদলালে এই মাস থেকেই বিলে বসবে।</p>
+          <p className="mt-0.5 text-xs text-ink-muted">
+            {hasPapers
+              ? 'এই মাসের কাগজ তৈরি হয়ে গেছে — রেট বদলালে পরের মাসের হিসাবে বসবে।'
+              : 'বদলালে এই মাসের বিল হিসাবের সময় এই রেট বসবে।'}
+          </p>
           <div className="mt-4 grid grid-cols-2 gap-3">
             <div>
               <label htmlFor="prop-rate" className="mb-1 block text-xs font-medium text-ink-muted">

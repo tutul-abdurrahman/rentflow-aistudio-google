@@ -34,6 +34,16 @@ interface BillView {
 const sumKind = (bill: Bill, kind: BillLine['kind']): number =>
   bill.lines.filter((line) => line.kind === kind).reduce((sum, line) => sum + line.amount, 0);
 
+/**
+ * Unit truth for a bill is the engine line detail ('123 unit × 7.5',
+ * '83.33 unit × 7.5'), not the current property rate. Dividing the stored
+ * ৳ utilities by today's rate breaks as soon as the rate changes.
+ */
+const lineUnits = (line?: BillLine): number => {
+  const match = line?.detail ? /^(-?\d+(?:\.\d+)?)\s*unit/.exec(line.detail.trim()) : null;
+  return match ? Number(match[1]) : 0;
+};
+
 /** '123 unit × 7.5' → '১২৩ ইউনিট × ৭.৫' */
 const detailBn = (detail?: string): string =>
   detail ? bnDigits(detail).replace(' unit × ', ' ইউনিট × ') : '';
@@ -145,13 +155,13 @@ export default function BillPreview() {
     return (tenantId: string): string => map.get(tenantId) ?? '';
   }, [tenants]);
 
-  const rate = property?.electricityRate ?? 0;
-
   const views = useMemo<BillView[]>(
     () =>
       bills.map((bill) => {
         const loan = loans.find((item) => item.tenantId === bill.tenantId && item.status === 'active');
         const utilities = bill.utilitiesTotal;
+        const electricity = bill.lines.find((line) => line.kind === 'electricity');
+        const water = bill.lines.find((line) => line.kind === 'water');
         return {
           bill,
           roomNumber: roomNumber(bill.roomId),
@@ -163,11 +173,11 @@ export default function BillPreview() {
           adjustmentLines: bill.lines.filter((line) => line.kind === 'adjustment'),
           prevDue: sumKind(bill, 'prev_due'),
           loan: sumKind(bill, 'loan'),
-          utilityUnits: rate > 0 ? Math.round(utilities / rate) : 0,
+          utilityUnits: lineUnits(electricity) + lineUnits(water),
           loanRecord: loan,
         };
       }),
-    [bills, loans, roomNumber, tenantName, rate],
+    [bills, loans, roomNumber, tenantName],
   );
 
   const selected = views.find((view) => view.bill.id === selectedId) ?? null;
@@ -288,7 +298,7 @@ export default function BillPreview() {
                 </p>
               </div>
               <div className="px-3 py-4 text-center sm:px-4">
-                <p className="text-xs text-ink-faint">অনাদায়ী</p>
+                <p className="text-xs text-ink-faint">নিট অনাদায়ী</p>
                 <p className="mt-1 text-lg font-bold leading-none text-ink sm:text-xl">
                   {bnTaka(totals.due)}
                 </p>
@@ -301,7 +311,7 @@ export default function BillPreview() {
                 {vacantNumbers.length > 0 ? ` · ${vacantNumbers.join(', ')} খালি` : ''}
               </span>
               <span>
-                বিদ্যুৎ ৳{rateLabel}/ইউনিট · ওয়েস্ট ৳{wasteLabel}/রুম
+                বর্তমান রেট: বিদ্যুৎ ৳{rateLabel}/ইউনিট · ওয়েস্ট ৳{wasteLabel}/রুম
               </span>
             </div>
           </section>

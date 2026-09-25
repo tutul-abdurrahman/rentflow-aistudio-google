@@ -254,7 +254,7 @@ export default function MonthlySummaryLedger() {
             </p>
           </div>
           <div className="px-3 py-4 text-center sm:px-4">
-            <p className="text-xs text-ink-faint">বাকি</p>
+            <p className="text-xs text-ink-faint">নিট বাকি</p>
             <p className="mt-1 text-lg font-bold leading-none text-warning sm:text-xl">
               {loading ? '—' : bnTaka(dueTotal)}
             </p>
@@ -269,7 +269,7 @@ export default function MonthlySummaryLedger() {
               : ''}
           </span>
           <span>
-            বিদ্যুৎ {bnRate(property?.electricityRate ?? 0)}/ইউনিট · ওয়েস্ট{' '}
+            বর্তমান রেট: বিদ্যুৎ {bnRate(property?.electricityRate ?? 0)}/ইউনিট · ওয়েস্ট{' '}
             {bnRate(property?.wasteFee ?? 0)}/রুম
           </span>
         </div>
@@ -428,7 +428,7 @@ export default function MonthlySummaryLedger() {
                     {bnTaka(totals.paid)}
                   </td>
                   <td className="border-t-2 border-border-strong px-3 py-3 text-sm font-bold whitespace-nowrap text-warning">
-                    বাকি {bnTaka(dueTotal)}
+                    মোট চক্রের নিট বাকি {bnTaka(dueTotal)}
                   </td>
                   <td className="border-t-2 border-border-strong px-3 py-3 text-center text-sm whitespace-nowrap text-ink-faint">
                     —

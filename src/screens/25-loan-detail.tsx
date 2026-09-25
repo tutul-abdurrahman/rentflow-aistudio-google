@@ -67,7 +67,11 @@ export default function LoanDetail() {
   const { loan, tenant, room, property, activeMonth } = data;
   const paid = Math.min(loan.paidInstallments * loan.installmentAmount, loan.totalAmount);
   const balance = Math.max(0, loan.totalAmount - paid);
-  const percent = loan.totalAmount > 0 ? Math.round((paid / loan.totalAmount) * 100) : 0;
+  // Progress tracks installments paid (matches the '২/৫ কিস্তি' label).
+  const percent =
+    loan.installmentCount > 0
+      ? Math.round((loan.paidInstallments / loan.installmentCount) * 100)
+      : 0;
   const isActive = loan.status === 'active';
   const remaining = Math.max(0, loan.installmentCount - loan.paidInstallments);
   const nextIndex = Math.min(loan.paidInstallments + 1, loan.installmentCount);

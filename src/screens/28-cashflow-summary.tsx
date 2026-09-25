@@ -295,7 +295,7 @@ export default function CashflowSummary() {
           <p className="mt-2 text-xs text-success">আয় − ব্যয়</p>
         </div>
         <div className="rounded-card border border-border bg-surface-raised p-4">
-          <p className="text-sm text-ink-faint">আদায়ের হার</p>
+          <p className="text-sm text-ink-faint">এই মাসের আদায়ের হার</p>
           <p className="mt-2 text-2xl font-bold leading-none text-ink">
             {loading ? '—' : `${bnDigits(rate)}%`}
           </p>
