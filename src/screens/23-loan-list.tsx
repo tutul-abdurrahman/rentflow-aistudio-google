@@ -28,15 +28,15 @@ function SkeletonCard() {
   return (
     <div className="rounded-card border border-border bg-surface-raised p-4">
       <div className="flex items-center gap-3">
-        <span className="h-11 w-11 shrink-0 rounded-full bg-surface-soft" />
+        <span className="skeleton h-11 w-11 shrink-0 rounded-full" />
         <div className="min-w-0 flex-1 space-y-2">
-          <div className="h-4 w-2/3 rounded-pill bg-surface-soft" />
-          <div className="h-3 w-1/3 rounded-pill bg-surface-soft" />
+          <div className="skeleton h-4 w-2/3 rounded-pill" />
+          <div className="skeleton h-3 w-1/3 rounded-pill" />
         </div>
-        <span className="h-5 w-16 shrink-0 rounded-pill bg-surface-soft" />
+        <span className="skeleton h-5 w-16 shrink-0 rounded-pill" />
       </div>
-      <div className="mt-4 h-14 w-full rounded-md bg-surface-soft" />
-      <div className="mt-3 h-2 w-full rounded-pill bg-surface-soft" />
+      <div className="skeleton mt-4 h-14 w-full rounded-md" />
+      <div className="skeleton mt-3 h-2 w-full rounded-pill" />
     </div>
   );
 }

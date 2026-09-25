@@ -225,7 +225,41 @@ export default function MeterEntry() {
     return (
       <>
         <PageHeader title="মিটার রিডিং" subtitle="লোড হচ্ছে…" backTo="/" />
-        <p className="mt-6 text-sm text-ink-muted">— অপেক্ষা করুন —</p>
+        <div aria-busy="true" aria-label="লোড হচ্ছে">
+          <div
+            className="mt-4 overflow-hidden rounded-card border border-border bg-surface-raised"
+            aria-hidden="true"
+          >
+            <div className="flex items-center justify-between px-5 py-4">
+              <div className="skeleton h-4 w-32" />
+              <div className="skeleton h-3 w-24" />
+            </div>
+            {[0, 1, 2, 3, 4].map((index) => (
+              <div
+                key={index}
+                className="flex items-center gap-3 border-t border-border px-5 py-3.5"
+                aria-hidden="true"
+              >
+                <div className="skeleton h-4 w-12" />
+                <div className="skeleton h-4 w-28 max-w-[40%] flex-1" />
+                <div className="skeleton h-4 w-4 flex-1" />
+                <div className="skeleton h-9 w-24" />
+                <div className="skeleton h-4 w-12" />
+              </div>
+            ))}
+          </div>
+          <div
+            className="mt-4 rounded-card border border-border bg-surface-raised px-5 py-4"
+            aria-hidden="true"
+          >
+            <div className="skeleton h-4 w-48" />
+            <div className="skeleton mt-3 h-3 w-64 max-w-full" />
+          </div>
+          <div className="mt-5 flex gap-3" aria-hidden="true">
+            <div className="skeleton h-10 w-28" />
+            <div className="skeleton h-10 w-32" />
+          </div>
+        </div>
       </>
     );
   }

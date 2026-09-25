@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useRepository } from '../app/repository';
 import EmptyState from '../components/EmptyState';
 import KpiCard, { type KpiTrend } from '../components/KpiCard';
+import Sheet from '../components/Sheet';
 import StatusChip from '../components/StatusChip';
 import { bnDate, bnDigits, bnMonth, bnNumber, bnTaka } from '../lib/format';
 import type {
@@ -181,9 +182,13 @@ const ICON_BUTTON_CLASS =
 function DashboardHeader({
   property,
   month,
+  onOpenMonthPicker,
+  onOpenNotifications,
 }: {
   property: Property;
   month: string;
+  onOpenMonthPicker: () => void;
+  onOpenNotifications: () => void;
 }) {
   const cycleLabel = `${bnDigits(month.slice(5, 7))}/${bnDigits(month.slice(0, 4))}`;
   return (
@@ -202,6 +207,7 @@ function DashboardHeader({
         </div>
         <button
           type="button"
+          onClick={onOpenNotifications}
           className="relative flex h-10 w-10 items-center justify-center rounded-full text-ink-muted transition-colors hover:bg-surface-soft"
           aria-label="নোটিফিকেশন"
         >
@@ -213,8 +219,10 @@ function DashboardHeader({
       <div className="mt-4 flex items-center justify-between lg:mt-0 lg:gap-3">
         <button
           type="button"
-          className="inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface-raised px-3.5 py-2 text-sm font-semibold text-ink transition-colors hover:bg-surface-soft"
+          onClick={onOpenMonthPicker}
+          className="inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface-raised px-3.5 py-2 text-sm font-semibold text-ink transition-colors hover:bg-surface-soft active:bg-primary-tint"
           aria-label="মাস পরিবর্তন করুন"
+          aria-haspopup="dialog"
         >
           <CalendarIcon />
           {bnMonth(month)}
@@ -274,15 +282,15 @@ function DashboardSkeleton() {
   return (
     <div aria-busy="true" aria-label="লোড হচ্ছে">
       <div className="pt-5 lg:pt-8" aria-hidden="true">
-        <div className="h-5 w-40 rounded bg-surface-soft" />
-        <div className="mt-2 h-3 w-28 rounded bg-surface-soft" />
+        <div className="skeleton h-5 w-40" />
+        <div className="skeleton mt-2 h-3 w-28" />
       </div>
       <div className="mt-4 grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-4" aria-hidden="true">
         {[0, 1, 2, 3].map((index) => (
           <div key={index} className={CONTENT_CLASS}>
-            <div className="h-3 w-20 rounded bg-surface-soft" />
-            <div className="mt-3 h-6 w-24 rounded bg-surface-soft" />
-            <div className="mt-3 h-3 w-16 rounded bg-surface-soft" />
+            <div className="skeleton h-3 w-20" />
+            <div className="skeleton mt-3 h-6 w-24" />
+            <div className="skeleton mt-3 h-3 w-16" />
           </div>
         ))}
       </div>
@@ -293,10 +301,10 @@ function DashboardSkeleton() {
         {[0, 1, 2].map((index) => (
           <div key={index} className="flex items-center gap-3 p-4">
             <div className="min-w-0 flex-1 space-y-2">
-              <div className="h-3 w-32 rounded bg-surface-soft" />
-              <div className="h-3 w-24 rounded bg-surface-soft" />
+              <div className="skeleton h-3 w-32" />
+              <div className="skeleton h-3 w-24" />
             </div>
-            <div className="h-4 w-16 rounded bg-surface-soft" />
+            <div className="skeleton h-4 w-16" />
           </div>
         ))}
       </div>
@@ -311,25 +319,35 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
+  /** active = the repository's latest cycle; chosen = the month being viewed. */
+  const [months, setMonths] = useState<{ active: string | null; chosen: string | null }>({
+    active: null,
+    chosen: null,
+  });
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [notifyOpen, setNotifyOpen] = useState(false);
 
   useEffect(() => {
-    let active = true;
+    let alive = true;
     (async () => {
-      const month = await repo.getActiveMonth();
-      const months = lastMonths(month, 6);
+      const activeMonth = months.active ?? (await repo.getActiveMonth());
+      const month = months.chosen ?? activeMonth;
+      if (!alive) return;
+      if (!months.active) setMonths({ active: activeMonth, chosen: null });
+      const window = lastMonths(month, 6);
       const [property, dashboard, previous, cashflow, bills, rooms, loans, ledger, meter] =
         await Promise.all([
           repo.getProperty(),
           repo.getDashboard(month),
           repo.getDashboard(shiftMonth(month, -1)),
-          repo.getCashflow(months),
+          repo.getCashflow(window),
           repo.listBills(month),
           repo.listRooms(),
           repo.listLoans(),
           repo.listLedger(month),
           repo.getMeterEntry(month),
         ]);
-      if (!active) return;
+      if (!alive) return;
       setData({
         month,
         property,
@@ -345,9 +363,17 @@ export default function Dashboard() {
       setLoading(false);
     })();
     return () => {
-      active = false;
+      alive = false;
     };
-  }, [repo]);
+  }, [repo, months]);
+
+  const pickMonth = (month: string) => {
+    if (!data || month === data.month) return;
+    setMonths((current) => ({ ...current, chosen: month }));
+    setData(null);
+    setLoading(true);
+    setPickerOpen(false);
+  };
 
   if (loading || !data) {
     return <DashboardSkeleton />;
@@ -359,13 +385,25 @@ export default function Dashboard() {
   if (bills.length === 0) {
     return (
       <>
-        <DashboardHeader property={property} month={month} />
+        <DashboardHeader
+          property={property}
+          month={month}
+          onOpenMonthPicker={() => setPickerOpen(true)}
+          onOpenNotifications={() => setNotifyOpen(true)}
+        />
         <EmptyState
           className="mt-4"
           title="এখনও কোনো বিল নেই"
           caption="প্রথম মাসের মিটার রিডিং দিয়ে বিল তৈরি শুরু করুন।"
           actionLabel="প্রথম বিল তৈরি করুন"
           onAction={() => navigate('/bills/meters')}
+        />
+        <MonthPickerSheet
+          open={pickerOpen}
+          onClose={() => setPickerOpen(false)}
+          anchorMonth={months.active ?? month}
+          currentMonth={month}
+          onPick={pickMonth}
         />
       </>
     );
@@ -488,7 +526,25 @@ export default function Dashboard() {
 
   return (
     <>
-      <DashboardHeader property={property} month={month} />
+      <DashboardHeader
+        property={property}
+        month={month}
+        onOpenMonthPicker={() => setPickerOpen(true)}
+        onOpenNotifications={() => setNotifyOpen(true)}
+      />
+
+      <MonthPickerSheet
+        open={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        anchorMonth={months.active ?? month}
+        currentMonth={month}
+        onPick={pickMonth}
+      />
+      <NotificationSheet
+        open={notifyOpen}
+        onClose={() => setNotifyOpen(false)}
+        dashboard={dashboard}
+      />
 
       {/* KPI */}
       <section className="mt-4 grid grid-cols-2 gap-3 md:mt-6 md:gap-4 lg:grid-cols-4">
@@ -780,5 +836,112 @@ export default function Dashboard() {
         </section>
       </div>
     </>
+  );
+}
+
+/* ---------- month picker sheet ---------- */
+
+function MonthPickerSheet({
+  open,
+  onClose,
+  anchorMonth,
+  currentMonth,
+  onPick,
+}: {
+  open: boolean;
+  onClose: () => void;
+  /** latest cycle month — the picker window anchors here */
+  anchorMonth: string;
+  currentMonth: string;
+  onPick: (month: string) => void;
+}) {
+  const options = lastMonths(anchorMonth, 6);
+  return (
+    <Sheet open={open} onClose={onClose} ariaLabel="মাস বাছাই করুন">
+      <h2 className="px-1 text-base font-semibold text-ink">মাস বাছাই করুন</h2>
+      <p className="mt-1 px-1 text-xs text-ink-muted">
+        যে মাসের হিসাব দেখতে চান, সেটি বেছে নিন।
+      </p>
+      <ul className="mt-3 space-y-1.5 pb-1">
+        {options.map((option) => {
+          const isCurrent = option === currentMonth;
+          return (
+            <li key={option}>
+              <button
+                type="button"
+                onClick={() => onPick(option)}
+                aria-current={isCurrent ? 'true' : undefined}
+                className={`flex w-full items-center justify-between rounded-button border px-4 py-3 text-sm transition-colors ${
+                  isCurrent
+                    ? 'border-primary bg-primary-tint font-semibold text-ink'
+                    : 'border-border bg-surface-raised font-medium text-ink-muted hover:bg-surface-soft'
+                }`}
+              >
+                <span>{bnMonth(option)}</span>
+                <span className={isCurrent ? 'text-xs text-primary' : 'text-xs text-ink-faint'}>
+                  {isCurrent ? 'দেখা হচ্ছে' : 'দেখুন'}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </Sheet>
+  );
+}
+
+/* ---------- notification sheet ---------- */
+
+function NotificationSheet({
+  open,
+  onClose,
+  dashboard,
+}: {
+  open: boolean;
+  onClose: () => void;
+  dashboard: DashboardSnapshot;
+}) {
+  const dues = dashboard.dueList;
+  return (
+    <Sheet open={open} onClose={onClose} ariaLabel="নোটিফিকেশন">
+      <h2 className="px-1 text-base font-semibold text-ink">নোটিফিকেশন</h2>
+
+      {dues.length > 0 ? (
+        <>
+          <p className="mt-1 px-1 text-xs text-ink-muted">
+            {bnDigits(String(dues.length))} জনের বকেয়া আছে · মোট {bnTaka(dashboard.dueTotal)}
+          </p>
+          <ul className="mt-3 space-y-1.5 pb-1">
+            {dues.map((row) => (
+              <li
+                key={row.tenantId}
+                className="flex items-center justify-between gap-3 rounded-button border border-border bg-surface-raised px-4 py-3"
+              >
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-ink">{row.tenantName}</p>
+                  <p className="text-xs text-ink-muted">রুম {bnDigits(row.roomNumber)} · বকেয়া</p>
+                </div>
+                <div className="flex shrink-0 items-center gap-2">
+                  <span className="text-sm font-bold text-danger">{bnTaka(row.amount)}</span>
+                  <Link
+                    to="/collection"
+                    onClick={onClose}
+                    className="rounded-button bg-primary px-3 py-1.5 text-xs font-semibold text-on-primary transition-colors hover:bg-primary-hover"
+                  >
+                    আদায়
+                  </Link>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : (
+        <p className="mt-3 px-1 text-sm text-ink-muted">এই মুহূর্তে কোনো বকেয়ার বার্তা নেই।</p>
+      )}
+
+      <p className="mt-3 px-1 text-xs text-ink-faint">
+        মিটার ও লোনের ঝাঁকুনি — শীঘ্রই আসছে।
+      </p>
+    </Sheet>
   );
 }

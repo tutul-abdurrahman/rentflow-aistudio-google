@@ -99,10 +99,10 @@ function VacantCard({ room }: { room: Room }) {
 function SkeletonCard() {
   return (
     <div className="flex items-center gap-3 rounded-card border border-border bg-surface-raised p-4">
-      <span className="h-11 w-11 shrink-0 rounded-full bg-surface-soft" />
+      <span className="skeleton h-11 w-11 shrink-0 rounded-full" />
       <div className="min-w-0 flex-1 space-y-2">
-        <div className="h-4 w-2/3 rounded-pill bg-surface-soft" />
-        <div className="h-3 w-1/2 rounded-pill bg-surface-soft" />
+        <div className="skeleton h-4 w-2/3 rounded-pill" />
+        <div className="skeleton h-3 w-1/2 rounded-pill" />
       </div>
     </div>
   );

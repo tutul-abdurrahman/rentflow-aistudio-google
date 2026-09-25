@@ -142,12 +142,12 @@ function WalletIcon() {
 function SkeletonRow() {
   return (
     <div className="flex items-center gap-3 p-4" aria-hidden="true">
-      <span className="h-9 w-9 shrink-0 rounded-full bg-surface-soft" />
+      <span className="skeleton h-9 w-9 shrink-0 rounded-full" />
       <div className="min-w-0 flex-1 space-y-2">
-        <div className="h-3 w-32 rounded bg-surface-soft" />
-        <div className="h-3 w-24 rounded bg-surface-soft" />
+        <div className="skeleton h-3 w-32 rounded" />
+        <div className="skeleton h-3 w-24 rounded" />
       </div>
-      <div className="h-4 w-16 rounded bg-surface-soft" />
+      <div className="skeleton h-4 w-16 rounded" />
     </div>
   );
 }

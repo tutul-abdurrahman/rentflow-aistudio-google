@@ -126,8 +126,8 @@ export default function VacatedArchive() {
         </p>
       ) : loading && !data ? (
         <div className="mt-4 space-y-3" aria-hidden="true">
-          <div className="h-20 animate-pulse rounded-card bg-surface-soft" />
-          <div className="h-20 animate-pulse rounded-card bg-surface-soft" />
+          <div className="skeleton h-20 rounded-card" />
+          <div className="skeleton h-20 rounded-card" />
         </div>
       ) : archived.length === 0 ? (
         <div className="mt-4 flex flex-col items-center rounded-card border border-border bg-surface-raised px-6 py-12 text-center">

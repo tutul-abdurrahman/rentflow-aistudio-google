@@ -223,10 +223,10 @@ export default function RoomsManagement() {
 
       {loading ? (
         <div className={GRID} aria-hidden="true">
-          <div className="h-32 rounded-card bg-surface-soft" />
-          <div className="h-32 rounded-card bg-surface-soft" />
-          <div className="h-32 rounded-card bg-surface-soft" />
-          <div className="h-32 rounded-card bg-surface-soft" />
+          <div className="skeleton h-32 rounded-card" />
+          <div className="skeleton h-32 rounded-card" />
+          <div className="skeleton h-32 rounded-card" />
+          <div className="skeleton h-32 rounded-card" />
         </div>
       ) : rooms.length === 0 ? (
         <div className="mt-4">
