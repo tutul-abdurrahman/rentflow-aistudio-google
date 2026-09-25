@@ -10,3 +10,13 @@ Logo/nul
 
 # Local portfolio / social boards — never push
 showcase/
+
+# App — secrets and build output. .env is gitignored from the first commit.
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+
+# Supabase secrets file from Tutul — never commit
+supabaseInfo.txt
