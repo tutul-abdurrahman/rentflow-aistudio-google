@@ -61,4 +61,65 @@
   body.print-summary .print-only {
     display: block;
   }
+
+  /* ---------- density: ~20 rows on ONE A4 landscape page ----------
+     Printable box = 210mm − 2×10mm margin = 190mm ≈ 718px @96dpi.
+     Row = 13px × 1.25 line-height (16.25px) + 2×2px padding + 1px border
+     ≈ 21.3px → 20 rows ≈ 426px, plus table head ~33px, card head ~46px and
+     the compacted title ~44px ≈ 549px < 718px (~169px slack).
+     The single-line row is only possible because the stacked room cell
+     below is inlined; otherwise that cell is ~3 lines (~50px/row). */
+  body.print-summary .ledger-table {
+    font-size: 13px;
+    line-height: 1.25;
+  }
+  body.print-summary .ledger-table th,
+  body.print-summary .ledger-table td {
+    padding: 2px 6px;
+    font-size: 13px;
+    line-height: 1.25;
+  }
+  body.print-summary .ledger-table tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  body.print-summary .ledger-table thead {
+    display: table-header-group;
+  }
+
+  /* The sticky first column is a screen-only affordance; freezing it across
+     printed pages breaks the row flow, so make it inert on paper. */
+  body.print-summary .ledger-table th:first-child,
+  body.print-summary .ledger-table td:first-child {
+    position: static !important;
+  }
+
+  /* The room cell stacks room number / name / paper ref. Inline them
+     (13px, larger than the old 12px/10px sub-lines) so each row is one line. */
+  body.print-summary .ledger-table td:first-child > span {
+    display: inline;
+    font-size: 13px;
+    line-height: 1.25;
+  }
+  body.print-summary .ledger-table td:first-child > span + span::before {
+    content: ' · ';
+  }
+
+  /* Print-only title block: ~70px → ~44px. */
+  body.print-summary .print-only {
+    margin: 0 0 4px;
+  }
+  body.print-summary .print-only p {
+    margin: 0;
+    line-height: 1.25;
+  }
+  body.print-summary .print-only p:first-child {
+    font-size: 14px;
+  }
+  body.print-summary .print-only p:nth-child(2) {
+    font-size: 11px;
+  }
+  body.print-summary .print-only p:nth-child(3) {
+    font-size: 10px;
+  }
 }

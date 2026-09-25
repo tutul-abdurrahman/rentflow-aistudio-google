@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useRepository } from '../app/repository';
 import EmptyState from '../components/EmptyState';
+import MonthSelect from '../components/MonthSelect';
 import Sheet from '../components/Sheet';
 import { bnDate, bnDigits, bnMonth, bnTaka } from '../lib/format';
+import { addMonths } from '../lib/view';
 import type { CashflowRow, FinanceEntry } from '../lib/types';
 
 /**
@@ -22,25 +24,6 @@ const BACK_CLASS =
 /** '2026-08-05' → '৫ আগস্ট' (the list groups by day, not full date). */
 function dayMonth(iso: string): string {
   return bnDate(iso).split(' ').slice(0, 2).join(' ');
-}
-
-function CalendarIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M6 3v2M18 3v2M3 8h18" />
-      <rect x="3" y="5" width="18" height="16" rx="2" />
-    </svg>
-  );
 }
 
 function PlusIcon() {
@@ -158,6 +141,8 @@ export default function IncomeExpenseList() {
 
   const [loading, setLoading] = useState(true);
   const [month, setMonth] = useState('');
+  /** latest cycle month — the month dropdown window anchors here */
+  const [anchorMonth, setAnchorMonth] = useState('');
   const [propertyName, setPropertyName] = useState('');
   const [entries, setEntries] = useState<FinanceEntry[]>([]);
   const [cash, setCash] = useState<CashflowRow | null>(null);
@@ -171,13 +156,16 @@ export default function IncomeExpenseList() {
     setLoading(true);
     (async () => {
       const activeMonth = await repo.getActiveMonth();
+      // Keep the viewed month on delete-reload; default to the active cycle.
+      const target = month || activeMonth;
       const [rows, cashRows, property] = await Promise.all([
-        repo.listFinance(activeMonth),
-        repo.getCashflow([activeMonth]),
+        repo.listFinance(target),
+        repo.getCashflow([target]),
         repo.getProperty(),
       ]);
       if (!alive) return;
-      setMonth(activeMonth);
+      setAnchorMonth(activeMonth);
+      setMonth(target);
       setEntries(rows);
       setCash(cashRows[0] ?? null);
       setPropertyName(property.name);
@@ -186,7 +174,30 @@ export default function IncomeExpenseList() {
     return () => {
       alive = false;
     };
+    // `month` is intentionally read but not a dependency: the reload effect must
+    // not refetch on every pick — pickMonth() handles that path itself.
   }, [repo, reloadKey]);
+
+  const monthOptions = useMemo(
+    () =>
+      anchorMonth
+        ? Array.from({ length: 12 }, (_, index) => addMonths(anchorMonth, index - 11))
+        : [],
+    [anchorMonth],
+  );
+
+  const pickMonth = (next: string) => {
+    if (!next || next === month) return;
+    setMonth(next);
+    setLoading(true);
+    Promise.all([repo.listFinance(next), repo.getCashflow([next])]).then(
+      ([rows, cashRows]) => {
+        setEntries(rows);
+        setCash(cashRows[0] ?? null);
+        setLoading(false);
+      },
+    );
+  };
 
   const filtered = useMemo(
     () => (filter === 'all' ? entries : entries.filter((entry) => entry.kind === filter)),
@@ -254,10 +265,18 @@ export default function IncomeExpenseList() {
         </div>
 
         <div className="mt-3 flex flex-wrap items-center gap-2 lg:mt-0 lg:shrink-0">
-          <span className="inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface-raised px-3.5 py-2 text-sm font-semibold text-ink">
-            <CalendarIcon />
-            {month ? bnMonth(month) : '—'}
-          </span>
+          {month ? (
+            <MonthSelect
+              value={month}
+              months={monthOptions}
+              onChange={pickMonth}
+              align="right"
+            />
+          ) : (
+            <span className="inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface-raised px-3.5 py-2 text-sm font-semibold text-ink">
+              —
+            </span>
+          )}
           <Link
             to="/finance/add"
             className="inline-flex items-center justify-center gap-2 rounded-button bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover active:bg-primary-active"

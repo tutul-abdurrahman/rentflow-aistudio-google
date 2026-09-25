@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useRepository } from '../app/repository';
 import EmptyState from '../components/EmptyState';
 import KpiCard, { type KpiTrend } from '../components/KpiCard';
+import MonthSelect from '../components/MonthSelect';
 import Sheet from '../components/Sheet';
 import StatusChip from '../components/StatusChip';
 import { bnDate, bnDigits, bnMonth, bnNumber, bnTaka } from '../lib/format';
@@ -93,19 +94,6 @@ const BellIcon = () => (
   </StrokeIcon>
 );
 
-const CalendarIcon = () => (
-  <StrokeIcon size={16}>
-    <path d="M6 3v2M18 3v2M3 8h18" />
-    <rect x="3" y="5" width="18" height="16" rx="2" />
-  </StrokeIcon>
-);
-
-const ChevronDownIcon = () => (
-  <StrokeIcon size={16}>
-    <path d="m6 9 6 6 6-6" />
-  </StrokeIcon>
-);
-
 const GaugeIcon = () => (
   <StrokeIcon size={22}>
     <path d="M3.5 18a8.5 8.5 0 1 1 17 0" />
@@ -182,12 +170,15 @@ const ICON_BUTTON_CLASS =
 function DashboardHeader({
   property,
   month,
-  onOpenMonthPicker,
+  anchorMonth,
+  onPickMonth,
   onOpenNotifications,
 }: {
   property: Property;
   month: string;
-  onOpenMonthPicker: () => void;
+  /** latest cycle month — the month dropdown window anchors here */
+  anchorMonth: string;
+  onPickMonth: (month: string) => void;
   onOpenNotifications: () => void;
 }) {
   const cycleLabel = `${bnDigits(month.slice(5, 7))}/${bnDigits(month.slice(0, 4))}`;
@@ -217,19 +208,14 @@ function DashboardHeader({
       </div>
 
       <div className="mt-4 flex items-center justify-between lg:mt-0 lg:gap-3">
-        <button
-          type="button"
-          onClick={onOpenMonthPicker}
-          className="inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface-raised px-3.5 py-2 text-sm font-semibold text-ink transition-colors hover:bg-surface-soft active:bg-primary-tint"
-          aria-label="মাস পরিবর্তন করুন"
-          aria-haspopup="dialog"
-        >
-          <CalendarIcon />
-          {bnMonth(month)}
-          <ChevronDownIcon />
-        </button>
+        <MonthSelect
+          value={month}
+          months={lastMonths(anchorMonth, 12)}
+          onChange={onPickMonth}
+          align="left"
+        />
         <span className="text-xs font-medium text-ink-faint">
-          চক্র {cycleLabel}
+          মাস {cycleLabel}
         </span>
       </div>
     </header>
@@ -324,7 +310,6 @@ export default function Dashboard() {
     active: null,
     chosen: null,
   });
-  const [pickerOpen, setPickerOpen] = useState(false);
   const [notifyOpen, setNotifyOpen] = useState(false);
 
   useEffect(() => {
@@ -372,7 +357,6 @@ export default function Dashboard() {
     setMonths((current) => ({ ...current, chosen: month }));
     setData(null);
     setLoading(true);
-    setPickerOpen(false);
   };
 
   if (loading || !data) {
@@ -388,7 +372,8 @@ export default function Dashboard() {
         <DashboardHeader
           property={property}
           month={month}
-          onOpenMonthPicker={() => setPickerOpen(true)}
+          anchorMonth={months.active ?? month}
+          onPickMonth={pickMonth}
           onOpenNotifications={() => setNotifyOpen(true)}
         />
         <EmptyState
@@ -397,13 +382,6 @@ export default function Dashboard() {
           caption="প্রথম মাসের মিটার রিডিং দিয়ে বিল তৈরি শুরু করুন।"
           actionLabel="প্রথম বিল তৈরি করুন"
           onAction={() => navigate('/bills/meters')}
-        />
-        <MonthPickerSheet
-          open={pickerOpen}
-          onClose={() => setPickerOpen(false)}
-          anchorMonth={months.active ?? month}
-          currentMonth={month}
-          onPick={pickMonth}
         />
       </>
     );
@@ -529,17 +507,11 @@ export default function Dashboard() {
       <DashboardHeader
         property={property}
         month={month}
-        onOpenMonthPicker={() => setPickerOpen(true)}
+        anchorMonth={months.active ?? month}
+        onPickMonth={pickMonth}
         onOpenNotifications={() => setNotifyOpen(true)}
       />
 
-      <MonthPickerSheet
-        open={pickerOpen}
-        onClose={() => setPickerOpen(false)}
-        anchorMonth={months.active ?? month}
-        currentMonth={month}
-        onPick={pickMonth}
-      />
       <NotificationSheet
         open={notifyOpen}
         onClose={() => setNotifyOpen(false)}
@@ -836,57 +808,6 @@ export default function Dashboard() {
         </section>
       </div>
     </>
-  );
-}
-
-/* ---------- month picker sheet ---------- */
-
-function MonthPickerSheet({
-  open,
-  onClose,
-  anchorMonth,
-  currentMonth,
-  onPick,
-}: {
-  open: boolean;
-  onClose: () => void;
-  /** latest cycle month — the picker window anchors here */
-  anchorMonth: string;
-  currentMonth: string;
-  onPick: (month: string) => void;
-}) {
-  const options = lastMonths(anchorMonth, 6);
-  return (
-    <Sheet open={open} onClose={onClose} ariaLabel="মাস বাছাই করুন">
-      <h2 className="px-1 text-base font-semibold text-ink">মাস বাছাই করুন</h2>
-      <p className="mt-1 px-1 text-xs text-ink-muted">
-        যে মাসের হিসাব দেখতে চান, সেটি বেছে নিন।
-      </p>
-      <ul className="mt-3 space-y-1.5 pb-1">
-        {options.map((option) => {
-          const isCurrent = option === currentMonth;
-          return (
-            <li key={option}>
-              <button
-                type="button"
-                onClick={() => onPick(option)}
-                aria-current={isCurrent ? 'true' : undefined}
-                className={`flex w-full items-center justify-between rounded-button border px-4 py-3 text-sm transition-colors ${
-                  isCurrent
-                    ? 'border-primary bg-primary-tint font-semibold text-ink'
-                    : 'border-border bg-surface-raised font-medium text-ink-muted hover:bg-surface-soft'
-                }`}
-              >
-                <span>{bnMonth(option)}</span>
-                <span className={isCurrent ? 'text-xs text-primary' : 'text-xs text-ink-faint'}>
-                  {isCurrent ? 'দেখা হচ্ছে' : 'দেখুন'}
-                </span>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-    </Sheet>
   );
 }
 

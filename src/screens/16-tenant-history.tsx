@@ -47,7 +47,7 @@ export default function TenantHistory() {
   if (error || !data) {
     return (
       <div className="mx-auto w-full max-w-3xl">
-        <PageHeader title="হিস্টরি" backTo="/tenants" />
+        <PageHeader title="রেন্টি লেজার" backTo="/tenants" />
         <p className="mt-4 rounded-card border border-border bg-surface-raised px-4 py-6 text-center text-sm text-ink-muted">
           রেন্টি খুঁজে পাওয়া যায়নি।
         </p>
@@ -68,8 +68,8 @@ export default function TenantHistory() {
   return (
     <div className="mx-auto w-full max-w-3xl">
       <PageHeader
-        title="হিস্টরি"
-        subtitle={tenant.name}
+        title="রেন্টি লেজার"
+        subtitle="বিল ও পেমেন্ট — রুম নাম/নম্বর অনুযায়ী"
         backTo={`/tenants/${tenant.id}`}
         action={
           <span className="ml-auto shrink-0 rounded-pill border border-border bg-surface-raised px-3 py-1.5 text-xs font-medium text-ink-faint">

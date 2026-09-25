@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRepository } from '../app/repository';
+import MonthSelect from '../components/MonthSelect';
 import Sheet from '../components/Sheet';
 import StatusChip from '../components/StatusChip';
 import { bnDigits, bnMonth, bnTaka } from '../lib/format';
+import { addMonths } from '../lib/view';
 import type { MonthlyLedgerRow, Property, Room } from '../lib/types';
 
 /**
@@ -24,25 +26,6 @@ function bnRate(value: number): string {
 }
 
 const STATUS_VARIANT = { paid: 'paid', partial: 'partial', due: 'due' } as const;
-
-function CalendarIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M6 3v2M18 3v2M3 8h18" />
-      <rect x="3" y="5" width="18" height="16" rx="2" />
-    </svg>
-  );
-}
 
 function HomeFilterIcon() {
   return (
@@ -87,6 +70,8 @@ export default function MonthlySummaryLedger() {
 
   const [loading, setLoading] = useState(true);
   const [month, setMonth] = useState('');
+  /** latest cycle month — the month dropdown window anchors here */
+  const [anchorMonth, setAnchorMonth] = useState('');
   const [property, setProperty] = useState<Property | null>(null);
   const [rooms, setRooms] = useState<Room[]>([]);
   const [rows, setRows] = useState<MonthlyLedgerRow[]>([]);
@@ -111,6 +96,7 @@ export default function MonthlySummaryLedger() {
       ]);
       if (!alive) return;
       setMonth(activeMonth);
+      setAnchorMonth(activeMonth);
       setRows(ledgerRows);
       setRooms(roomRows);
       setProperty(propertyRow);
@@ -120,6 +106,24 @@ export default function MonthlySummaryLedger() {
       alive = false;
     };
   }, [repo]);
+
+  const monthOptions = useMemo(
+    () =>
+      anchorMonth
+        ? Array.from({ length: 12 }, (_, index) => addMonths(anchorMonth, index - 11))
+        : [],
+    [anchorMonth],
+  );
+
+  const pickMonth = (next: string) => {
+    if (!next || next === month) return;
+    setMonth(next);
+    setLoading(true);
+    repo.getMonthlyLedger(next).then((ledgerRows) => {
+      setRows(ledgerRows);
+      setLoading(false);
+    });
+  };
 
   const roomOptions = useMemo(
     () => [...new Set(rows.map((row) => row.roomNumber))],
@@ -171,10 +175,18 @@ export default function MonthlySummaryLedger() {
         </div>
 
         <div className="mt-3 flex flex-wrap items-center gap-2 lg:mt-0 lg:shrink-0">
-          <span className="inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface-raised px-3.5 py-2 text-sm font-semibold text-ink">
-            <CalendarIcon />
-            {month ? bnMonth(month) : '—'}
-          </span>
+          {month ? (
+            <MonthSelect
+              value={month}
+              months={monthOptions}
+              onChange={pickMonth}
+              align="right"
+            />
+          ) : (
+            <span className="inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface-raised px-3.5 py-2 text-sm font-semibold text-ink">
+              —
+            </span>
+          )}
 
           <button
             type="button"

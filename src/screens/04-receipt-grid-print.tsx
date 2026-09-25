@@ -365,35 +365,35 @@ export default function ReceiptGridPrint() {
                   bill ? (
                     <article
                       key={bill.id}
-                      className="receipt flex h-full min-h-0 flex-col border border-dashed border-border px-5 pt-4 pb-6"
+                      className="receipt flex h-full min-h-0 flex-col border border-dashed border-border px-5 pt-3.5 pb-5"
                       aria-label={`কাগজ ${bill.paperRef} — রুম ${roomNumber(bill.roomId)}`}
                     >
-                      <p className="text-center text-[10px] font-semibold tracking-[0.18em] text-ink-muted uppercase">
+                      <p className="text-center text-[11px] font-semibold tracking-[0.2em] text-ink-muted uppercase">
                         মানি রিসিট
                       </p>
-                      <div className="mt-1.5 text-center">
-                        <p className="text-[11px] leading-snug font-bold text-ink">
+                      <div className="mt-1 text-center">
+                        <p className="text-[13px] leading-tight font-bold text-ink">
                           {property.name}
                         </p>
-                        <p className="text-[9px] leading-snug text-ink-muted">{property.address}</p>
-                        <p className="text-[9px] leading-snug text-ink-muted">
+                        <p className="text-[10px] leading-tight text-ink-muted">{property.address}</p>
+                        <p className="text-[10px] leading-tight text-ink-muted">
                           মোবাইল: {phoneLabel(property.ownerPhone)}
                         </p>
                       </div>
-                      <div className="mt-2 flex items-baseline justify-between text-[11px]">
+                      <div className="mt-1.5 flex items-baseline justify-between text-[11.5px]">
                         <span className="font-bold text-ink">রিসিট নং {bill.paperRef}</span>
                         <span className="text-ink-muted">তারিখ: {printedOn}</span>
                       </div>
-                      <p className="mt-2.5 text-[12px] font-semibold text-ink">
+                      <p className="mt-2 text-[14px] leading-snug font-semibold text-ink">
                         রুম {bnDigits(roomNumber(bill.roomId))} · {tenantName(bill.tenantId)}
                       </p>
                       <p className="text-[11px] text-ink-muted">বিলের মাস: {bnMonth(month)}</p>
 
-                      <div className="mt-2.5 border-t border-border-strong">
+                      <div className="mt-1.5 border-t border-border-strong">
                         {slipLines(bill).map((row, rowIndex) => (
                           <div
                             key={`${bill.id}-${row.label}-${rowIndex}`}
-                            className={`flex justify-between py-1 text-[11px] ${
+                            className={`flex items-baseline justify-between py-[3px] text-[11.5px] ${
                               rowIndex === 0 ? 'text-ink' : 'border-t border-border'
                             }`}
                           >
@@ -405,18 +405,18 @@ export default function ReceiptGridPrint() {
                             </span>
                           </div>
                         ))}
-                        <div className="mt-1 flex justify-between border-t-2 border-border-strong pt-1.5 text-[12px] font-bold text-ink">
+                        <div className="mt-1 flex items-baseline justify-between border-t-2 border-border-strong pt-1.5 text-[12.5px] font-bold text-ink">
                           <span>মোট</span>
-                          <span className="text-[13px]">{bnTaka(bill.total)}</span>
+                          <span className="text-[14.5px]">{bnTaka(bill.total)}</span>
                         </div>
                       </div>
 
-                      <p className="mt-2 text-[10px] leading-relaxed text-ink-muted">
+                      <p className="mt-1.5 text-[10.5px] leading-relaxed text-ink-muted">
                         টাকা অক্ষরে: {takaInWords(bill.total)} টাকা মাত্র
                       </p>
 
-                      <div className="mt-auto flex min-h-[26px] items-end justify-end pt-4 text-[11px] text-ink-muted">
-                        <p className="w-44 border-t border-border-strong pt-1 text-right">
+                      <div className="mt-auto flex min-h-[24px] items-end justify-end pt-3 text-[11px] text-ink-muted">
+                        <p className="w-40 border-t border-border-strong pt-1 text-right">
                           আদায়কারীর স্বাক্ষর
                         </p>
                       </div>

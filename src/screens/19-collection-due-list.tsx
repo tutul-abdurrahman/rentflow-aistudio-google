@@ -4,9 +4,11 @@ import { useRepository } from '../app/repository';
 import Button from '../components/Button';
 import PageHeader from '../components/PageHeader';
 import Sheet from '../components/Sheet';
+import StatusChip from '../components/StatusChip';
 import { cn } from '../lib/cn';
 import { cycleTotal } from '../lib/engine';
 import { bnDigits, bnMonth, bnTaka } from '../lib/format';
+import { initials } from '../lib/view';
 import type { Bill, Property, Room, Tenant } from '../lib/types';
 
 /**
@@ -27,17 +29,6 @@ interface DueView {
   hasPrevDue: boolean;
   status: BillStatus;
 }
-
-const STATUS_CHIP: Record<BillStatus, { label: string; chip: string; dot: string }> = {
-  due: { label: 'বাকি', chip: 'bg-warning-tint text-ink', dot: 'bg-warning' },
-  partial: { label: 'আংশিক', chip: 'bg-warning-tint text-warning', dot: 'bg-warning' },
-  paid: { label: 'পরিশোধিত', chip: 'bg-success-tint text-success', dot: 'bg-success' },
-  overdue: {
-    label: 'অতিরিক্ত বকেয়া',
-    chip: 'bg-danger-tint text-danger',
-    dot: 'bg-danger',
-  },
-};
 
 function BanknoteIcon() {
   return (
@@ -200,7 +191,7 @@ export default function CollectionDueList() {
 
   if (loading || !property) {
     return (
-      <>
+      <div className="mx-auto w-full max-w-3xl">
         <PageHeader title="কালেকশন" subtitle="লোড হচ্ছে…" backTo="/bills/preview" />
         <div aria-busy="true" aria-label="লোড হচ্ছে">
           <div className="mt-3 rounded-card border border-border bg-surface-raised px-5 py-4" aria-hidden="true">
@@ -230,18 +221,18 @@ export default function CollectionDueList() {
             </div>
           ))}
         </div>
-      </>
+      </div>
     );
   }
 
   return (
-    <div className="lg:max-w-3xl">
+    <div className="mx-auto w-full max-w-3xl">
       <PageHeader
         title={`কালেকশন — ${bnMonth(month)}`}
         subtitle={property.name}
         backTo="/bills/preview"
       />
-      <p className="mt-1 text-xs text-ink-faint">
+      <p className="mt-2 text-xs text-ink-faint">
         টাকা এলে লেজারে লিখুন। নতুন রিসিট ছাপাবেন না — কাগজ আগেই গেছে।
       </p>
 
@@ -279,70 +270,58 @@ export default function CollectionDueList() {
 
       <section className="mt-4" aria-label="বকেয়া রেন্টিদের তালিকা">
         <div className="divide-y divide-border rounded-card border border-border bg-surface-raised">
-          {views.map((view) => {
-            const chip = STATUS_CHIP[view.status];
-            const isPaid = view.status === 'paid';
-            return (
-              <div key={view.bill.id} className="flex items-center gap-3 p-4">
-                <span
-                  className={cn(
-                    'flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold',
-                    isPaid
-                      ? 'bg-success-tint text-success'
-                      : view.status === 'overdue'
-                        ? 'bg-danger-tint text-danger'
-                        : 'bg-primary-tint text-ink',
-                  )}
-                >
-                  {view.tenantName.trim().slice(0, 2)}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold text-ink">{view.tenantName}</p>
-                  <p className="text-xs text-ink-muted">
-                    রুম {bnDigits(view.roomNumber)} ·{' '}
-                    {view.status === 'overdue'
-                      ? `আগের বাকি সহ মোট ${bnTaka(view.total)}`
-                      : view.status === 'partial'
-                        ? `মোট ${bnTaka(view.total)} · ${bnTaka(view.paid)} আদায়`
-                        : `মোট ${bnTaka(view.total)}`}
-                  </p>
-                </div>
-                <div className="shrink-0 text-right">
-                  <p
-                    className={cn(
-                      'text-sm font-bold',
-                      isPaid ? 'text-success' : view.status === 'overdue' ? 'text-danger' : 'text-ink',
-                    )}
-                  >
-                    {bnTaka(view.due)}
-                  </p>
-                  <span
-                    className={cn(
-                      'mt-0.5 inline-flex items-center gap-1 rounded-pill px-2 py-0.5 text-xs font-medium',
-                      chip.chip,
-                    )}
-                  >
-                    <span className={cn('h-1.5 w-1.5 rounded-full', chip.dot)} />
-                    {chip.label}
+          {views.length === 0 ? (
+            <p className="px-4 py-6 text-center text-sm text-ink-muted">
+              এই মাসে কোনো বিল নেই।
+            </p>
+          ) : (
+            views.map((view) => {
+              const isPaid = view.status === 'paid';
+              return (
+                <div key={view.bill.id} className="flex items-center gap-3 p-4">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary-tint text-sm font-bold text-ink">
+                    {initials(view.tenantName)}
                   </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold text-ink">{view.tenantName}</p>
+                    <p className="text-xs text-ink-muted">
+                      রুম {bnDigits(view.roomNumber)} ·{' '}
+                      {view.status === 'overdue'
+                        ? `আগের বাকি সহ মোট ${bnTaka(view.total)}`
+                        : view.status === 'partial'
+                          ? `মোট ${bnTaka(view.total)} · ${bnTaka(view.paid)} আদায়`
+                          : `মোট ${bnTaka(view.total)}`}
+                    </p>
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <p
+                      className={cn(
+                        'text-sm font-bold',
+                        isPaid ? 'text-success' : view.status === 'overdue' ? 'text-danger' : 'text-ink',
+                      )}
+                    >
+                      {bnTaka(view.due)}
+                    </p>
+                    <StatusChip variant={view.status} className="mt-0.5" />
+                  </div>
+                  <button
+                    type="button"
+                    disabled={isPaid}
+                    onClick={() => openSheet(view)}
+                    className={cn(
+                      'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-button px-3 py-2 text-sm font-semibold',
+                      isPaid
+                        ? 'bg-surface-soft text-ink-faint'
+                        : 'bg-primary text-on-primary transition-colors hover:bg-primary-hover active:bg-primary-active',
+                    )}
+                  >
+                    {isPaid ? <CheckIcon /> : <BanknoteIcon />}
+                    আদায়
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  disabled={isPaid}
-                  onClick={() => openSheet(view)}
-                  className={cn(
-                    'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-button px-3 py-2 text-sm font-semibold',
-                    isPaid
-                      ? 'bg-surface-soft text-ink-faint'
-                      : 'bg-primary text-on-primary transition-colors hover:bg-primary-hover active:bg-primary-active',
-                  )}
-                >
-                  {isPaid ? <CheckIcon /> : <BanknoteIcon />}
-                  আদায়
-                </button>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
       </section>
 

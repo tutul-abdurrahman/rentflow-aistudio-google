@@ -188,7 +188,7 @@ export default function TenantProfile() {
             <ActionTile to={`/tenants/${tenant.id}/move-out`} label="মুভ আউট" icon={<LogOutIcon size={20} />} />
           </>
         ) : null}
-        <ActionTile to={`/tenants/${tenant.id}/history`} label="হিস্টরি" icon={<ClockIcon size={20} />} />
+        <ActionTile to={`/tenants/${tenant.id}/history`} label="লেজার" icon={<ClockIcon size={20} />} />
       </section>
 
       <section className="mt-3 rounded-card border border-border bg-surface-raised" aria-label="তথ্য">
@@ -246,7 +246,7 @@ export default function TenantProfile() {
               বিলের ইতিহাস
             </h2>
             <Link to={`/tenants/${tenant.id}/history`} className="text-sm font-medium text-primary">
-              পুরো হিস্টরি
+              পুরো লেজার
             </Link>
           </div>
           <div className="divide-y divide-border">
