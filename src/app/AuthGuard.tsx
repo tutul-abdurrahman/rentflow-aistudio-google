@@ -7,8 +7,13 @@ import { supabase } from '../lib/supabase';
  * While the session is being read it renders a quiet centered spinner;
  * with no session it redirects to /login. Supabase keeps the session in
  * sync, so a later signOut re-triggers this redirect.
+ *
+ * Setup gate: an authenticated user WITHOUT a property (a fresh signup)
+ * cannot see the dashboard — they are sent to /onboarding first. Once the
+ * onboarding saves the property, navigating back makes the guard re-run
+ * (fresh mount) and pass.
  */
-type GuardState = 'loading' | 'authed' | 'anon';
+type GuardState = 'loading' | 'authed' | 'anon' | 'needs-setup';
 
 export default function AuthGuard({ children }: { children: ReactNode }) {
   const [state, setState] = useState<GuardState>('loading');
@@ -16,15 +21,30 @@ export default function AuthGuard({ children }: { children: ReactNode }) {
   useEffect(() => {
     let active = true;
 
-    supabase.auth.getSession().then(({ data }) => {
-      if (active) setState(data.session ? 'authed' : 'anon');
-    });
+    const evaluate = async (hasSession: boolean) => {
+      if (!hasSession) {
+        if (active) setState('anon');
+        return;
+      }
+      // Setup gate: does this owner have a property yet? (RLS-scoped query)
+      // head:true returns count only — data is null, the number is in `count`.
+      const { count, error } = await supabase
+        .from('properties')
+        .select('*', { count: 'exact', head: true });
+      if (!active) return;
+      if (error) {
+        // A stale-token hiccup should not lock a working session out — the
+        // auth state change listener re-evaluates with a fresh token.
+        return;
+      }
+      setState((count ?? 0) > 0 ? 'authed' : 'needs-setup');
+    };
 
-    const { data: subscription } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        if (active) setState(session ? 'authed' : 'anon');
-      },
-    );
+    supabase.auth.getSession().then(({ data }) => evaluate(Boolean(data.session)));
+
+    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+      void evaluate(Boolean(session));
+    });
 
     return () => {
       active = false;
@@ -49,6 +69,10 @@ export default function AuthGuard({ children }: { children: ReactNode }) {
 
   if (state === 'anon') {
     return <Navigate to="/login" replace />;
+  }
+
+  if (state === 'needs-setup') {
+    return <Navigate to="/onboarding" replace />;
   }
 
   return <>{children}</>;

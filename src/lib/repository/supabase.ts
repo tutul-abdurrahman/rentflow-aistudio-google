@@ -360,7 +360,12 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
     return data.user.id;
   }
 
-  /** Get the single property, creating a default row for a brand-new owner. */
+  /**
+   * Get the single property. DO NOT auto-create a row here: a brand-new
+   * owner must go through onboarding, which persists via updateProperty
+   * (that path inserts on first save). Until then a detached default is
+   * returned so screens can render without touching the database.
+   */
   async function fetchProperty(): Promise<Property> {
     const existing = await maybePropertyContext();
     if (existing) {
@@ -372,25 +377,18 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
       if (error) throw error;
       if (data) return mapProperty(data as PropertyRow);
     }
-    const ownerId = await authUserId();
-    const { data, error } = await client
-      .from('properties')
-      .insert({
-        owner_id: ownerId,
-        name: 'আবাসিক ভবন',
-        address: '',
-        owner_name: '',
-        owner_phone: '',
-        electricity_rate: 7.5,
-        waste_fee: 200,
-        water_split_rule: 'occupied_plus_one',
-        mid_month_rule: 'day_wise',
-      })
-      .select()
-      .single();
-    if (error) throw error;
-    cachedContext = { id: (data as PropertyRow).id, ownerId };
-    return mapProperty(data as PropertyRow);
+    return {
+      id: '',
+      createdAt: new Date().toISOString(),
+      name: '',
+      address: '',
+      ownerName: '',
+      ownerPhone: '',
+      electricityRate: 7.5,
+      wasteFee: 200,
+      waterSplitRule: 'occupied_plus_one',
+      midMonthRule: 'day_wise',
+    };
   }
 
   async function fetchRooms(): Promise<Room[]> {

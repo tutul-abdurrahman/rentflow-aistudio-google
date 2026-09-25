@@ -228,19 +228,32 @@ export default function Onboarding() {
 
   useEffect(() => {
     let active = true;
+    // A brand-new owner has no property row yet — listRooms (and friends)
+    // throw PROPERTY_NOT_FOUND. That is the normal first-run state, so
+    // treat it as "nothing saved" instead of failing the screen.
+    const tolerant = async <T,>(call: Promise<T>): Promise<T | null> => {
+      try {
+        return await call;
+      } catch (error) {
+        if (error instanceof Error && error.message === 'PROPERTY_NOT_FOUND') return null;
+        throw error;
+      }
+    };
     (async () => {
       const [property, rooms] = await Promise.all([
-        repo.getProperty(),
-        repo.listRooms(),
+        repo.getProperty().catch(() => null),
+        tolerant(repo.listRooms()),
       ]);
       if (!active) return;
-      setName(property.name);
-      setAddress(property.address);
-      setPhone(property.ownerPhone);
-      setRate(String(property.electricityRate));
-      setWaste(String(property.wasteFee));
-      setInitialRooms(rooms.length);
-      setRoomCount(rooms.length > 0 ? rooms.length : 6);
+      if (property) {
+        setName(property.name);
+        setAddress(property.address);
+        setPhone(property.ownerPhone);
+        setRate(String(property.electricityRate));
+        setWaste(String(property.wasteFee));
+      }
+      setInitialRooms(rooms?.length ?? 0);
+      setRoomCount((rooms?.length ?? 0) > 0 ? (rooms?.length ?? 0) : 6);
       setLoading(false);
     })();
     return () => {
@@ -269,8 +282,16 @@ export default function Onboarding() {
     if (submitting) return;
     setSubmitting(true);
 
-    const rooms = await repo.listRooms();
-    const brandNew = rooms.length === 0;
+    // A brand-new owner has no property row yet — that means brand-new.
+    let existingRooms: Awaited<ReturnType<typeof repo.listRooms>> = [];
+    try {
+      existingRooms = await repo.listRooms();
+    } catch (error) {
+      if (!(error instanceof Error && error.message === 'PROPERTY_NOT_FOUND')) {
+        throw error;
+      }
+    }
+    const brandNew = existingRooms.length === 0;
 
     await repo.updateProperty({
       name: name.trim(),
