@@ -191,52 +191,54 @@ export default function TenantProfile() {
         <ActionTile to={`/tenants/${tenant.id}/history`} label="লেজার" icon={<ClockIcon size={20} />} />
       </section>
 
-      <section className="mt-3 rounded-card border border-border bg-surface-raised" aria-label="তথ্য">
-        <div className="flex items-center gap-2 border-b border-border px-5 py-4">
-          <UserIcon className="shrink-0 text-primary" />
-          <h2 className="text-base font-semibold text-ink">তথ্য</h2>
-        </div>
-        <dl className="divide-y divide-border">
-          <InfoRow label="মোবাইল">{formatPhone(tenant.phone)}</InfoRow>
-          <InfoRow label="যোগদানের তারিখ">{bnDate(tenant.moveInDate)}</InfoRow>
-          {meterCurrent !== null ? (
-            <InfoRow label="সাব-মিটার শেষ রিডিং">{bnNumber(meterCurrent)} ইউনিট</InfoRow>
-          ) : null}
-        </dl>
-      </section>
-
-      <section className="mt-3 rounded-card border border-border bg-surface-raised" aria-label="আর্থিক">
-        <div className="flex items-center gap-2 border-b border-border px-5 py-4">
-          <WalletIcon className="shrink-0 text-primary" />
-          <h2 className="text-base font-semibold text-ink">আর্থিক</h2>
-        </div>
-        <dl className="divide-y divide-border">
-          <InfoRow label="মাসিক ভাড়া">{bnTaka(room?.rent ?? 0)}</InfoRow>
-          <InfoRow label="বর্তমান বকেয়া">
-            {outstanding > 0 ? (
-              <span className="inline-flex items-center gap-2">
-                <span className="font-semibold text-warning">{bnTaka(outstanding)}</span>
-                <StatusChip variant={bill?.status === 'due' ? 'overdue' : 'due'} />
-              </span>
-            ) : (
-              <span className="text-success">বাকি নেই</span>
-            )}
-          </InfoRow>
-          <div className="flex items-center justify-between gap-4 px-5 py-3.5">
-            <dt className="shrink-0 text-sm text-ink-muted">অবস্থা</dt>
-            <dd>
-              {isActive ? (
-                <StatusChip variant="paid" label="সক্রিয়" />
-              ) : (
-                <span className="inline-flex items-center gap-1.5 rounded-pill bg-surface-soft px-3 py-1 text-xs font-medium text-ink-faint">
-                  <span className="h-1.5 w-1.5 rounded-full bg-ink-faint" aria-hidden="true" />
-                  প্রাক্তন
-                </span>
-              )}
-            </dd>
+      <div className="mt-3 grid md:grid-cols-2 md:gap-3 lg:gap-4">
+        <section className="rounded-card border border-border bg-surface-raised" aria-label="তথ্য">
+          <div className="flex items-center gap-2 border-b border-border px-5 py-4">
+            <UserIcon className="shrink-0 text-primary" />
+            <h2 className="text-base font-semibold text-ink">তথ্য</h2>
           </div>
-        </dl>
-      </section>
+          <dl className="divide-y divide-border">
+            <InfoRow label="মোবাইল">{formatPhone(tenant.phone)}</InfoRow>
+            <InfoRow label="যোগদানের তারিখ">{bnDate(tenant.moveInDate)}</InfoRow>
+            {meterCurrent !== null ? (
+              <InfoRow label="সাব-মিটার শেষ রিডিং">{bnNumber(meterCurrent)} ইউনিট</InfoRow>
+            ) : null}
+          </dl>
+        </section>
+
+        <section className="mt-3 rounded-card border border-border bg-surface-raised lg:mt-0" aria-label="আর্থিক">
+          <div className="flex items-center gap-2 border-b border-border px-5 py-4">
+            <WalletIcon className="shrink-0 text-primary" />
+            <h2 className="text-base font-semibold text-ink">আর্থিক</h2>
+          </div>
+          <dl className="divide-y divide-border">
+            <InfoRow label="মাসিক ভাড়া">{bnTaka(room?.rent ?? 0)}</InfoRow>
+            <InfoRow label="বর্তমান বকেয়া">
+              {outstanding > 0 ? (
+                <span className="inline-flex items-center gap-2">
+                  <span className="font-semibold text-warning">{bnTaka(outstanding)}</span>
+                  <StatusChip variant={bill?.status === 'due' ? 'overdue' : 'due'} />
+                </span>
+              ) : (
+                <span className="text-success">বাকি নেই</span>
+              )}
+            </InfoRow>
+            <div className="flex items-center justify-between gap-4 px-5 py-3.5">
+              <dt className="shrink-0 text-sm text-ink-muted">অবস্থা</dt>
+              <dd>
+                {isActive ? (
+                  <StatusChip variant="paid" label="সক্রিয়" />
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 rounded-pill bg-surface-soft px-3 py-1 text-xs font-medium text-ink-faint">
+                    <span className="h-1.5 w-1.5 rounded-full bg-ink-faint" aria-hidden="true" />
+                    প্রাক্তন
+                  </span>
+                )}
+              </dd>
+            </div>
+          </dl>
+        </section>
+      </div>
 
       {billRows.length > 0 ? (
         <section className="mt-3 rounded-card border border-border bg-surface-raised" aria-label="বিলের ইতিহাস">
