@@ -101,7 +101,7 @@ export default function Profile() {
   const otpRefs = useRef<Array<HTMLInputElement | null>>([]);
 
   // ui-only preferences (no persistence surface in the foundation)
-  const [language, setLanguage] = useState<'bn' | 'en'>('bn');
+  // language: বাংলা-only for now — the English option is disabled (no i18n yet)
   const [notifyDue, setNotifyDue] = useState(true);
   const [notifyBill, setNotifyBill] = useState(true);
   const [notifyCollection, setNotifyCollection] = useState(false);
@@ -451,30 +451,21 @@ export default function Profile() {
           <div className="mt-4 grid grid-cols-2 gap-1 rounded-md bg-surface-soft p-1">
             <button
               type="button"
-              aria-pressed={language === 'bn'}
-              onClick={() => setLanguage('bn')}
-              className={`rounded-md px-4 py-2 text-sm transition-colors ${
-                language === 'bn'
-                  ? 'bg-surface-raised font-semibold text-ink shadow-pop'
-                  : 'font-medium text-ink-muted'
-              }`}
+              aria-pressed={true}
+              className="rounded-md px-4 py-2 text-sm bg-surface-raised font-semibold text-ink shadow-pop"
             >
               বাংলা
             </button>
             <button
               type="button"
-              aria-pressed={language === 'en'}
-              onClick={() => setLanguage('en')}
-              className={`rounded-md px-4 py-2 text-sm transition-colors ${
-                language === 'en'
-                  ? 'bg-surface-raised font-semibold text-ink shadow-pop'
-                  : 'font-medium text-ink-muted'
-              }`}
+              aria-pressed={false}
+              aria-disabled="true"
+              disabled
+              className="rounded-md px-4 py-2 text-sm font-medium text-ink-faint opacity-60"
             >
-              English
+              English · শীঘ্রই
             </button>
           </div>
-          <p className="mt-2 text-xs text-ink-faint">ইংরেজি ভাষা শীঘ্রই আসছে।</p>
         </section>
 
         {/* নোটিফিকেশন */}

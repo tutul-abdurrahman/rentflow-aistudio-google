@@ -184,9 +184,7 @@ export default function Login() {
         </div>
 
         <p className="mt-8 text-center text-xs leading-relaxed text-ink-faint">
-          চাইলে পরে ভাষা বদলাতে পারবেন —<br className="sm:hidden" />
-          {' '}
-          (বাংলা / English)
+          ভাষা — বাংলা
         </p>
 
         {error ? (

@@ -164,19 +164,24 @@ interface LangCardProps {
   label: string;
   sub: string;
   icon: ReactNode;
+  disabled?: boolean;
 }
 
-function LangCard({ selected, onSelect, label, sub, icon }: LangCardProps) {
+function LangCard({ selected, onSelect, label, sub, icon, disabled }: LangCardProps) {
   return (
     <button
       type="button"
       role="radio"
       aria-checked={selected}
-      onClick={onSelect}
+      aria-disabled={disabled || undefined}
+      disabled={disabled}
+      onClick={disabled ? undefined : onSelect}
       className={`relative flex flex-col items-center rounded-md border p-4 text-center transition-colors ${
         selected
           ? 'border-primary bg-primary-tint'
-          : 'border-border bg-surface-raised hover:bg-surface-soft'
+          : disabled
+            ? 'border-border bg-surface-sunken opacity-60'
+            : 'border-border bg-surface-raised hover:bg-surface-soft'
       }`}
     >
       <span
@@ -334,7 +339,7 @@ export default function Onboarding() {
             <section className="mt-6">
               <h1 className="text-lg font-semibold text-ink">ভাষা নির্বাচন</h1>
               <p className="mt-1 text-sm text-ink-muted">
-                কোন ভাষায় ব্যবহার করবেন?
+                অ্যাপটি বাংলায় চলে।
               </p>
 
               <div
@@ -350,11 +355,12 @@ export default function Onboarding() {
                   icon={<HomeIcon />}
                 />
                 <LangCard
-                  selected={language === 'en'}
+                  selected={false}
                   onSelect={() => setLanguage('en')}
                   label="English"
-                  sub="ইংরেজি"
+                  sub="ইংরেজি · শীঘ্রই"
                   icon={<GlobeIcon />}
+                  disabled
                 />
               </div>
             </section>
