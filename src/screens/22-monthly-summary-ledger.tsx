@@ -350,7 +350,10 @@ export default function MonthlySummaryLedger() {
                 </>
               ) : visibleRows.length === 0 ? (
                 <tr>
-                  <td className={`${TD_CLASS} text-left text-ink-faint`} colSpan={11}>
+                  <td
+                    className="border-b border-border px-3 py-2.5 text-center text-ink-faint"
+                    colSpan={11}
+                  >
                     এই মাসে কোনো বিল নেই।
                   </td>
                 </tr>
