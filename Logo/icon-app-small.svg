@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="App icon small">
-  <!--
-    Bill House — 16–24px app icon
-    Two thicker ledger bars. Same silhouette. Use below 32px only.
-  -->
-  <rect width="64" height="64" rx="16" fill="#DF9C35"/>
-  <path fill="#FAF6F0" fill-rule="evenodd" d="M32 11 L11 28.5 H17 V50.6 C17 51.9 18.1 53 19.4 53 H44.6 C45.9 53 47 51.9 47 50.6 V28.5 H53 Z M23.5 35.5 H40.5 A2 2 0 0 1 40.5 39.5 H23.5 A2 2 0 0 1 23.5 35.5 Z M23.5 44 H36.5 A2 2 0 0 1 36.5 48 H23.5 A2 2 0 0 1 23.5 44 Z"/>
-</svg>
