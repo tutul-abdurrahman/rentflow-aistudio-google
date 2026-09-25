@@ -315,11 +315,27 @@ export default function MonthlySummaryLedger() {
 
             <tbody className="divide-y divide-border">
               {loading ? (
-                <tr>
-                  <td className={`${TD_CLASS} text-left text-ink-faint`} colSpan={11}>
-                    লোড হচ্ছে…
-                  </td>
-                </tr>
+                <>
+                  {[0, 1, 2, 3, 4].map((index) => (
+                    <tr key={index} aria-hidden="true">
+                      <td
+                        className="sticky left-0 z-10 border-b border-border bg-surface-raised px-3 py-2.5"
+                        colSpan={1}
+                      >
+                        <div className="skeleton h-4 w-12" />
+                      </td>
+                      <td className={TD_CLASS} colSpan={10}>
+                        <div className="flex gap-4">
+                          <div className="skeleton h-4 flex-1 max-w-40" />
+                          <div className="skeleton h-4 w-20" />
+                          <div className="skeleton h-4 w-16" />
+                          <div className="skeleton h-4 w-16" />
+                          <div className="skeleton h-4 w-14" />
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </>
               ) : visibleRows.length === 0 ? (
                 <tr>
                   <td className={`${TD_CLASS} text-left text-ink-faint`} colSpan={11}>

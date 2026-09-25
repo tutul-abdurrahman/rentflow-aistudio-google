@@ -279,8 +279,30 @@ export default function ReceiptGridPrint() {
 
   if (loading || !property) {
     return (
-      <div className="min-h-dvh bg-surface text-ink">
-        <p className="px-5 py-10 text-sm text-ink-muted">— অপেক্ষা করুন —</p>
+      <div className="min-h-dvh bg-surface text-ink" aria-busy="true" aria-label="লোড হচ্ছে">
+        <div className="mx-auto max-w-3xl px-5 py-10" aria-hidden="true">
+          <div className="skeleton h-7 w-56 max-w-full" />
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            {[0, 1, 2, 3, 4, 5].map((index) => (
+              <div
+                key={index}
+                className="rounded-card border border-border bg-surface-raised px-5 py-6"
+              >
+                <div className="skeleton h-2 w-24" />
+                <div className="skeleton mt-2 h-5 w-36 max-w-full" />
+                <div className="skeleton mt-2 h-3 w-44 max-w-full" />
+                {[0, 1, 2].map((row) => (
+                  <div key={row} className="mt-4 flex items-center justify-between gap-3">
+                    <div className="skeleton h-3 w-20" />
+                    <div className="skeleton h-3 w-14" />
+                  </div>
+                ))}
+                <div className="skeleton mt-5 h-px w-full" />
+                <div className="skeleton mt-3 h-4 w-28" />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }

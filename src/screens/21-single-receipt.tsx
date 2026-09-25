@@ -120,8 +120,23 @@ export default function SingleReceipt() {
 
   if (loading || !property) {
     return (
-      <div className="min-h-dvh bg-surface text-ink">
-        <p className="px-5 py-10 text-sm text-ink-muted">— অপেক্ষা করুন —</p>
+      <div className="min-h-dvh bg-surface text-ink" aria-busy="true" aria-label="লোড হচ্ছে">
+        <div className="mx-auto max-w-md px-5 py-10" aria-hidden="true">
+          <div className="skeleton h-2 w-48" />
+          <div className="skeleton mt-2 h-7 w-64 max-w-full" />
+          <div className="mt-4 rounded-md border border-border bg-surface-raised px-6 py-6">
+            <div className="skeleton h-3 w-24" />
+            <div className="skeleton mt-2 h-3 w-40" />
+            {[0, 1, 2, 3].map((index) => (
+              <div key={index} className="mt-4 flex items-center justify-between gap-3">
+                <div className="skeleton h-3 w-28" />
+                <div className="skeleton h-3 w-16" />
+              </div>
+            ))}
+            <div className="skeleton mt-5 h-px w-full" />
+            <div className="skeleton mt-4 h-5 w-36" />
+          </div>
+        </div>
       </div>
     );
   }

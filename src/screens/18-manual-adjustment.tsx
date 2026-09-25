@@ -214,7 +214,22 @@ export default function ManualAdjustment() {
     return (
       <>
         <PageHeader title="অ্যাডজাস্টমেন্ট" subtitle="লোড হচ্ছে…" backTo="/bills/preview" />
-        <p className="mt-6 text-sm text-ink-muted">— অপেক্ষা করুন —</p>
+        <div
+          className="mx-auto mt-4 w-full max-w-3xl space-y-4"
+          aria-busy="true"
+          aria-label="লোড হচ্ছে"
+        >
+          {[0, 1, 2].map((index) => (
+            <div
+              key={index}
+              className="rounded-card border border-border bg-surface-raised px-5 py-4"
+              aria-hidden="true"
+            >
+              <div className="skeleton h-3 w-24" />
+              <div className="skeleton mt-3 h-10 w-full rounded-input" />
+            </div>
+          ))}
+        </div>
       </>
     );
   }

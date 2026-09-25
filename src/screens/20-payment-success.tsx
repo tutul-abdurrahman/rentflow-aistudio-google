@@ -102,8 +102,20 @@ export default function PaymentSuccess() {
 
   if (loading || !property) {
     return (
-      <div className="flex min-h-dvh flex-col bg-surface text-ink">
-        <p className="px-5 py-10 text-center text-sm text-ink-muted">— অপেক্ষা করুন —</p>
+      <div className="flex min-h-dvh flex-col bg-surface text-ink" aria-busy="true" aria-label="লোড হচ্ছে">
+        <div className="mx-auto flex w-full max-w-md flex-1 flex-col px-5 py-10" aria-hidden="true">
+          <div className="skeleton mx-auto h-12 w-12 rounded-full" />
+          <div className="skeleton mt-4 mx-auto h-6 w-56 max-w-full" />
+          <div className="mt-6 rounded-card border border-border bg-surface-raised px-5 py-5">
+            <div className="skeleton h-3 w-24" />
+            <div className="skeleton mt-3 h-6 w-32" />
+            <div className="mt-4 flex justify-between">
+              <div className="skeleton h-3 w-20" />
+              <div className="skeleton h-3 w-16" />
+            </div>
+          </div>
+          <div className="skeleton mx-auto mt-8 h-10 w-36 rounded-button" />
+        </div>
       </div>
     );
   }

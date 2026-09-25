@@ -202,7 +202,34 @@ export default function CollectionDueList() {
     return (
       <>
         <PageHeader title="কালেকশন" subtitle="লোড হচ্ছে…" backTo="/bills/preview" />
-        <p className="mt-6 text-sm text-ink-muted">— অপেক্ষা করুন —</p>
+        <div aria-busy="true" aria-label="লোড হচ্ছে">
+          <div className="mt-3 rounded-card border border-border bg-surface-raised px-5 py-4" aria-hidden="true">
+            <div className="grid grid-cols-3 gap-3">
+              <div className="skeleton h-3 w-20" />
+              <div className="skeleton h-3 w-20" />
+              <div className="skeleton h-3 w-20" />
+              <div className="skeleton h-5 w-24" />
+              <div className="skeleton h-5 w-24" />
+              <div className="skeleton h-5 w-24" />
+            </div>
+          </div>
+          {[0, 1, 2].map((index) => (
+            <div
+              key={index}
+              className="mt-3 flex items-center justify-between gap-3 rounded-card border border-border bg-surface-raised px-5 py-4"
+              aria-hidden="true"
+            >
+              <div className="min-w-0 flex-1 space-y-2">
+                <div className="skeleton h-4 w-32" />
+                <div className="skeleton h-3 w-24" />
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="skeleton h-5 w-20" />
+                <div className="skeleton h-9 w-20 rounded-button" />
+              </div>
+            </div>
+          ))}
+        </div>
       </>
     );
   }
