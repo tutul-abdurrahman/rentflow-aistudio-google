@@ -27,8 +27,8 @@ create table if not exists public.properties (
   address text not null default '',
   owner_name text not null default '',
   owner_phone text not null default '',
-  electricity_rate numeric not null default 7.5,
-  waste_fee numeric not null default 200,
+  electricity_rate numeric not null default 0,
+  waste_fee numeric not null default 0,
   water_split_rule text not null default 'occupied_plus_one',
   mid_month_rule text not null default 'day_wise',
   created_at timestamptz not null default now()
@@ -270,5 +270,16 @@ begin
     alter table public.loans drop constraint loans_tenant_id_fkey;
     alter table public.loans
       add constraint loans_tenant_id_fkey foreign key (tenant_id) references public.tenants (id) on delete restrict;
+  end if;
+
+  -- No preset rates: the owner enters them at onboarding. Existing databases
+  -- (created before this rule) get their column defaults corrected here.
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'properties'
+      and column_name = 'electricity_rate' and column_default like '%7.5%'
+  ) then
+    alter table public.properties alter column electricity_rate set default 0;
+    alter table public.properties alter column waste_fee set default 0;
   end if;
 end $$;

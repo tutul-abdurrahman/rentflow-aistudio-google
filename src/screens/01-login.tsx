@@ -190,7 +190,7 @@ export default function Login() {
         {error ? (
           <section
             className="mt-10 border-t border-border-strong pt-8"
-            aria-label="লগইন ব্যর্থ"
+            aria-label="লগ ইন ব্যর্থ"
           >
             <div className="flex items-start gap-2.5 rounded-card border border-border bg-surface-raised px-4 py-3.5">
               <svg

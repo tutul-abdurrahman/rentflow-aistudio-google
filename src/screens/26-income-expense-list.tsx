@@ -467,14 +467,14 @@ export default function IncomeExpenseList() {
       <Sheet
         open={deleteTarget !== null}
         onClose={() => setDeleteTarget(null)}
-        ariaLabel="খরচ মুছে ফেলার নিশ্চিতকরণ"
+        ariaLabel="এন্ট্রি মুছে ফেলার নিশ্চিতকরণ"
       >
         <div className="mt-4 flex items-center gap-3">
           <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-danger-tint text-danger">
             <TrashIcon size={22} />
           </span>
           <div>
-            <h2 className="text-lg font-semibold text-ink">এই খরচ মুছবেন?</h2>
+            <h2 className="text-lg font-semibold text-ink">এই এন্ট্রি মুছবেন?</h2>
             <p className="text-sm text-ink-muted">
               {deleteTarget ? `${deleteTarget.note ?? deleteTarget.category} · ${bnTaka(deleteTarget.amount)}। ` : ''}
               এই এন্ট্রি স্থায়ীভাবে মুছে যাবে।

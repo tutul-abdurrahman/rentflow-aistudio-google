@@ -11,7 +11,7 @@ import type { ReactNode } from 'react';
  * Screen 29 — সেটিংস হাব (design-output/screens/29-settings-hub.html).
  *
  * The টাকা group is lg:hidden — the desktop sidebar already exposes লোন and
- * ফিনান্স. Multi-property stays a disabled future tile ('শীঘ্রই'). Logout is a
+ * ফিনান্স. Logout is a
  * confirm sheet that clears the Supabase session through src/lib/auth.ts.
  */
 
@@ -236,27 +236,6 @@ export default function SettingsHub() {
                 </span>
               }
             />
-
-            {/* future feature — visually present, not clickable */}
-            <div
-              className="flex items-center gap-3 px-4 py-3.5 opacity-60"
-              aria-disabled="true"
-            >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-soft text-ink-faint">
-                <svg width="20" height="20" viewBox="0 0 24 24" {...stroke}>
-                  <path d="m12 2 9 5-9 5-9-5 9-5z" />
-                  <path d="m3 12 9 5 9-5" />
-                  <path d="m3 17 9 5 9-5" />
-                </svg>
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block text-sm font-semibold text-ink-muted">একাধিক প্রপার্টি</span>
-                <span className="block truncate text-xs text-ink-faint">এক অ্যাপে সব বাড়ি</span>
-              </span>
-              <span className="shrink-0 rounded-pill bg-surface-soft px-2.5 py-1 text-xs font-medium text-ink-faint">
-                শীঘ্রই
-              </span>
-            </div>
           </div>
         </section>
       </div>
@@ -301,9 +280,9 @@ export default function SettingsHub() {
             </svg>
           </span>
           <div>
-            <h2 className="text-lg font-semibold text-ink">নিশ্চিতভাবে লগআউট করবেন?</h2>
+            <h2 className="text-lg font-semibold text-ink">সত্যিই লগআউট করবেন?</h2>
             <p className="text-sm text-ink-muted">
-              তথ্য সংরক্ষিত থাকবে — আবার লগইন করলেই সব ফিরে পাবেন।
+              সব তথ্য থেকে যাবে — আবার লগ ইন করলেই সব ফিরে পাবেন।
             </p>
           </div>
         </div>

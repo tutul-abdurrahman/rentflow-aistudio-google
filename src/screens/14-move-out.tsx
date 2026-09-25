@@ -111,7 +111,7 @@ export default function MoveOut() {
             <CheckCircleIcon size={44} strokeWidth={2.2} />
           </span>
           <h2 className="mt-5 text-xl font-bold text-ink">মুভ আউট সম্পন্ন!</h2>
-          <p className="mt-1.5 text-sm text-ink-muted">প্রাক্তন রেন্টি আর্কাইভে সংরক্ষিত</p>
+          <p className="mt-1.5 text-sm text-ink-muted">প্রাক্তন রেন্টি আর্কাইভে সেভ হয়েছে</p>
           <div className="mt-7 w-full space-y-2.5">
             <Link
               to="/tenants/archive"
@@ -215,7 +215,7 @@ export default function MoveOut() {
           </div>
           <div className="md:col-span-2">
             <label htmlFor="mo-note" className="mb-1.5 block text-sm font-medium text-ink">
-              নোট (ঐচ্ছিক)
+              নোট (ইচ্ছা হলে)
             </label>
             <textarea
               id="mo-note"
@@ -254,7 +254,7 @@ export default function MoveOut() {
           <div>
             <h2 className="text-lg font-semibold text-ink">মুভ আউট নিশ্চিত করুন</h2>
             <p className="text-sm text-ink-muted">
-              {tenant.name} প্রাক্তন রেন্টি হবেন — হিস্টরি ২ বছর সংরক্ষিত থাকবে
+              {tenant.name} প্রাক্তন রেন্টি হবেন — হিস্টরি ২ বছর থেকে যাবে
             </p>
           </div>
         </div>

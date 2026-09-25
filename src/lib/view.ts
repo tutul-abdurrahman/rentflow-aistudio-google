@@ -27,12 +27,12 @@ export function formatPhone(phone: string): string {
 export const RESOLUTION_LABELS: Record<MoveOutInput['resolution'], string> = {
   refund: 'রিফান্ড',
   hold: 'হোল্ড',
-  adjust: 'বকেয়ার সাথে অ্যাডজাস্ট',
+  adjust: 'বকেয়ার সাথে সমন্বয়',
 };
 
 export const RESOLUTION_DESCRIPTIONS: Record<MoveOutInput['resolution'], string> = {
   refund: 'নগদে ফেরত দেওয়া হবে',
-  hold: 'নতুন রুমে জমা বহন হবে',
+  hold: 'জমা টাকা পরের রুমে চলে যাবে',
   adjust: 'বকেয়া কেটে বাকি টাকা ফেরত',
 };
 

@@ -158,7 +158,7 @@ export default function SingleReceipt() {
           </Link>
           <div className="min-w-0 text-center">
             <h1 className="truncate text-base font-bold text-ink">{toolbarTitle}</h1>
-            <p className="text-xs text-ink-muted">মাসিক কাগজ আবার ছাপুন · Margin: None</p>
+            <p className="text-xs text-ink-muted">মাসিক কাগজ আবার প্রিন্ট করুন · Margin: None</p>
           </div>
           <button
             type="button"

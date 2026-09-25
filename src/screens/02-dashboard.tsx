@@ -472,7 +472,7 @@ export default function Dashboard() {
       tone: 'primary',
       icon: <BoltIcon />,
       title: 'মিটার এন্ট্রি',
-      detail: `${bnMonth(month)} · খসড়া সংরক্ষিত`,
+      detail: `${bnMonth(month)} · খসড়া সেভ হয়েছে`,
       time: bnDate(`${month}-01`),
     });
   }
@@ -718,7 +718,7 @@ export default function Dashboard() {
               to="/bills/meters"
               done={tile1Done}
               step="১"
-              title="মিটার দিন"
+              title="মিটার লিখুন"
               caption="বিদ্যুৎ ও পানি রিডিং"
               icon={<GaugeIcon />}
             />
@@ -738,8 +738,8 @@ export default function Dashboard() {
               to="/bills/print"
               done={tile3Done}
               step="৩"
-              title="কাগজ ছাপুন"
-              caption="ভাড়াটেদের মাসিক কাগজ"
+              title="প্রিন্ট করুন"
+              caption="ভাড়াটেদের মাসিক বিল"
               icon={<PrinterIcon />}
             />
             <CycleTile
@@ -865,11 +865,11 @@ function NotificationSheet({
           </ul>
         </>
       ) : (
-        <p className="mt-3 px-1 text-sm text-ink-muted">এই মুহূর্তে কোনো বকেয়ার বার্তা নেই।</p>
+        <p className="mt-3 px-1 text-sm text-ink-muted">এখন কোনো বকেয়ার বার্তা নেই।</p>
       )}
 
       <p className="mt-3 px-1 text-xs text-ink-faint">
-        মিটার ও লোনের ঝাঁকুনি — শীঘ্রই আসছে।
+        মিটার ও লোনের রিমাইন্ডার — শীঘ্রই আসছে।
       </p>
     </Sheet>
   );

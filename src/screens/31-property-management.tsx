@@ -3,7 +3,6 @@ import { useRepository } from '../app/repository';
 import Input from '../components/Input';
 import PageHeader from '../components/PageHeader';
 import RadioCard from '../components/RadioCard';
-import { bnDigits } from '../lib/format';
 
 /**
  * Screen 31 — বাড়ির তথ্য + রেট + নিয়ম (design-output/screens/31-*.html).
@@ -29,7 +28,6 @@ export default function PropertyManagement() {
   const [rate, setRate] = useState('');
   const [waste, setWaste] = useState('');
   const [midMonthRule, setMidMonthRule] = useState<'day_wise' | 'full_month'>('day_wise');
-  const [roomsCaption, setRoomsCaption] = useState('');
   const [infoSaved, setInfoSaved] = useState(false);
   const [ratesSaved, setRatesSaved] = useState(false);
   const [rateError, setRateError] = useState<string | undefined>();
@@ -39,7 +37,7 @@ export default function PropertyManagement() {
   useEffect(() => {
     let alive = true;
     (async () => {
-      const [property, rooms] = await Promise.all([repo.getProperty(), repo.listRooms()]);
+      const property = await repo.getProperty();
       if (!alive) return;
       setName(property.name);
       setAddress(property.address);
@@ -48,11 +46,6 @@ export default function PropertyManagement() {
       setRate(String(property.electricityRate));
       setWaste(String(property.wasteFee));
       setMidMonthRule(property.midMonthRule);
-      setRoomsCaption(
-        rooms.length > 0
-          ? `${bnDigits(rooms.length)}টি রুম · ${bnDigits(rooms[0].number)}–${bnDigits(rooms[rooms.length - 1].number)}`
-          : 'কোনো রুম নেই',
-      );
       setLoaded(true);
     })();
     return () => {
@@ -158,9 +151,9 @@ export default function PropertyManagement() {
             />
 
             <button type="button" onClick={saveInfo} disabled={!loaded || saving} className={SAVE_BUTTON}>
-              সংরক্ষণ করুন
+              সেভ করুন
             </button>
-            {infoSaved ? <p className="text-xs text-success">সংরক্ষণ হয়েছে।</p> : null}
+            {infoSaved ? <p className="text-xs text-success">সেভ হয়েছে।</p> : null}
           </div>
         </section>
 
@@ -199,9 +192,9 @@ export default function PropertyManagement() {
           </div>
 
           <button type="button" onClick={saveRates} disabled={!loaded || saving} className={`${SAVE_BUTTON} mt-4`}>
-            সংরক্ষণ করুন
+            সেভ করুন
           </button>
-          {ratesSaved ? <p className="mt-2 text-xs text-success">সংরক্ষণ হয়েছে।</p> : null}
+          {ratesSaved ? <p className="mt-2 text-xs text-success">সেভ হয়েছে।</p> : null}
         </section>
 
         {/* পানির ভাগের নিয়ম — LOCKED, read-only */}
@@ -239,10 +232,10 @@ export default function PropertyManagement() {
         <section className={SECTION} aria-label="মাসের মাঝে ভাড়ার নিয়ম">
           <h2 className="text-base font-semibold text-ink">মাসের মাঝে ভাড়া</h2>
           <p className="mt-0.5 text-sm text-ink-muted">
-            মাসের মাঝখানে রেন্টি উঠলে ভাড়া কীভাবে হিসাব হবে।
+            মাসের মাঝখানে নতুন রেন্টি এলে ভাড়া কীভাবে হিসাব হবে।
           </p>
 
-          <div className="mt-3 space-y-2" role="radiogroup" aria-label="মাসের মাঝে ভাড়ার নিয়ম">
+          <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2" role="radiogroup" aria-label="মাসের মাঝে ভাড়ার নিয়ম">
             <RadioCard
               name="mid-month-rule"
               value="day_wise"
@@ -250,6 +243,7 @@ export default function PropertyManagement() {
               onChange={chooseMidMonthRule}
               title="দিনভিত্তিক"
               description="যে দিনে উঠেছেন, সেই দিন থেকে ভাড়া"
+              className="px-3.5 py-3"
             />
             <RadioCard
               name="mid-month-rule"
@@ -258,77 +252,8 @@ export default function PropertyManagement() {
               onChange={chooseMidMonthRule}
               title="পুরো মাস"
               description="মাসের মাঝে উঠলেও পুরো মাসের ভাড়া"
+              className="px-3.5 py-3"
             />
-          </div>
-        </section>
-
-        {/* একাধিক প্রপার্টি — future slot */}
-        <section className={SECTION} aria-label="একাধিক প্রপার্টি">
-          <div className="flex items-center justify-between gap-3">
-            <h2 className="text-base font-semibold text-ink">একাধিক প্রপার্টি</h2>
-            <span className="shrink-0 rounded-pill bg-surface-soft px-2.5 py-1 text-xs font-medium text-ink-faint">
-              শীঘ্রই আসছে
-            </span>
-          </div>
-          <p className="mt-0.5 text-sm text-ink-muted">
-            এখন এক বাড়ির হিসাব চলে; শীঘ্রই এক অ্যাপেই সব বাড়ি যুক্ত করে ভাড়া, বিল ও রেন্টির হিসাব
-            রাখা যাবে।
-          </p>
-
-          <div className="mt-4 flex items-center gap-3 rounded-card border border-border bg-surface-soft p-4">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary-tint text-primary">
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M3 21h18" />
-                <path d="M5 21V5a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v16" />
-                <path d="M9 21v-4h6v4" />
-                <path d="M9 8h.01M12 8h.01M15 8h.01M9 12h.01M12 12h.01M15 12h.01" />
-              </svg>
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold text-ink">{name || '—'}</p>
-              <p className="truncate text-xs text-ink-muted">{roomsCaption}</p>
-            </div>
-            <span className="shrink-0 rounded-pill bg-primary-tint px-2.5 py-1 text-xs font-medium text-primary">
-              বর্তমান
-            </span>
-          </div>
-
-          <div
-            className="mt-3 flex flex-col items-center justify-center gap-1.5 rounded-card border border-dashed border-border-strong px-4 py-8 text-center opacity-70"
-            aria-disabled="true"
-          >
-            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-surface-soft text-ink-faint">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M12 5v14M5 12h14" />
-              </svg>
-            </span>
-            <span className="mt-1 text-sm font-semibold text-ink-muted">আরেকটি বাড়ি যোগ করুন</span>
-            <span className="rounded-pill bg-surface-soft px-2.5 py-1 text-xs font-medium text-ink-faint">
-              শীঘ্রই আসছে
-            </span>
-            <span className="max-w-60 text-xs text-ink-faint">
-              একাধিক বাড়ি যুক্ত হলে সব বাড়ি এক জায়গায় দেখতে পাবেন।
-            </span>
           </div>
         </section>
       </div>

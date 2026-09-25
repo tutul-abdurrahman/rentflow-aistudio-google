@@ -76,7 +76,7 @@ export default function VacatedArchive() {
 
   return (
     <div className="mx-auto w-full max-w-3xl">
-      <PageHeader title="প্রাক্তন রেন্টি" subtitle="২ বছরের হিস্টরি সংরক্ষিত" backTo="/tenants" />
+      <PageHeader title="প্রাক্তন রেন্টি" subtitle="২ বছরের হিস্টরি এখানে থাকে" backTo="/tenants" />
 
       <div className="mt-4">
         <div className="relative">
@@ -136,7 +136,7 @@ export default function VacatedArchive() {
           </span>
           <h2 className="mt-4 text-lg font-semibold text-ink">কোনো প্রাক্তন রেন্টি নেই</h2>
           <p className="mt-1.5 max-w-60 text-sm text-ink-muted">
-            মুভ আউট করলে রেন্টির ২ বছরের হিস্টরি এখানে সংরক্ষিত হবে।
+            মুভ আউট করলে রেন্টির ২ বছরের হিস্টরি এখানে থাকবে।
           </p>
           <Link
             to="/tenants"

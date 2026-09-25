@@ -290,7 +290,7 @@ export default function Profile() {
               }}
             />
             <Input
-              label="ইমেইল (ঐচ্ছিক)"
+              label="ইমেইল (ইচ্ছা হলে)"
               type="email"
               value={authEmail}
               readOnly
@@ -301,9 +301,9 @@ export default function Profile() {
               onClick={saveInfo}
               className="inline-flex w-full items-center justify-center gap-2 rounded-button border border-transparent bg-primary px-5 py-3 text-base font-semibold text-on-primary transition-colors hover:bg-primary-hover active:bg-primary-active sm:w-auto"
             >
-              সংরক্ষণ করুন
+              সেভ করুন
             </button>
-            {infoSaved ? <p className="text-xs text-success">সংরক্ষণ হয়েছে।</p> : null}
+            {infoSaved ? <p className="text-xs text-success">সেভ হয়েছে।</p> : null}
           </div>
         </section>
 
@@ -359,7 +359,7 @@ export default function Profile() {
                       disabled={pwStep !== 'verify'}
                       onChange={(event) => handleOtpChange(index, event.target.value)}
                       onKeyDown={(event) => handleOtpKeyDown(index, event.key)}
-                      aria-label={`ওটিপি ${bnDigits(index + 1)} নম্বর অঙ্ক`}
+                      aria-label={`ওটিপি ${bnDigits(index + 1)} নম্বর সংখ্যা`}
                       className={`w-full rounded-input border bg-surface-raised py-3 text-center text-md text-ink transition-colors focus:border-border-focus ${
                         otpError ? 'border-danger' : 'border-border'
                       }`}
@@ -642,9 +642,9 @@ export default function Profile() {
             </svg>
           </span>
           <div>
-            <h2 className="text-lg font-semibold text-ink">নিশ্চিতভাবে লগআউট করবেন?</h2>
+            <h2 className="text-lg font-semibold text-ink">সত্যিই লগআউট করবেন?</h2>
             <p className="text-sm text-ink-muted">
-              তথ্য সংরক্ষিত থাকবে — আবার লগইন করলেই সব ফিরে পাবেন।
+              সব তথ্য থেকে যাবে — আবার লগ ইন করলেই সব ফিরে পাবেন।
             </p>
           </div>
         </div>

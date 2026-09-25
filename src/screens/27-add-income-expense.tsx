@@ -133,7 +133,7 @@ export default function AddIncomeExpense() {
                 htmlFor="finance-category"
                 className="mb-1.5 block text-sm font-medium text-ink"
               >
-                ক্যাটাগরি
+                খাত
               </label>
               <div className="relative">
                 <select
@@ -194,7 +194,7 @@ export default function AddIncomeExpense() {
               <textarea
                 id="finance-note"
                 rows={3}
-                placeholder="ঐচ্ছিক — যেমন কোন রুম বা বিলের বিবরণ"
+                placeholder="ইচ্ছা হলে — যেমন কোন রুম বা বিলের বিবরণ"
                 value={note}
                 onChange={(event) => setNote(event.target.value)}
                 className="w-full resize-none rounded-input border border-border bg-surface-raised px-4 py-3 text-md text-ink transition-colors placeholder:text-ink-faint focus:border-border-focus"
@@ -230,7 +230,7 @@ export default function AddIncomeExpense() {
             >
               <path d="M20 6 9 17l-5-5" />
             </svg>
-            সংরক্ষণ করুন
+            সেভ করুন
           </button>
         </div>
       </div>

@@ -175,12 +175,12 @@ export default function LoanDetail() {
             </div>
 
             <div className="mt-3 flex items-center justify-between rounded-md bg-primary-tint px-4 py-3">
-              <span className="text-sm font-medium text-ink">ব্যালেন্স</span>
+              <span className="text-sm font-medium text-ink">বাকি</span>
               <span className="text-xl font-bold text-ink">৳{bnNumber(balance)}</span>
             </div>
           </section>
 
-          <section className="mt-3 rounded-card border border-border bg-surface-raised p-5" aria-label="বিলে যোগ করুন">
+          <section className="mt-3 rounded-card border border-border bg-surface-raised p-5" aria-label="মাসিক বিলে যোগ">
             <div className="flex items-start gap-3">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-info-tint text-info">
                 <CardIcon size={20} />
@@ -310,7 +310,7 @@ export default function LoanDetail() {
           <div>
             <h2 className="text-lg font-semibold text-ink">লোন বাতিল করবেন?</h2>
             <p className="text-sm text-ink-muted">
-              {tenant?.name ?? 'রেন্টি'} · বাকি ৳{bnNumber(balance)}। বাতিল করলে কিস্তি আর বিলে উঠবে না।
+              {tenant?.name ?? 'রেন্টি'} · বাকি ৳{bnNumber(balance)}। বাতিল করলে কিস্তি আর বিলে যোগ হবে না।
             </p>
           </div>
         </div>

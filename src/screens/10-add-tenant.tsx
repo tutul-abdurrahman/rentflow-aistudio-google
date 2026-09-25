@@ -17,8 +17,8 @@ interface AddTenantData {
 
 function ruleNote(rule: Property['midMonthRule']): string {
   return rule === 'day_wise'
-    ? 'মাসের মাঝপথে যোগ দিলে ভাড়া দিন-ভিত্তিক হিসাব হবে — প্রপার্টি সেটিং অনুযায়ী।'
-    : 'মাসের মাঝপথে যোগ দিলেও পুরো মাসের ভাড়া হবে — প্রপার্টি সেটিং অনুযায়ী।';
+    ? 'মাসের মাঝপথে যোগ দিলে ভাড়া দিন-ভিত্তিক হিসাব হবে — বাড়ির সেটিং অনুযায়ী।'
+    : 'মাসের মাঝপথে যোগ দিলেও পুরো মাসের ভাড়া হবে — বাড়ির সেটিং অনুযায়ী।';
 }
 
 function todayIso(): string {
@@ -56,7 +56,7 @@ export default function AddTenant() {
 
     const nextErrors: typeof errors = {};
     const digits = asciiDigits(phone).replace(/\D/g, '');
-    if (!name.trim()) nextErrors.name = 'নাম আবশ্যক';
+    if (!name.trim()) nextErrors.name = 'নাম লিখুন';
     if (digits.length !== 11) nextErrors.phone = 'সঠিক ১১ সংখ্যার নম্বর দিন';
     if (!roomId) nextErrors.room = 'রুম বেছে নিন';
     if (!moveInDate) nextErrors.date = 'তারিখ দিন';
@@ -74,7 +74,7 @@ export default function AddTenant() {
       navigate(`/tenants/${tenant.id}`);
     } catch (cause) {
       const code = cause instanceof Error ? cause.message : '';
-      setFormError(code === 'ROOM_OCCUPIED' ? 'এই রুমে ইতিমধ্যে একজন রেন্টি আছেন।' : 'রেন্টি যোগ করা যায়নি। আবার চেষ্টা করুন।');
+      setFormError(code === 'ROOM_OCCUPIED' ? 'এই রুমে আগেই একজন রেন্টি আছেন।' : 'রেন্টি যোগ করা যায়নি। আবার চেষ্টা করুন।');
       setSaving(false);
     }
   };
@@ -142,7 +142,7 @@ export default function AddTenant() {
                   <option value="">রুম বেছে নিন</option>
                   {vacantRooms.map((room) => (
                     <option key={room.id} value={room.id}>
-                      রুম {bnDigits(room.number)} — খালি (উপলব্ধ)
+                      রুম {bnDigits(room.number)} — খালি
                     </option>
                   ))}
                 </select>
@@ -152,7 +152,7 @@ export default function AddTenant() {
                 <p className="mt-1.5 text-xs text-danger">{errors.room}</p>
               ) : (
                 <p className="mt-1.5 text-xs text-ink-faint">
-                  {noVacancy ? 'এই মুহূর্তে কোনো খালি রুম নেই।' : 'শুধু খালি রুম বেছে নেওয়া যায়'}
+                  {noVacancy ? 'এখন কোনো খালি রুম নেই।' : 'শুধু খালি রুম বেছে নেওয়া যায়'}
                 </p>
               )}
             </div>
@@ -202,7 +202,7 @@ export default function AddTenant() {
             disabled={saving || noVacancy}
             leadingIcon={<PlusIcon size={18} />}
           >
-            {saving ? 'সংরক্ষণ হচ্ছে…' : 'রেন্টি যোগ করুন'}
+            {saving ? 'সেভ হচ্ছে…' : 'রেন্টি যোগ করুন'}
           </Button>
         </div>
       </form>

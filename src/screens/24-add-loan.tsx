@@ -222,7 +222,7 @@ export default function AddLoan() {
 
             <div className="md:col-span-2">
               <label htmlFor="loan-note" className="mb-1.5 block text-sm font-medium text-ink">
-                নোট (ঐচ্ছিক)
+                নোট (ইচ্ছা হলে)
               </label>
               <textarea
                 id="loan-note"
@@ -295,7 +295,7 @@ export default function AddLoan() {
             বাতিল
           </Link>
           <Button type="submit" className="w-full sm:flex-1" disabled={saving} leadingIcon={<CardIcon size={18} />}>
-            {saving ? 'সংরক্ষণ হচ্ছে…' : 'লোন দিন'}
+            {saving ? 'সেভ হচ্ছে…' : 'লোন দিন'}
           </Button>
         </div>
       </form>

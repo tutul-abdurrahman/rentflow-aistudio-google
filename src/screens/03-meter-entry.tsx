@@ -194,7 +194,7 @@ export default function MeterEntry() {
       await persistDraft();
       setSaved(true);
     } catch (error) {
-      setFormError(error instanceof Error ? error.message : 'সংরক্ষণ করা যায়নি');
+      setFormError(error instanceof Error ? error.message : 'সেভ করা যায়নি');
     } finally {
       setBusy(false);
     }
@@ -278,7 +278,9 @@ export default function MeterEntry() {
       >
         <div className="flex items-center justify-between px-5 py-4">
           <h2 className="text-base font-semibold text-ink">বিদ্যুৎ সাব-মিটার</h2>
-          <span className="text-xs text-ink-faint">পূর্ববর্তী আপনি লিখবেন না</span>
+          <span className="text-xs text-ink-faint">
+            পূর্বের রিডিং নিজে থেকেই থাকে — লিখতে হবে না
+          </span>
         </div>
 
         <div className="hidden border-t border-border bg-surface-soft px-5 py-2.5 lg:grid lg:grid-cols-[4.5rem_minmax(0,1fr)_7rem_8rem_5rem] lg:gap-3">
@@ -342,7 +344,7 @@ export default function MeterEntry() {
               {showError ? (
                 <p className="mt-2 flex items-center gap-1.5 text-xs text-danger">
                   <WarnIcon />
-                  বর্তমান রিডিং পূর্ববর্তীর চেয়ে কম
+                  বর্তমান রিডিং পূর্বের চেয়ে কম
                 </p>
               ) : null}
             </div>
@@ -350,7 +352,7 @@ export default function MeterEntry() {
         </div>
 
         <p className="border-t border-border px-5 py-3 text-xs text-ink-faint">
-          রুম {vacantNumbers.join(', ') || '—'} খালি — সাব-মিটার নেই, অটো বিদ্যুৎও নেই।
+          রুম {vacantNumbers.join(', ') || '—'} খালি — সাব-মিটার নেই, বিদ্যুৎ বিলও নেই।
         </p>
       </section>
 
@@ -360,7 +362,7 @@ export default function MeterEntry() {
           aria-label="পানি মেইন মিটার"
         >
           <h2 className="text-base font-semibold text-ink">পানি · মেইন মিটার</h2>
-          <p className="mt-0.5 text-xs text-ink-muted">সক্রিয় রুমে ভাগ। খালি রুম বাদ।</p>
+          <p className="mt-0.5 text-xs text-ink-muted">সক্রিয় রুমে ভাগ হয়। খালি রুম বাদ।</p>
           <div className="mt-4 flex flex-wrap items-end gap-x-6 gap-y-3">
             <div>
               <p className="text-xs text-ink-faint">পূর্ববর্তী</p>
@@ -401,7 +403,7 @@ export default function MeterEntry() {
             {waterShowError ? (
               <p className="flex basis-full items-center gap-1.5 text-xs text-danger">
                 <WarnIcon />
-                বর্তমান রিডিং পূর্ববর্তীর চেয়ে কম
+                বর্তমান রিডিং পূর্বের চেয়ে কম
               </p>
             ) : null}
           </div>
@@ -474,17 +476,17 @@ export default function MeterEntry() {
           disabled={busy}
           className="w-full sm:w-auto"
         >
-          খসড়া রাখুন
+          খসড়া সেভ করুন
         </Button>
         <Button onClick={onPrimary} disabled={busy} className="w-full sm:w-auto">
           {hasPapers ? 'বিল দেখুন' : 'বিল হিসাব করুন'}
         </Button>
       </div>
       <p className="mt-2 text-xs text-ink-faint sm:text-right">
-        বিল দেখার পর কাগজ ছাপাবেন। টাকা পরে লেজারে লেখা হবে।
+        বিল দেখার পর প্রিন্ট করবেন। টাকা পরে লেজারে লেখা হবে।
       </p>
       {saved ? (
-        <p className="mt-1 text-xs text-success sm:text-right">খসড়া সংরক্ষিত হয়েছে।</p>
+        <p className="mt-1 text-xs text-success sm:text-right">খসড়া সেভ হয়েছে।</p>
       ) : null}
     </>
   );

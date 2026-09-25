@@ -98,7 +98,7 @@ export default function LoanList() {
           <p className="mt-1.5 text-xl font-bold leading-none text-info">{bnDigits(activeLoans.length)}</p>
         </div>
         <div className="rounded-card border border-border bg-surface-raised p-4">
-          <p className="text-xs text-ink-faint">মোট বিতরণ</p>
+          <p className="text-xs text-ink-faint">মোট দেওয়া</p>
           <p className="mt-1.5 text-xl font-bold leading-none text-ink">৳{bnNumber(totalDisbursed)}</p>
         </div>
         <div className="rounded-card border border-border bg-surface-raised p-4">
@@ -210,7 +210,7 @@ export default function LoanList() {
                     <p className="mt-0.5 text-sm font-semibold text-ink">৳{bnNumber(paid)}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-ink-faint">ব্যালেন্স</p>
+                    <p className="text-xs text-ink-faint">বাকি</p>
                     <p className={cn('mt-0.5 text-sm font-bold', balance > 0 ? 'text-warning' : 'text-ink-faint')}>
                       ৳{bnNumber(balance)}
                     </p>

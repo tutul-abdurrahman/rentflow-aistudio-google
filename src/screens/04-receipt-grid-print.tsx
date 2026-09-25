@@ -344,7 +344,7 @@ export default function ReceiptGridPrint() {
           <div className="mx-auto w-full max-w-[48rem] rounded-card border border-dashed border-border bg-surface-raised px-6 py-12 text-center">
             <p className="text-sm font-semibold text-ink">এই মাসে কোনো কাগজ নেই।</p>
             <p className="mt-1 text-xs text-ink-muted">
-              বিল প্রিভিউ থেকে কাগজ তৈরি হলে এখানে ছাপা যাবে।
+              বিল প্রিভিউ থেকে কাগজ তৈরি হলে এখানে প্রিন্ট করা যাবে।
             </p>
             <Link
               to="/bills/preview"

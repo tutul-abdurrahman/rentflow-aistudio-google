@@ -384,8 +384,10 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
       address: '',
       ownerName: '',
       ownerPhone: '',
-      electricityRate: 7.5,
-      wasteFee: 200,
+      // No preset rates: the owner enters them at onboarding. Rates on a
+      // detached (unsaved) placeholder are 0 and never displayed.
+      electricityRate: 0,
+      wasteFee: 0,
       waterSplitRule: 'occupied_plus_one',
       midMonthRule: 'day_wise',
     };

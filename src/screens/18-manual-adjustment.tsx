@@ -186,7 +186,7 @@ export default function ManualAdjustment() {
       return;
     }
     if (!note.trim()) {
-      setError('নোট আবশ্যক।');
+      setError('নোট লিখুন।');
       return;
     }
     setBusy(true);
@@ -245,7 +245,7 @@ export default function ManualAdjustment() {
       {billRooms.length === 0 ? (
         <div className="mt-4">
           <EmptyState
-            title="এই মাসে অ্যাডজাস্টমেন্ট করার কাগজ নেই"
+            title="এই মাসে কোনো বিল নেই"
             caption="আগে মিটার রিডিং দিয়ে বিল হিসাব করুন।"
           />
         </div>
@@ -342,7 +342,7 @@ export default function ManualAdjustment() {
 
             <div className="mt-4">
               <label htmlFor="adj-note" className="mb-1.5 block text-sm font-medium text-ink">
-                মন্তব্য / নোট <span className="text-danger">*</span>
+                নোট <span className="text-danger">*</span>
               </label>
               <textarea
                 id="adj-note"
@@ -354,15 +354,15 @@ export default function ManualAdjustment() {
                 className="w-full resize-none rounded-input border border-border bg-surface-raised px-4 py-3 text-md text-ink transition-colors placeholder:text-ink-faint focus:border-border-focus"
               />
               <p className="mt-1.5 text-xs text-ink-faint">
-                নোট আবশ্যক — লেজারে থাকবে; কাগজ আবার ছাপালে তখন দেখাবে
+                নোট লিখতে হবে — লেজারে থাকবে; কাগজ আবার প্রিন্ট করলে তখন দেখা যাবে
               </p>
             </div>
 
             <div className="mt-4 flex items-start gap-2.5 rounded-md bg-surface-soft px-4 py-3">
               <InfoIcon />
               <p className="text-xs leading-relaxed text-ink-muted">
-                ভুল এন্ট্রি এখানেই সারাবেন। লেজার যেখানে ভাঙে সেখানে আপডেট হবে। বিল আবার
-                জেনারেট করা এই পথ নয়। খালি রুমে কেউ বিদ্যুৎ নিলে ম্যানুয়ালি যোগ করুন।
+                ভুল এন্ট্রি এখানেই ঠিক করুন। লেজারও সেই অনুযায়ী আপডেট হবে। এখান থেকে বিল আবার
+                তৈরি হয় না। খালি রুমে কেউ বিদ্যুৎ নিলে ম্যানুয়ালি যোগ করুন।
               </p>
             </div>
           </section>
@@ -416,7 +416,7 @@ export default function ManualAdjustment() {
                   এই মাসে কোনো অ্যাডজাস্টমেন্ট নেই
                 </h3>
                 <p className="mt-1 max-w-60 text-xs text-ink-muted">
-                  নতুন অ্যাডজাস্টমেন্ট যোগ করলে সেটি এখানে তালিকাভুক্ত হবে।
+                  নতুন অ্যাডজাস্টমেন্ট যোগ করলে এখানে দেখা যাবে।
                 </p>
               </div>
             ) : (

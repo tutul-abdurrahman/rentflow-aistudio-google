@@ -69,7 +69,7 @@ export default function TenantHistory() {
     <div className="mx-auto w-full max-w-3xl">
       <PageHeader
         title="রেন্টি লেজার"
-        subtitle="বিল ও পেমেন্ট — রুম নাম/নম্বর অনুযায়ী"
+        subtitle="বিল ও পেমেন্ট — রুম অনুযায়ী"
         backTo={`/tenants/${tenant.id}`}
         action={
           <span className="ml-auto shrink-0 rounded-pill border border-border bg-surface-raised px-3 py-1.5 text-xs font-medium text-ink-faint">
@@ -104,10 +104,10 @@ export default function TenantHistory() {
 
       <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-4">
         <div className="mt-4 space-y-3 lg:mt-0">
-          <section className="rounded-card border border-border bg-surface-raised" aria-label="লিজ ও শিফট">
+          <section className="rounded-card border border-border bg-surface-raised" aria-label="লিজ ও রুম বদল">
             <div className="flex items-center gap-2 border-b border-border px-5 py-4">
               <ShuffleIcon className="shrink-0 text-primary" />
-              <h2 className="text-base font-semibold text-ink">লিজ ও শিফট</h2>
+              <h2 className="text-base font-semibold text-ink">লিজ ও রুম বদল</h2>
             </div>
             <ol className="relative px-5 py-4 before:absolute before:bottom-5 before:left-[27px] before:top-5 before:w-px before:bg-border">
               {leaseEvents.map((event) => (

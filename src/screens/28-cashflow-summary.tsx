@@ -280,7 +280,7 @@ export default function CashflowSummary() {
         <div className="rounded-card border border-border bg-surface-raised p-4">
           <p className="text-sm text-ink-faint">এই মাসের আয়</p>
           <p className="mt-2 text-2xl font-bold leading-none text-ink">{dash(billed)}</p>
-          <p className="mt-2 text-xs text-success">মূল ভাড়া + সেকেন্ডারি</p>
+          <p className="mt-2 text-xs text-success">মূল ভাড়া + অন্যান্য</p>
         </div>
         <div className="rounded-card border border-border bg-surface-raised p-4">
           <p className="text-sm text-ink-faint">এই মাসের ব্যয়</p>
@@ -374,13 +374,13 @@ export default function CashflowSummary() {
             </div>
             <div>
               <div className="flex items-baseline justify-between text-sm">
-                <span className="text-ink-muted">সেকেন্ডারি</span>
+                <span className="text-ink-muted">অন্যান্য</span>
                 <span className="font-semibold text-ink">{bnTaka(secondaryTotal)}</span>
               </div>
               <p className="mt-1 text-xs text-ink-faint">
-                ইউটিলিটি {bnTaka(utilitiesTotal)} · ওয়েস্ট {bnTaka(wasteTotal)} · লোন{' '}
+                বিদ্যুৎ+পানি {bnTaka(utilitiesTotal)} · ওয়েস্ট {bnTaka(wasteTotal)} · লোন{' '}
                 {bnTaka(loanTotal)} · আগের বাকি {bnTaka(prevDueTotal)}
-                {adjustmentTotal !== 0 ? ` · অ্যাডজাস্ট ${bnTaka(adjustmentTotal)}` : ''}
+                {adjustmentTotal !== 0 ? ` · সমন্বয় ${bnTaka(adjustmentTotal)}` : ''}
               </p>
             </div>
             <div className="flex items-baseline justify-between border-t-2 border-border-strong pt-2.5 text-sm font-bold text-ink">

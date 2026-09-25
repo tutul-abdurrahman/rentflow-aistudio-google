@@ -169,14 +169,14 @@ export default function PaymentSuccess() {
             <span className="font-semibold text-ink">{bnTaka(bill.total)}</span>
           </div>
           <div className="mt-2 flex items-baseline justify-between text-sm">
-            <span className="text-ink-muted">এখন আদায়</span>
+            <span className="text-ink-muted">এই আদায়</span>
             <span className="font-semibold text-ink">{bnTaka(bill.paidAmount)}</span>
           </div>
           <div className="mt-2 flex items-baseline justify-between border-t border-border pt-2 text-sm">
             <span className="text-ink-muted">বাকি</span>
             <span className="font-bold text-success">{bnTaka(dueLeft)}</span>
           </div>
-          <p className="mt-2 text-xs text-ink-faint">কাগজ আগেই ছাপানো। নতুন রিসিট লাগবে না।</p>
+          <p className="mt-2 text-xs text-ink-faint">কাগজ আগেই প্রিন্ট হয়ে গেছে। নতুন রিসিট লাগবে না।</p>
         </div>
 
         <div className="mt-5 w-full space-y-2.5">

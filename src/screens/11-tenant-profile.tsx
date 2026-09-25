@@ -183,7 +183,7 @@ export default function TenantProfile() {
       <section className="mt-3 grid grid-cols-4 gap-2.5" aria-label="দ্রুত অ্যাকশন">
         {isActive ? (
           <>
-            <ActionTile to={`/tenants/${tenant.id}/shift`} label="শিফট রুম" icon={<ShuffleIcon size={20} />} />
+            <ActionTile to={`/tenants/${tenant.id}/shift`} label="রুম বদল" icon={<ShuffleIcon size={20} />} />
             <ActionTile to={`/tenants/${tenant.id}/edit`} label="সম্পাদনা" icon={<PencilIcon size={20} />} />
             <ActionTile to={`/tenants/${tenant.id}/move-out`} label="মুভ আউট" icon={<LogOutIcon size={20} />} />
           </>
@@ -201,7 +201,7 @@ export default function TenantProfile() {
             <InfoRow label="মোবাইল">{formatPhone(tenant.phone)}</InfoRow>
             <InfoRow label="যোগদানের তারিখ">{bnDate(tenant.moveInDate)}</InfoRow>
             {meterCurrent !== null ? (
-              <InfoRow label="সাব-মিটার শেষ রিডিং">{bnNumber(meterCurrent)} ইউনিট</InfoRow>
+              <InfoRow label="সাব-মিটারের শেষ রিডিং">{bnNumber(meterCurrent)} ইউনিট</InfoRow>
             ) : null}
           </dl>
         </section>

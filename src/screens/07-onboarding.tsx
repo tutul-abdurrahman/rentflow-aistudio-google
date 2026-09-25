@@ -18,7 +18,7 @@ type Step = 1 | 2 | 3;
 const DEFAULT_ROOM_RENT = 9000;
 
 const STEP_TITLES: Record<Step, string> = {
-  1: 'ভাষা নির্বাচন',
+  1: 'ভাষা বাছাই',
   2: 'বাড়ির তথ্য',
   3: 'রুম ও রেট',
 };
@@ -217,11 +217,12 @@ export default function Onboarding() {
   const [address, setAddress] = useState('');
   const [phone, setPhone] = useState('');
   const [propertyError, setPropertyError] = useState(false);
+  const [ratesError, setRatesError] = useState(false);
 
   const [roomCount, setRoomCount] = useState(6);
   const [initialRooms, setInitialRooms] = useState(0);
-  const [rate, setRate] = useState('7.5');
-  const [waste, setWaste] = useState('200');
+  const [rate, setRate] = useState('');
+  const [waste, setWaste] = useState('');
   const [submeter, setSubmeter] = useState(true);
 
   const [submitting, setSubmitting] = useState(false);
@@ -249,8 +250,12 @@ export default function Onboarding() {
         setName(property.name);
         setAddress(property.address);
         setPhone(property.ownerPhone);
-        setRate(String(property.electricityRate));
-        setWaste(String(property.wasteFee));
+        // Only fill rates from a SAVED property. A brand-new owner (the
+        // detached, unpersisted default) starts with empty fields — the
+        // rate/waste fee must come from the owner, never a preset.
+        const persisted = Boolean(property.id);
+        setRate(persisted ? String(property.electricityRate) : '');
+        setWaste(persisted ? String(property.wasteFee) : '');
       }
       setInitialRooms(rooms?.length ?? 0);
       setRoomCount((rooms?.length ?? 0) > 0 ? (rooms?.length ?? 0) : 6);
@@ -268,6 +273,13 @@ export default function Onboarding() {
       if (!ok) return;
     }
     if (step === 3) {
+      // Rates are the owner's own numbers — nothing is preset for them.
+      const rateValue = Number.parseFloat(rate);
+      const wasteValue = Number.parseInt(waste, 10);
+      const ratesOk = rate !== '' && Number.isFinite(rateValue) && rateValue > 0
+        && waste !== '' && Number.isFinite(wasteValue) && wasteValue >= 0;
+      setRatesError(!ratesOk);
+      if (!ratesOk) return;
       void finish();
       return;
     }
@@ -297,8 +309,8 @@ export default function Onboarding() {
       name: name.trim(),
       address: address.trim(),
       ownerPhone: phone.trim(),
-      electricityRate: Number.parseFloat(rate) || 0,
-      wasteFee: Number.parseInt(waste, 10) || 0,
+      electricityRate: Number.parseFloat(rate),
+      wasteFee: Number.parseInt(waste, 10),
       midMonthRule: 'day_wise',
     });
 
@@ -358,7 +370,7 @@ export default function Onboarding() {
 
           {step === 1 ? (
             <section className="mt-6">
-              <h1 className="text-lg font-semibold text-ink">ভাষা নির্বাচন</h1>
+              <h1 className="text-lg font-semibold text-ink">ভাষা বাছাই</h1>
               <p className="mt-1 text-sm text-ink-muted">
                 অ্যাপটি বাংলায় চলে।
               </p>
@@ -366,7 +378,7 @@ export default function Onboarding() {
               <div
                 className="mt-4 grid grid-cols-2 gap-3"
                 role="radiogroup"
-                aria-label="ভাষা নির্বাচন"
+                aria-label="ভাষা বাছাই"
               >
                 <LangCard
                   selected={language === 'bn'}
@@ -391,7 +403,7 @@ export default function Onboarding() {
             <section className="mt-6">
               <h1 className="text-lg font-semibold text-ink">বাড়ির তথ্য</h1>
               <p className="mt-1 text-sm text-ink-muted">
-                রেন্ট-বিল হিসাবের জন্য বাড়ির নাম আর ঠিকানা দিন।
+                বিল আর ভাড়ার হিসাবের জন্য বাড়ির নাম আর ঠিকানা দিন।
               </p>
 
               <div className="mt-5">
@@ -434,7 +446,7 @@ export default function Onboarding() {
                 />
 
                 <p className="mt-2 text-xs text-ink-faint">
-                  এই সব তথ্য পরে সেটিংস থেকে বদলাতে পারবেন।
+                  এই তথ্যগুলো পরে সেটিংস থেকে বদলাতে পারবেন।
                 </p>
                 <p className="mt-2 rounded-md border border-border bg-surface-soft p-3 text-xs leading-relaxed text-ink-muted">
                   মাসের মাঝখানে ভাড়াটে উঠলে ভাড়া দিন-ভিত্তিক হিসাব হবে
@@ -494,6 +506,7 @@ export default function Onboarding() {
                     step="0.01"
                     prefix="৳"
                     value={rate}
+                    error={ratesError && rate === '' ? 'বিদ্যুৎ রেট লিখুন' : undefined}
                     onChange={(event) => setRate(event.target.value)}
                   />
                   <Input
@@ -502,6 +515,7 @@ export default function Onboarding() {
                     inputMode="numeric"
                     prefix="৳"
                     value={waste}
+                    error={ratesError && waste === '' ? 'ওয়েস্ট ফি লিখুন' : undefined}
                     onChange={(event) => setWaste(event.target.value)}
                   />
                 </div>

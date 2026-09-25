@@ -231,7 +231,7 @@ export default function MonthlySummaryLedger() {
           {property ? `${property.name} · ${property.address} · ${bnDigits(property.ownerPhone)}` : ''}
         </p>
         <p className="mt-1 text-xs text-ink-faint">
-          স্বাক্ষর কলাম ক্যাশ কালেকশনের সময় হাতে নেওয়ার জন্য খালি রাখা হয়েছে।
+          ক্যাশ নেওয়ার সময় স্বাক্ষর কলামটি হাতে পূরণ করা হবে।
         </p>
       </div>
 
@@ -310,17 +310,16 @@ export default function MonthlySummaryLedger() {
               <tr>
                 <th className={`${TH_CLASS} sticky left-0 z-10 text-ink`}>রুম · রেন্টি</th>
                 <th className={`${TH_CLASS} text-right text-ink-muted`}>
-                  ইউটিলিটি
-                  <span className="block text-[10px] font-medium">বিদ্যুৎ+পানি</span>
+                  বিদ্যুৎ ও পানি
                 </th>
                 <th className={`${TH_CLASS} text-right text-ink-muted`}>ওয়েস্ট</th>
                 <th className={`${TH_CLASS} text-right text-ink-muted`}>ভাড়া</th>
-                <th className={`${TH_CLASS} text-right text-ink-muted`}>অ্যাডজাস্ট</th>
+                <th className={`${TH_CLASS} text-right text-ink-muted`}>সমন্বয়</th>
                 <th className={`${TH_CLASS} text-right text-ink-muted`}>আগের বাকি</th>
                 <th className={`${TH_CLASS} text-right text-ink-muted`}>লোন</th>
                 <th className={`${TH_CLASS} text-right text-ink`}>মোট</th>
                 <th className={`${TH_CLASS} text-right text-ink`}>পরিশোধিত</th>
-                <th className={`${TH_CLASS} text-ink-muted`}>স্ট্যাটাস</th>
+                <th className={`${TH_CLASS} text-ink-muted`}>অবস্থা</th>
                 <th className={`${TH_CLASS} text-ink-muted`}>স্বাক্ষর</th>
               </tr>
             </thead>
@@ -431,7 +430,7 @@ export default function MonthlySummaryLedger() {
                     {bnTaka(totals.paid)}
                   </td>
                   <td className="border-t-2 border-border-strong px-3 py-3 text-sm font-bold whitespace-nowrap text-warning">
-                    মোট চক্রের নিট বাকি {bnTaka(dueTotal)}
+                    নিট বাকি {bnTaka(dueTotal)}
                   </td>
                   <td className="border-t-2 border-border-strong px-3 py-3 text-center text-sm whitespace-nowrap text-ink-faint">
                     —

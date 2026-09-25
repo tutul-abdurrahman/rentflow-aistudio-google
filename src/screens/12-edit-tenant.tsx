@@ -56,7 +56,7 @@ export default function EditTenant() {
 
     const nextErrors: typeof errors = {};
     const digits = asciiDigits(phone).replace(/\D/g, '');
-    if (!name.trim()) nextErrors.name = 'নাম আবশ্যক';
+    if (!name.trim()) nextErrors.name = 'নাম লিখুন';
     if (digits.length !== 11) nextErrors.phone = 'সঠিক ১১ সংখ্যার নম্বর দিন';
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
@@ -66,7 +66,7 @@ export default function EditTenant() {
       await repository.updateTenant(id, { name: name.trim(), phone: digits });
       navigate(`/tenants/${id}`);
     } catch {
-      setFormError('পরিবর্তন সংরক্ষণ করা যায়নি। আবার চেষ্টা করুন।');
+      setFormError('পরিবর্তন সেভ করা যায়নি। আবার চেষ্টা করুন।');
       setSaving(false);
     }
   };
@@ -153,7 +153,7 @@ export default function EditTenant() {
             </div>
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-ink-faint">
               <LockIcon size={14} />
-              রুম বদলাতে প্রোফাইল থেকে “শিফট রুম” ব্যবহার করুন
+              রুম বদলাতে প্রোফাইল থেকে “রুম বদল” ব্যবহার করুন
             </p>
           </div>
         </section>
@@ -172,7 +172,7 @@ export default function EditTenant() {
             বাতিল
           </Link>
           <Button type="submit" className="w-full sm:flex-1" disabled={saving} leadingIcon={<CheckIcon size={18} />}>
-            {saving ? 'সংরক্ষণ হচ্ছে…' : 'সংরক্ষণ করুন'}
+            {saving ? 'সেভ হচ্ছে…' : 'সেভ করুন'}
           </Button>
         </div>
       </form>

@@ -153,7 +153,7 @@ export default function RoomsManagement() {
     } catch (error) {
       const message = error instanceof Error ? error.message : '';
       if (message === 'ROOM_EXISTS') setNumberError('এই রুম নম্বর আগে থেকেই আছে।');
-      else setNumberError('সংরক্ষণ করা যায়নি। আবার চেষ্টা করুন।');
+      else setNumberError('সেভ করা যায়নি। আবার চেষ্টা করুন।');
     } finally {
       setSaving(false);
     }
@@ -370,7 +370,7 @@ export default function RoomsManagement() {
             >
               <path d="m4 12 5 5L20 7" />
             </svg>
-            সংরক্ষণ করুন
+            সেভ করুন
           </button>
         </div>
       </Sheet>

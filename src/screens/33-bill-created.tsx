@@ -186,7 +186,7 @@ export default function BillCreated() {
           </svg>
         </span>
 
-        <h1 className="mt-6 text-2xl font-bold text-ink">কাগজ প্রস্তুত</h1>
+        <h1 className="mt-6 text-2xl font-bold text-ink">বিল প্রস্তুত</h1>
         <p className="mt-1.5 text-sm text-ink-muted">{subtitleParts.join(' · ')}</p>
 
         <p className="mt-5 text-4xl leading-none font-bold tracking-tight text-ink">
@@ -228,7 +228,7 @@ export default function BillCreated() {
             className="inline-flex w-full items-center justify-center gap-2 rounded-button bg-primary px-5 py-3 text-base font-semibold text-on-primary transition-colors hover:bg-primary-hover active:bg-primary-active"
           >
             <PrintIcon />
-            কাগজ ছাপুন
+            প্রিন্ট করুন
           </Link>
           <Link
             to="/bills/preview"

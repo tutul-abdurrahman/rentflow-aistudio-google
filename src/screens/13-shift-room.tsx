@@ -51,7 +51,7 @@ export default function ShiftRoom() {
   if (!loading && (error || !data)) {
     return (
       <div className="mx-auto w-full max-w-3xl">
-        <PageHeader title="রুম শিফট" backTo="/tenants" />
+        <PageHeader title="রুম বদল" backTo="/tenants" />
         <p className="mt-4 rounded-card border border-border bg-surface-raised px-4 py-6 text-center text-sm text-ink-muted">
           রেন্টি খুঁজে পাওয়া যায়নি।
         </p>
@@ -88,7 +88,7 @@ export default function ShiftRoom() {
     } catch (cause) {
       const code = cause instanceof Error ? cause.message : '';
       setSheetOpen(false);
-      setFormError(code === 'ROOM_OCCUPIED' ? 'এই রুমে ইতিমধ্যে একজন রেন্টি আছেন।' : 'রুম শিফট করা যায়নি। আবার চেষ্টা করুন।');
+      setFormError(code === 'ROOM_OCCUPIED' ? 'এই রুমে আগেই একজন রেন্টি আছেন।' : 'রুম বদল করা যায়নি। আবার চেষ্টা করুন।');
     } finally {
       setApplying(false);
     }
@@ -97,12 +97,12 @@ export default function ShiftRoom() {
   if (success) {
     return (
       <div className="mx-auto w-full max-w-3xl">
-        <PageHeader title="রুম শিফট" subtitle={property.name} backTo={`/tenants/${tenant.id}`} />
+        <PageHeader title="রুম বদল" subtitle={property.name} backTo={`/tenants/${tenant.id}`} />
         <div className="mt-4 flex flex-col items-center rounded-card border border-border bg-surface-raised px-6 py-12 text-center">
           <span className="flex h-20 w-20 items-center justify-center rounded-full bg-primary-tint text-primary">
             <CheckIcon size={44} strokeWidth={2.2} />
           </span>
-          <h2 className="mt-5 text-xl font-bold text-ink">রুম শিফট সম্পন্ন!</h2>
+          <h2 className="mt-5 text-xl font-bold text-ink">রুম বদল সম্পন্ন!</h2>
           <p className="mt-1.5 text-sm text-ink-muted">
             {tenant.name} · {success.from} → {success.to}
           </p>
@@ -129,7 +129,7 @@ export default function ShiftRoom() {
   return (
     <div className="mx-auto w-full max-w-3xl">
       <PageHeader
-        title="রুম শিফট"
+        title="রুম বদল"
         subtitle={property.name}
         backTo={`/tenants/${tenant.id}`}
         action={
@@ -195,7 +195,7 @@ export default function ShiftRoom() {
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-sm font-semibold text-ink">{occupant ?? 'খালি রুম'}</span>
                   <span className={cn('block text-xs', occupant ? 'text-ink-muted' : 'text-success')}>
-                    {occupant ? 'দখলকৃত' : 'খালি — উপলব্ধ'}
+                    {occupant ? 'দখলকৃত' : 'খালি'}
                   </span>
                 </span>
                 <CheckIcon
@@ -207,7 +207,7 @@ export default function ShiftRoom() {
             );
           })}
           {options.length === 0 ? (
-            <p className="px-1 py-2 text-sm text-ink-muted">শিফট করার মতো অন্য কোনো রুম নেই।</p>
+            <p className="px-1 py-2 text-sm text-ink-muted">বদল করার মতো অন্য কোনো রুম নেই।</p>
           ) : null}
         </div>
       </section>
@@ -215,7 +215,7 @@ export default function ShiftRoom() {
       <section className="mt-3 rounded-card border border-border bg-surface-raised" aria-label="কার্যকর তারিখ">
         <div className="p-4">
           <label htmlFor="shift-date" className="mb-1.5 block text-sm font-medium text-ink">
-            কার্যকর তারিখ
+            শুরুর তারিখ
           </label>
           <input
             id="shift-date"
@@ -228,7 +228,7 @@ export default function ShiftRoom() {
         </div>
       </section>
 
-      <section className="mt-3 flex items-start gap-3 rounded-card bg-surface-sunken px-5 py-4" aria-label="তথ্য স্থানান্তর নোট">
+      <section className="mt-3 flex items-start gap-3 rounded-card bg-surface-sunken px-5 py-4" aria-label="তথ্য বদলের নোট">
         <InfoIcon className="mt-0.5 shrink-0 text-info" />
         <p className="text-sm leading-relaxed text-ink-muted">
           বকেয়া, জমা/জামানত আর পুরনো হিস্টরি নতুন রুমে চলে যাবে — কোনো তথ্য হারাবে না।
@@ -248,21 +248,21 @@ export default function ShiftRoom() {
           onClick={() => setSheetOpen(true)}
           leadingIcon={<ShuffleIcon size={18} />}
         >
-          শিফট নিশ্চিত করুন
+          রুম বদল নিশ্চিত করুন
         </Button>
       </div>
 
       <Sheet
         open={sheetOpen}
         onClose={() => setSheetOpen(false)}
-        ariaLabel="রুম শিফট নিশ্চিত করুন"
+        ariaLabel="রুম বদল নিশ্চিত করুন"
       >
         <div className="mt-4 flex items-center gap-3">
           <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-danger-tint text-danger">
             <ShuffleIcon size={22} />
           </span>
           <div>
-            <h2 className="text-lg font-semibold text-ink">রুম শিফট নিশ্চিত করুন</h2>
+            <h2 className="text-lg font-semibold text-ink">রুম বদল নিশ্চিত করুন</h2>
             <p className="text-sm text-ink-muted">
               {tenant.name}কে রুম {fromLabel} → {toLabel}-তে সরানো হবে
             </p>
@@ -279,7 +279,7 @@ export default function ShiftRoom() {
             className="inline-flex flex-1 items-center justify-center gap-2 rounded-button bg-danger px-5 py-3 text-base font-semibold text-surface-raised transition-opacity hover:opacity-90 active:opacity-100 disabled:opacity-60"
           >
             <CheckIcon size={18} />
-            {applying ? 'শিফট হচ্ছে…' : 'নিশ্চিত শিফট'}
+            {applying ? 'বদল হচ্ছে…' : 'হ্যাঁ, বদল করুন'}
           </button>
         </div>
       </Sheet>

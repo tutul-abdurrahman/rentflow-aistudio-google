@@ -264,7 +264,7 @@ export default function BillPreview() {
             className="inline-flex h-10 items-center justify-center gap-2 rounded-button bg-primary px-4 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover active:bg-primary-active"
           >
             <PrintIcon />
-            কাগজ ছাপুন
+            প্রিন্ট করুন
           </Link>
         ) : null}
       </div>
@@ -298,7 +298,7 @@ export default function BillPreview() {
                 </p>
               </div>
               <div className="px-3 py-4 text-center sm:px-4">
-                <p className="text-xs text-ink-faint">নিট অনাদায়ী</p>
+                <p className="text-xs text-ink-faint">নিট বাকি</p>
                 <p className="mt-1 text-lg font-bold leading-none text-ink sm:text-xl">
                   {bnTaka(totals.due)}
                 </p>
@@ -307,7 +307,7 @@ export default function BillPreview() {
             <div className="flex items-center justify-between border-t border-border bg-surface-soft px-4 py-2 text-xs text-ink-muted">
               <span className="inline-flex items-center gap-1.5">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                {bnDigits(bills.length)}টি কাগজ প্রস্তুত
+                {bnDigits(bills.length)}টি কাগজ তৈরি
                 {vacantNumbers.length > 0 ? ` · ${vacantNumbers.join(', ')} খালি` : ''}
               </span>
               <span>
@@ -352,7 +352,7 @@ export default function BillPreview() {
                         {head}
                       </th>
                     ))}
-                    {['ভাড়া', 'ইউটিলিটি', 'ওয়েস্ট', 'আগের বাকি', 'লোন'].map((head) => (
+                    {['ভাড়া', 'বিদ্যুৎ ও পানি', 'ওয়েস্ট', 'আগের বাকি', 'লোন'].map((head) => (
                       <th
                         key={head}
                         className="border-b-2 border-border-strong bg-surface-soft px-3 py-2.5 text-right text-xs font-semibold whitespace-nowrap text-ink-muted"
@@ -437,7 +437,7 @@ export default function BillPreview() {
 
           <p className="mt-2 text-xs text-ink-faint">
             রুম {vacantNumbers.join(', ') || '—'} খালি — এই মাসে কাগজ নেই। ওয়েস্ট, পানির ভাগ বা
-            অটো বিদ্যুৎ যোগ হয়নি।
+            বিদ্যুৎ যোগ হয়নি।
           </p>
 
           <div className="mt-4 pb-1 md:mt-6">
@@ -447,7 +447,7 @@ export default function BillPreview() {
                 className="inline-flex w-full items-center justify-center gap-2 rounded-button bg-primary px-5 py-3 text-base font-semibold text-on-primary transition-colors hover:bg-primary-hover active:bg-primary-active md:flex-1"
               >
                 <PrintIcon />
-                কাগজ ছাপুন
+                প্রিন্ট করুন
               </Link>
               <Link
                 to="/bills/adjustments"
@@ -459,7 +459,7 @@ export default function BillPreview() {
             </div>
             <p className="mt-2 text-center text-xs text-ink-faint">
               এই কাগজগুলো এখন ভাড়াটেদের হাতে দিন। টাকা এলে কালেকশনে লেজারে লেখা হবে — নতুন
-              রিসিট ছাপতে হবে না।
+              রিসিট প্রিন্ট করতে হবে না।
             </p>
           </div>
         </>
@@ -538,7 +538,7 @@ export default function BillPreview() {
               to={`/bills/reprint/${selected.bill.tenantId}`}
               className="mt-5 inline-flex w-full items-center justify-center rounded-button border border-secondary bg-surface-raised px-5 py-3 text-base font-semibold text-secondary transition-colors hover:bg-secondary-hover active:bg-secondary-active"
             >
-              রিপ্রিন্ট কাগজ
+              কাগজ আবার প্রিন্ট করুন
             </Link>
             <Button
               variant="ghost"

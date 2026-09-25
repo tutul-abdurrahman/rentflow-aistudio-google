@@ -14,12 +14,12 @@ import { supabase } from '../lib/supabase';
 
 const OTP_LENGTH = 6;
 const OTP_LABELS = [
-  'ওটিপি প্রথম অঙ্ক',
-  'ওটিপি দ্বিতীয় অঙ্ক',
-  'ওটিপি তৃতীয় অঙ্ক',
-  'ওটিপি চতুর্থ অঙ্ক',
-  'ওটিপি পঞ্চম অঙ্ক',
-  'ওটিপি ষষ্ঠ অঙ্ক',
+  'ওটিপি প্রথম সংখ্যা',
+  'ওটিপি দ্বিতীয় সংখ্যা',
+  'ওটিপি তৃতীয় সংখ্যা',
+  'ওটিপি চতুর্থ সংখ্যা',
+  'ওটিপি পঞ্চম সংখ্যা',
+  'ওটিপি ষষ্ঠ সংখ্যা',
 ];
 
 function authErrorMessage(message: string): string {
@@ -474,7 +474,7 @@ export default function Signup() {
                   অনবোর্ডিং শুরু করুন <ArrowRightIcon />
                 </Button>
                 <p className="mt-4 text-sm text-ink-muted">
-                  ইতিমধ্যে অ্যাকাউন্ট আছে?{' '}
+                  আগেই অ্যাকাউন্ট আছে?{' '}
                   <Link
                     to="/login"
                     className="font-semibold text-primary transition-colors hover:text-primary-hover"

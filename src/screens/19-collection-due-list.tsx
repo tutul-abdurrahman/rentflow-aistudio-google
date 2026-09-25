@@ -233,7 +233,7 @@ export default function CollectionDueList() {
         backTo="/bills/preview"
       />
       <p className="mt-2 text-xs text-ink-faint">
-        টাকা এলে লেজারে লিখুন। নতুন রিসিট ছাপাবেন না — কাগজ আগেই গেছে।
+        টাকা এলে লেজারে লিখুন। নতুন রিসিট প্রিন্ট করবেন না — কাগজ আগেই গেছে।
       </p>
 
       <section
@@ -398,7 +398,7 @@ export default function CollectionDueList() {
 
             <div className="mt-4">
               <label htmlFor="sheet-note" className="mb-1.5 block text-sm font-medium text-ink">
-                নোট (ঐচ্ছিক)
+                নোট (ইচ্ছা হলে)
               </label>
               <input
                 id="sheet-note"
