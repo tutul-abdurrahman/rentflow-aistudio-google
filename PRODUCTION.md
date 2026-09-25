@@ -65,25 +65,49 @@ never reach the browser bundle.
 Tutul will point Google AI Studio at this repo for the production pass.
 Recommended stage order — each stage is reviewable separately:
 
+**Snapshot for the pass:** the LIVE database is intentionally empty (Tutul
+wipes demo data before going live — `scripts/reset-property.mjs`). Do not
+re-seed demo data as if it were real; `scripts/seed-demo.mts` exists only for
+local testing. A fresh owner sees the onboarding flow (ভাষা → বাড়ির তথ্য →
+রুম ও রেট) and rates/waste fee are NEVER preset — the owner enters them.
+
 1. **Read the rules first**: `src/lib/engine/index.ts` doc comments +
-   `handoff`-derived rules baked into code. Locked business rules:
+   `src/lib/repository/types.ts` cycle semantics. Locked business rules:
    - Water split = used units ÷ (occupied rooms + 1) — owner bears one share.
    - Per-room electricity = current − previous, negative rejected.
-   - Bill = rent + (elec + water share) × rate + waste 200 + adjustments +
+   - Bill = rent + (elec + water share) × rate + waste fee + adjustments +
      prev due + optional loan installment.
    - Mid-month move-in rent: day-wise by default (property setting).
    - Vacant rooms get no waste/water/electricity bill.
    - Print-then-collect; payments are ledger-only; no payment receipts;
      corrections update the ledger in place — never regenerate.
-   - Engine math is the source of truth for every displayed number.
+   - Stored bills are never rewritten when SETTINGS change later (a new rate
+     applies from the next calculation); unit figures on screens derive from
+     the stored bill's own engine `detail` strings, not today's rate.
+   - Rates are owner-entered — never re-introduce presets (7.5/200).
+   - Engine math is the source of truth for every displayed number; labels
+     state their basis (e.g. 'বকেয়া' clamp-sum vs 'নিট বাকি' net).
 2. **Engine hardening**: edge cases, decimal safety, property-test the pure
    functions. Do NOT change locked rules.
 3. **Security review**: RLS policies in `supabase/schema.sql`, auth flows in
    `src/screens/01/05/06/32`, env handling. The anon key is public by design.
 4. **UX polish**: loading/empty/error states, focus order, print output.
    Keep the "Paper & Ink" tokens (`src/theme/tokens.css`) — one palette, one
-   typeface (Noto Sans Bengali), Bengali numerals via `src/lib/format.ts`.
-5. **Deploy polish**: PWA shell, offline meter-entry draft, CSV export.
+   typeface (Noto Sans Bengali), Bengali numerals via `src/lib/format.ts`,
+   and the polished conversational copy (প্রিন্ট করুন, সেভ করুন — not ছাপুন,
+   সংরক্ষণ).
+5. **Specific improvement candidates already identified**:
+   - `18-manual-adjustment.tsx` previews unit adjustments at the CURRENT
+     property rate; historical months ideally show the bill's own rate.
+   - `03-meter-entry.tsx` "বিল দেখুন" navigates without saving edited
+     rates — only "খসড়া সেভ করুন" persists them.
+   - Refresh flows when a month has no bills (month-select dropdowns on
+     02/22/26 vs an empty month).
+6. **Deploy polish**: PWA shell, offline meter-entry draft, CSV export.
+
+After the pass: the returned changes must keep `npm run build` exit 0 and
+`npm test` green, and must not break any locked rule above — run them by
+Tutul, who merges through his manager session.
 
 ## 5. Known resolved debts
 
