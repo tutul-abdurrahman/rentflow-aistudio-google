@@ -1,0 +1,123 @@
+/* ============================================================
+   RentFlow — print rules (handoff §11).
+
+   Ported from the design canvas <style> blocks of 04 and 21.
+   Loaded after tokens.css from src/main.tsx.
+
+   Rules:
+   - Only @media print rules live here; on-screen layout is Tailwind.
+   - Scoped per screen (`.print-04` / `.print-21`) so the two print
+     screens do not leak @page size into each other or into screen 22.
+   - The ONLY raw hex in the app is the 04 cut line `1.5px dashed #bbb`.
+   ============================================================ */
+
+@media print {
+  /* ---------- shared ---------- */
+
+  .no-print {
+    display: none !important;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--color-surface-raised);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* per-screen roots carry the page; verified A4 in Chromium print-to-PDF */
+  .print-04,
+  .print-21 {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ---------- 04 — monthly paper grid (A4 portrait, margin 0) ---------- */
+
+  @page print-grid {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  .print-04 {
+    page: print-grid;
+  }
+
+  .print-04 .print-stage {
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+    background: var(--color-surface-raised);
+  }
+
+  .print-04 .print-sheet {
+    width: 210mm;
+    height: 297mm;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: hidden;
+    break-after: page;
+    page-break-after: always;
+  }
+
+  .print-04 .print-sheet:last-of-type {
+    break-after: auto;
+    page-break-after: auto;
+  }
+
+  .print-04 .receipt-grid {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .print-04 .receipt {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* dashed cut lines (functional print-only style — the one allowed hex) */
+  .print-04 .receipt:nth-child(odd) {
+    border-right: 1.5px dashed #bbb;
+  }
+
+  .print-04 .receipt:nth-child(-n + 6) {
+    border-bottom: 1.5px dashed #bbb;
+  }
+
+  /* ---------- 21 — single monthly paper slip (A4 portrait) ---------- */
+
+  @page print-slip {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  .print-21 {
+    page: print-slip;
+  }
+
+  .print-21 .print-stage {
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+    background: var(--color-surface-raised);
+  }
+
+  .print-21 .print-sheet {
+    width: 210mm;
+    height: 297mm;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: hidden;
+  }
+
+  .print-21 .receipt-frame {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

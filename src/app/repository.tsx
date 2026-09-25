@@ -5,10 +5,10 @@ import { getRepository } from '../lib/repository';
 /**
  * Repository access for screens.
  *
- * `getRepository()` is called exactly once per provider, lazily — until the
- * integration worker replaces src/lib/repository/index.ts it throws
- * 'Repository not wired yet', and an eager call would take the whole shell
- * down before any screen renders.
+ * `getRepository()` is called exactly once per provider, lazily. It returns the
+ * memory-backed repository today; a Supabase implementation lands during
+ * integration. The lazy getter keeps that swap from becoming an eager
+ * dependency of the shell before any screen renders.
  */
 type RepositoryGetter = () => RentFlowRepository;
 

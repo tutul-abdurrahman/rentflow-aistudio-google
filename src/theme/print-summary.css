@@ -1,0 +1,64 @@
+/* ============================================================
+   RentFlow — print rules for screen 22 (মাসিক সারাংশ / লেজার).
+
+   Loaded from src/main.tsx after print.css, which owns the 04/21
+   sheet rules. This file never touches print.css.
+
+   Scoping: an unnamed `@page { size: A4 landscape }` would leak to
+   04/21 (the last @page in document order wins for the whole
+   document). So the landscape page is declared as a *named* page and
+   assigned to <body> only while screen 22 is mounted. 04/21 keep
+   whatever @page print.css declares.
+   ============================================================ */
+
+.print-only {
+  display: none;
+}
+
+@media print {
+  @page summary-ledger {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+
+  /* 22 mounts → <body class="print-summary">; the ledgers' pages use the
+     named landscape page, the rest of the document keeps its own page. */
+  body.print-summary {
+    page: summary-ledger;
+    background: var(--color-surface-raised);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Hide app chrome (sidebar + bottom nav) and the screen toolbar. */
+  body.print-summary aside,
+  body.print-summary nav,
+  body.print-summary .no-print {
+    display: none !important;
+  }
+
+  /* The shell offsets content for the sidebar; drop it on paper. */
+  body.print-summary [class*='lg:pl-'] {
+    padding-left: 0 !important;
+  }
+  body.print-summary main {
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  body.print-summary .ledger-card {
+    border: none;
+    border-radius: 0;
+  }
+  body.print-summary .ledger-scroll {
+    overflow: visible !important;
+  }
+  body.print-summary .ledger-table {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+  body.print-summary .print-only {
+    display: block;
+  }
+}

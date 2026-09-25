@@ -204,8 +204,17 @@ describe('memory repository — demo seed', () => {
     expect(archived[0].moveOutResolution).toBe('hold');
 
     await expect(repo.deleteArchivedTenant('tenant-rahat')).rejects.toThrow('TENANT_ACTIVE');
+    // শামীম has no bills or ledger entries, so his archive row can be removed.
     await repo.deleteArchivedTenant('tenant-shamim');
     expect(await repo.listTenants('archived')).toHaveLength(0);
+  });
+
+  it('deleteArchivedTenant refuses when the tenant has bills or ledger history', async () => {
+    await repo.moveOut('tenant-rahat', { date: '2026-09-30', resolution: 'hold' });
+
+    await expect(repo.deleteArchivedTenant('tenant-rahat')).rejects.toThrow('TENANT_HAS_HISTORY');
+    expect(await repo.getTenant('tenant-rahat')).not.toBeNull();
+    expect((await repo.listBills(DEMO_MONTH)).some((bill) => bill.tenantId === 'tenant-rahat')).toBe(true);
   });
 
   it('shiftRoom and moveOut mutate tenant + room status and show up in history', async () => {
@@ -248,6 +257,52 @@ describe('memory repository — demo seed', () => {
 
     const cancelled = await repo.cancelLoan('loan-nafisa');
     expect(cancelled.status).toBe('cancelled');
+  });
+
+  it('recordPayment against a bill with a loan line advances the tenant loan', async () => {
+    const bills = await repo.calculatePapers(DEMO_MONTH);
+    const loanBill = bills.find((bill) => bill.id === '2026-08-107')!;
+    expect(loanBill.lines.some((line) => line.kind === 'loan')).toBe(true);
+
+    await repo.recordPayment({ billId: loanBill.id, amount: 1000, paidAt: '2026-08-25', method: 'cash' });
+
+    const loan = (await repo.listLoans()).find((item) => item.id === 'loan-nafisa')!;
+    expect(loan.paidInstallments).toBe(3);
+    expect(loan.status).toBe('active');
+  });
+
+  it('does not overflow the loan counter when a payment lands at the installment count', async () => {
+    const bills = await repo.calculatePapers(DEMO_MONTH);
+    const loanBill = bills.find((bill) => bill.id === '2026-08-107')!;
+
+    // 2 → 5, completing the loan before the payment is recorded.
+    await repo.payLoanInstallment('loan-nafisa');
+    await repo.payLoanInstallment('loan-nafisa');
+    await repo.payLoanInstallment('loan-nafisa');
+    const completed = (await repo.listLoans()).find((item) => item.id === 'loan-nafisa')!;
+    expect(completed.paidInstallments).toBe(completed.installmentCount);
+    expect(completed.status).toBe('completed');
+
+    await repo.recordPayment({ billId: loanBill.id, amount: 1000, paidAt: '2026-08-26', method: 'cash' });
+
+    const after = (await repo.listLoans()).find((item) => item.id === 'loan-nafisa')!;
+    expect(after.paidInstallments).toBe(after.installmentCount);
+  });
+
+  it('completes the loan when payments carry the counter to the installment count', async () => {
+    const bills = await repo.calculatePapers(DEMO_MONTH);
+    const loanBill = bills.find((bill) => bill.id === '2026-08-107')!;
+
+    await repo.recordPayment({ billId: loanBill.id, amount: 1000, paidAt: '2026-08-25', method: 'cash' });
+    await repo.recordPayment({ billId: loanBill.id, amount: 1000, paidAt: '2026-08-26', method: 'cash' });
+    let loan = (await repo.listLoans()).find((item) => item.id === 'loan-nafisa')!;
+    expect(loan.paidInstallments).toBe(4);
+    expect(loan.status).toBe('active');
+
+    await repo.recordPayment({ billId: loanBill.id, amount: 1000, paidAt: '2026-08-27', method: 'cash' });
+    loan = (await repo.listLoans()).find((item) => item.id === 'loan-nafisa')!;
+    expect(loan.paidInstallments).toBe(5);
+    expect(loan.status).toBe('completed');
   });
 
   it('does not use Math.random for demo ids', async () => {

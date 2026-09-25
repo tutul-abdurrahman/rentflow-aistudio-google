@@ -104,7 +104,7 @@ create table if not exists public.bills (
   owner_id uuid not null references auth.users (id) on delete cascade,
   month text not null,
   room_id uuid not null references public.rooms (id) on delete cascade,
-  tenant_id uuid not null references public.tenants (id) on delete cascade,
+  tenant_id uuid not null references public.tenants (id) on delete restrict,
   lines jsonb not null default '[]',
   utilities_total numeric not null default 0,
   total numeric not null default 0,
@@ -122,7 +122,7 @@ create table if not exists public.ledger_entries (
   property_id uuid not null references public.properties (id) on delete cascade,
   owner_id uuid not null references auth.users (id) on delete cascade,
   bill_id uuid not null references public.bills (id) on delete cascade,
-  tenant_id uuid not null references public.tenants (id) on delete cascade,
+  tenant_id uuid not null references public.tenants (id) on delete restrict,
   month text not null,
   amount numeric not null,
   paid_at date not null,
@@ -152,7 +152,7 @@ create table if not exists public.loans (
   id uuid primary key default gen_random_uuid(),
   property_id uuid not null references public.properties (id) on delete cascade,
   owner_id uuid not null references auth.users (id) on delete cascade,
-  tenant_id uuid not null references public.tenants (id) on delete cascade,
+  tenant_id uuid not null references public.tenants (id) on delete restrict,
   total_amount numeric not null,
   installment_count integer not null,
   installment_amount numeric not null,
@@ -237,3 +237,38 @@ create policy "owner_full_loans" on public.loans
 drop policy if exists "owner_full_finance" on public.finance_entries;
 create policy "owner_full_finance" on public.finance_entries
   for all using (owner_id = (select auth.uid())) with check (owner_id = (select auth.uid()));
+
+-- ============================================================
+-- Migration fixups (idempotent, for databases created before
+-- these rules existed). Financial history must survive tenant
+-- deletion — restrict, never cascade.
+-- ============================================================
+do $$
+begin
+  if exists (
+    select 1 from pg_constraint
+    where conrelid = 'public.bills'::regclass and conname = 'bills_tenant_id_fkey' and confdeltype = 'c'
+  ) then
+    alter table public.bills drop constraint bills_tenant_id_fkey;
+    alter table public.bills
+      add constraint bills_tenant_id_fkey foreign key (tenant_id) references public.tenants (id) on delete restrict;
+  end if;
+
+  if exists (
+    select 1 from pg_constraint
+    where conrelid = 'public.ledger_entries'::regclass and conname = 'ledger_entries_tenant_id_fkey' and confdeltype = 'c'
+  ) then
+    alter table public.ledger_entries drop constraint ledger_entries_tenant_id_fkey;
+    alter table public.ledger_entries
+      add constraint ledger_entries_tenant_id_fkey foreign key (tenant_id) references public.tenants (id) on delete restrict;
+  end if;
+
+  if exists (
+    select 1 from pg_constraint
+    where conrelid = 'public.loans'::regclass and conname = 'loans_tenant_id_fkey' and confdeltype = 'c'
+  ) then
+    alter table public.loans drop constraint loans_tenant_id_fkey;
+    alter table public.loans
+      add constraint loans_tenant_id_fkey foreign key (tenant_id) references public.tenants (id) on delete restrict;
+  end if;
+end $$;

@@ -8,7 +8,9 @@
  * Cycle semantics (handoff §10, §14):
  * - calculatePapers: build + persist + shift readings; idempotent per month.
  * - adjustBill: mutate the stored bill in place, never regenerate.
- * - recordPayment: ledger entry only; bill paidAmount/status follow.
+ * - recordPayment: ledger entry only; bill paidAmount/status follow. When the
+ *   bill carries a loan line, the paying tenant's active add-to-bill loan
+ *   advances one installment (handoff §10).
  * - getPrevDueByRoom: Σ prior billed − Σ prior paid, per room.
  */
 
@@ -266,6 +268,12 @@ export function createMemoryRepository(): RentFlowRepository {
       const tenant = s.tenants.find((t) => t.id === tenantId);
       if (!tenant) throw new Error('TENANT_NOT_FOUND');
       if (tenant.status !== 'archived') throw new Error('TENANT_ACTIVE');
+      // Financial history is protected: bills and ledger entries must survive
+      // the tenant record (handoff §10). Deleting would orphan the archive.
+      const hasHistory =
+        s.bills.some((bill) => bill.tenantId === tenantId) ||
+        s.ledger.some((entry) => entry.tenantId === tenantId);
+      if (hasHistory) throw new Error('TENANT_HAS_HISTORY');
       s.tenants = s.tenants.filter((t) => t.id !== tenantId);
     },
 
@@ -454,6 +462,19 @@ export function createMemoryRepository(): RentFlowRepository {
       s.ledger.push(entry);
       bill.paidAmount += input.amount;
       bill.status = bill.paidAmount >= bill.total ? 'paid' : bill.paidAmount > 0 ? 'partial' : 'due';
+
+      // A loan folded into this bill is settled installment-by-installment as
+      // the bill gets paid: advance the paying tenant's active add-to-bill loan.
+      if (bill.lines.some((line) => line.kind === 'loan')) {
+        const loan = s.loans.find(
+          (item) => item.tenantId === bill.tenantId && item.status === 'active' && item.addToBill,
+        );
+        if (loan) {
+          loan.paidInstallments = Math.min(loan.paidInstallments + 1, loan.installmentCount);
+          if (loan.paidInstallments >= loan.installmentCount) loan.status = 'completed';
+        }
+      }
+
       return { ...entry };
     },
 

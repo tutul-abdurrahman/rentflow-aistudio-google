@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react';
+import { useRepository } from '../app/repository';
+import { useAsync } from '../lib/useAsync';
 import BottomNav, { type BottomNavVariant } from './BottomNav';
 import Sidebar from './Sidebar';
 
@@ -14,9 +16,13 @@ export interface AppShellProps {
 }
 
 export function AppShell({ children, navVariant }: AppShellProps) {
+  const repository = useRepository();
+  // Renames propagate from the repository; Sidebar keeps its defaults while loading.
+  const { data: property } = useAsync(() => repository.getProperty(), [repository]);
+
   return (
     <>
-      <Sidebar />
+      <Sidebar ownerName={property?.ownerName} propertyName={property?.name} />
       <div className="min-h-dvh lg:pl-[264px]">
         <main className="mx-auto w-full px-3 pb-32 sm:px-5 md:max-w-[48rem] lg:max-w-[72rem] lg:px-8 lg:pb-16 xl:max-w-[80rem]">
           {children}
