@@ -1,0 +1,15 @@
+- Project URL: `https://mysfovkfilbfxicvhaeh.supabase.co`
+
+- Publishable key: `sb_publishable_JxqzBWZSfVTNyzML-AWJPQ_PHhcYP56`
+
+- Direct connection string: `postgresql://postgres:[YOUR-PASSWORD]@db.mysfovkfilbfxicvhaeh.supabase.co:5432/postgres`
+
+- CLI setup commands: `supabase login
+supabase init
+supabase link --project-ref mysfovkfilbfxicvhaeh`
+
+- Database password: `162tk7hbP7zXFSaRe^R%`
+
+- anon public key: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15c2ZvdmtmaWxiZnhpY3ZoYWVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMDYwODcsImV4cCI6MjEwNTg4MjA4N30.5GiJiwsjs4xBsx0Eiq3zAVne8TS7c_dqirpU39SaSa0`
+
+- service_role key: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15c2ZvdmtmaWxiZnhpY3ZoYWVoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MDMwNjA4NywiZXhwIjoyMTA1ODgyMDg3fQ.vSCOMueDIzbzB1LIC-jQwqa-sA9FT0ZIr7ZWWn13zCg`
