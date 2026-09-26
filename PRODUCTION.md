@@ -36,6 +36,17 @@ never orphan financial history.
 The `service_role` key is needed only by those scripts (server-side). It must
 never reach the browser bundle.
 
+`.env.production` (committed) bakes the two PUBLIC values
+(`VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY`) into every production build,
+so AI Studio / CI deploys connect even without a secrets store. The anon key
+is public by design — RLS (`owner_id = auth.uid()`) locks each row to the
+signed-in owner, so it cannot read any other owner's data. Owner credentials
+and the `service_role` key stay out of every committed file.
+
+After the first deploy, add the production URL to Supabase → Authentication →
+URL Configuration (Site URL + Redirect URLs), so signup/password-reset OTP
+email links point to the live app instead of localhost.
+
 ## 2. Data & backups
 
 - Supabase free tier has no point-in-time recovery. Monthly (or after any
