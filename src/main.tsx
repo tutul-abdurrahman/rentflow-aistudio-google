@@ -7,6 +7,19 @@ import './theme/print.css';
 // it is loaded last in the app entry so it never weakens those.
 import './theme/print-summary.css';
 
+/**
+ * The hosting platform injects a RELATIVE /_service-worker.js registration,
+ * which 404s on subpaths (/settings/, /bills/) because it resolves against the
+ * current path. Registering the no-op worker ourselves with an ABSOLUTE path
+ * fixes that. Production-only, feature-detected, and error-swallowing — it can
+ * never break the app.
+ */
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/_service-worker.js').catch(() => {});
+  });
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />

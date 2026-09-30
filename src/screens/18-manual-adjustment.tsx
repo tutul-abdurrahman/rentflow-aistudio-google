@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useRepository } from '../app/repository';
 import Button from '../components/Button';
 import EmptyState from '../components/EmptyState';
@@ -7,6 +7,7 @@ import PageHeader from '../components/PageHeader';
 import RadioCard from '../components/RadioCard';
 import { cn } from '../lib/cn';
 import { bnDigits, bnMonth, bnTaka } from '../lib/format';
+import { resolveScreenMonth } from '../lib/screen-month';
 import type { Adjustment, Bill, Property, Room, Tenant } from '../lib/types';
 
 /**
@@ -14,13 +15,18 @@ import type { Adjustment, Bill, Property, Room, Tenant } from '../lib/types';
  * PLACE via repository.adjustBill(). There is no regenerate path here
  * (handoff §10/§14); a wrong entry is corrected in place and the ledger
  * follows wherever the numbers break.
+ *
+ * 'আগের বাকি' is the third mode: opening (pre-history) debt the owner seeds
+ * for a room — kind 'prev_due' appends an OPENING line, so the ledger carry
+ * keeps it instead of treating it as a transfer.
  */
 
-type AdjustmentType = 'units' | 'charge';
+type AdjustmentType = 'units' | 'charge' | 'prev_due';
 
 const TYPE_LABELS: Record<AdjustmentType, string> = {
   units: 'অতিরিক্ত ইউনিট',
   charge: 'এককালীন চার্জ',
+  prev_due: 'আগের বাকি',
 };
 
 function PlusIcon() {
@@ -84,6 +90,7 @@ const initials = (name: string): string => name.trim().slice(0, 2);
 
 export default function ManualAdjustment() {
   const repo = useRepository();
+  const [searchParams] = useSearchParams();
 
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -100,21 +107,22 @@ export default function ManualAdjustment() {
   const [type, setType] = useState<AdjustmentType>('units');
   const [units, setUnits] = useState('');
   const [charge, setCharge] = useState('');
+  const [due, setDue] = useState('');
   const [note, setNote] = useState('');
 
   useEffect(() => {
     let alive = true;
     (async () => {
-      const activeMonth = await repo.getActiveMonth();
+      const resolvedMonth = await resolveScreenMonth(repo, searchParams.get('month'));
       const [prop, roomList, tenantList, billList, adjustmentList] = await Promise.all([
         repo.getProperty(),
         repo.listRooms(),
         repo.listTenants(),
-        repo.listBills(activeMonth),
-        repo.listAdjustments(activeMonth),
+        repo.listBills(resolvedMonth),
+        repo.listAdjustments(resolvedMonth),
       ]);
       if (!alive) return;
-      setMonth(activeMonth);
+      setMonth(resolvedMonth);
       setProperty(prop);
       setRooms(roomList);
       setTenants(tenantList);
@@ -127,6 +135,7 @@ export default function ManualAdjustment() {
     return () => {
       alive = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [repo]);
 
   const roomNumber = useMemo(() => {
@@ -160,18 +169,24 @@ export default function ManualAdjustment() {
 
   const unitsNumber = units === '' ? Number.NaN : Number(units);
   const chargeNumber = charge === '' ? Number.NaN : Number(charge);
+  const dueNumber = due === '' ? Number.NaN : Number(due);
   const amount =
     type === 'units'
       ? Number.isFinite(unitsNumber)
         ? Math.round(unitsNumber * rate)
         : 0
-      : Number.isFinite(chargeNumber)
-        ? Math.round(chargeNumber)
-        : 0;
+      : type === 'prev_due'
+        ? Number.isFinite(dueNumber)
+          ? Math.round(dueNumber)
+          : 0
+        : Number.isFinite(chargeNumber)
+          ? Math.round(chargeNumber)
+          : 0;
 
   const resetInputs = () => {
     setUnits('');
     setCharge('');
+    setDue('');
     setNote('');
   };
 
@@ -182,7 +197,13 @@ export default function ManualAdjustment() {
       return;
     }
     if (amount === 0) {
-      setError(type === 'units' ? 'ইউনিট সংখ্যা দিন।' : 'চার্জের পরিমাণ দিন।');
+      setError(
+        type === 'units'
+          ? 'ইউনিট সংখ্যা দিন।'
+          : type === 'prev_due'
+            ? 'আগের বাকির পরিমাণ দিন।'
+            : 'চার্জের পরিমাণ দিন।',
+      );
       return;
     }
     if (!note.trim()) {
@@ -191,11 +212,16 @@ export default function ManualAdjustment() {
     }
     setBusy(true);
     try {
-      await repo.adjustBill(month, roomId, {
-        label: TYPE_LABELS[type],
-        amount,
-        note: note.trim(),
-      });
+      await repo.adjustBill(
+        month,
+        roomId,
+        {
+          label: TYPE_LABELS[type],
+          amount,
+          note: note.trim(),
+        },
+        type === 'prev_due' ? 'prev_due' : 'adjustment',
+      );
       setAdjustments(await repo.listAdjustments(month));
       resetInputs();
     } catch (caught) {
@@ -210,10 +236,12 @@ export default function ManualAdjustment() {
       ? `${bnDigits(units)} ইউনিট × ৳${bnDigits(rate)} = ${bnTaka(amount)} — সংখ্যা বদলালে টাকা নিজে নিজে হিসাব হবে`
       : 'সংখ্যা বদলালে টাকা নিজে নিজে হিসাব হবে';
 
+  const previewBackTo = month ? `/bills/preview?month=${month}` : '/bills/preview';
+
   if (loading || !property) {
     return (
       <>
-        <PageHeader title="অ্যাডজাস্টমেন্ট" subtitle="লোড হচ্ছে…" backTo="/bills/preview" />
+        <PageHeader title="অ্যাডজাস্টমেন্ট" subtitle="লোড হচ্ছে…" backTo={previewBackTo} />
         <div
           className="mx-auto mt-4 w-full max-w-3xl space-y-4"
           aria-busy="true"
@@ -239,7 +267,7 @@ export default function ManualAdjustment() {
       <PageHeader
         title="অ্যাডজাস্টমেন্ট"
         subtitle={`${bnMonth(month)} · ${property.name}`}
-        backTo="/bills/preview"
+        backTo={previewBackTo}
       />
 
       {billRooms.length === 0 ? (
@@ -292,6 +320,14 @@ export default function ManualAdjustment() {
                 title="এককালীন চার্জ"
                 description="মেরামত, ফাইন বা অন্য কোনো নির্দিষ্ট টাকা"
               />
+              <RadioCard
+                name="adj-type"
+                value="prev_due"
+                checked={type === 'prev_due'}
+                onChange={() => setType('prev_due')}
+                title="আগের বাকি"
+                description="এই মাসের আগের বাকি বা অগ্রিম — বিয়োগ দিলে জমা"
+              />
             </div>
 
             {type === 'units' ? (
@@ -315,7 +351,7 @@ export default function ManualAdjustment() {
                 </div>
                 <p className="mt-1.5 text-xs text-ink-faint">{unitsHelper}</p>
               </div>
-            ) : (
+            ) : type === 'charge' ? (
               <div className="mt-4">
                 <label htmlFor="charge-input" className="mb-1.5 block text-sm font-medium text-ink">
                   চার্জের পরিমাণ
@@ -336,6 +372,30 @@ export default function ManualAdjustment() {
                 </div>
                 <p className="mt-1.5 text-xs text-ink-faint">
                   এই টাকা লেজারে যোগ হবে — বিল আবার তৈরি করতে হবে না
+                </p>
+              </div>
+            ) : (
+              <div className="mt-4">
+                <label htmlFor="due-input" className="mb-1.5 block text-sm font-medium text-ink">
+                  আগের বাকির পরিমাণ
+                </label>
+                <div className="relative">
+                  <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-md font-medium text-ink-faint">
+                    ৳
+                  </span>
+                  <input
+                    id="due-input"
+                    type="number"
+                    placeholder="যেমন ৩০০০ (জমা হলে -৩০০০)"
+                    value={due}
+                    onChange={(event) => setDue(event.target.value)}
+                    className="w-full rounded-input border border-border bg-surface-raised py-3 pl-10 pr-4 text-md text-ink transition-colors placeholder:text-ink-faint focus:border-border-focus"
+                  />
+                </div>
+                <p className="mt-1.5 text-xs text-ink-faint">
+                  {due !== '' && Number.isFinite(dueNumber) && dueNumber !== 0
+                    ? `${bnTaka(amount)} — আগের বাকি হিসেবে যোগ হবে`
+                    : 'আগের মাসের বাকি লিখুন। অগ্রিম বা জমা হলে বিয়োগ চিহ্ন দিয়ে লিখুন।'}
                 </p>
               </div>
             )}
@@ -371,7 +431,7 @@ export default function ManualAdjustment() {
 
           <div className="mt-4 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
             <Link
-              to="/bills/preview"
+              to={previewBackTo}
               className="inline-flex w-full items-center justify-center rounded-button border border-secondary bg-surface-raised px-5 py-3 text-base font-semibold text-secondary transition-colors hover:bg-secondary-hover active:bg-secondary-active sm:w-auto"
             >
               বাতিল
@@ -423,6 +483,7 @@ export default function ManualAdjustment() {
               <div className="mt-2 divide-y divide-border rounded-card border border-border bg-surface-raised">
                 {adjustments.map((adjustment) => {
                   const isUnits = adjustment.label === TYPE_LABELS.units;
+                  const isPrevDue = adjustment.label === TYPE_LABELS.prev_due;
                   return (
                     <div key={adjustment.id} className="flex items-start gap-3 p-4">
                       <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-tint text-sm font-bold text-ink">
@@ -436,13 +497,17 @@ export default function ManualAdjustment() {
                           <span
                             className={cn(
                               'inline-flex items-center gap-1 rounded-pill px-2 py-0.5 text-xs font-medium',
-                              isUnits ? 'bg-primary-tint text-primary' : 'bg-info-tint text-info',
+                              isUnits
+                                ? 'bg-primary-tint text-primary'
+                                : isPrevDue
+                                  ? 'bg-danger-tint text-danger'
+                                  : 'bg-info-tint text-info',
                             )}
                           >
                             <span
                               className={cn(
                                 'h-1.5 w-1.5 rounded-full',
-                                isUnits ? 'bg-primary' : 'bg-info',
+                                isUnits ? 'bg-primary' : isPrevDue ? 'bg-danger' : 'bg-info',
                               )}
                             />
                             {adjustment.label}

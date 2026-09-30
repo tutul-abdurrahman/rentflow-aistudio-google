@@ -48,7 +48,8 @@ import type {
   PaymentInput,
   RentFlowRepository,
 } from './types';
-import { BILL_LABELS, buildMonthBills, cycleTotal, dashboardSnapshot } from '../engine';
+import { BILL_LABELS, buildMonthBills, cycleTotal, dashboardSnapshot, type Tenancy } from '../engine';
+import { addMonths, currentMonth } from '../view';
 
 type Num = number | string | null | undefined;
 
@@ -187,6 +188,8 @@ function mapLines(value: unknown): BillLine[] {
       amount: Number(line.amount ?? 0),
     };
     if (line.detail !== undefined) mapped.detail = String(line.detail);
+    // Opening (pre-history) prev_due lines must round-trip the jsonb flag.
+    if (line.opening === true) mapped.opening = true;
     return mapped;
   });
 }
@@ -845,22 +848,89 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
       };
     },
 
+    async getLastKnownReadings(month: MonthKey): Promise<{ rooms: Map<RoomId, number>; water: number }> {
+      const rooms = new Map<RoomId, number>();
+      const context = await maybePropertyContext();
+      if (!context) return { rooms, water: 0 };
+
+      const { data, error } = await client
+        .from('meter_readings')
+        .select('month, room_id, utility, current')
+        .eq('property_id', context.id)
+        .lt('month', month);
+      if (error) throw error;
+
+      // Ascending, so the latest earlier month wins per room meter.
+      const rows = ((data ?? []) as Pick<MeterRow, 'month' | 'room_id' | 'utility' | 'current'>[])
+        .slice()
+        .sort((a, b) => a.month.localeCompare(b.month));
+      let water = 0;
+      for (const row of rows) {
+        if (row.utility === 'water' && row.room_id === null) {
+          water = num(row.current);
+        } else if (row.utility === 'electricity' && row.room_id) {
+          rooms.set(row.room_id, num(row.current));
+        }
+      }
+      return { rooms, water };
+    },
+
     // ---- bills / monthly cycle ----
     async getActiveMonth(): Promise<MonthKey> {
+      const current = currentMonth();
       const context = await maybePropertyContext();
       if (context) {
-        const { data, error } = await client
-          .from('bills')
-          .select('month')
-          .eq('property_id', context.id)
-          .order('month', { ascending: false })
-          .limit(1)
-          .maybeSingle();
-        if (error) throw error;
-        if (data) return data.month as string;
+        const [meterResult, billResult] = await Promise.all([
+          client.from('meter_readings').select('month').eq('property_id', context.id),
+          client.from('bills').select('month').eq('property_id', context.id),
+        ]);
+        if (meterResult.error) throw meterResult.error;
+        if (billResult.error) throw billResult.error;
+
+        const billed = new Set((billResult.data ?? []).map((row) => row.month as string));
+        const unfinished = [...new Set((meterResult.data ?? []).map((row) => row.month as string))]
+          .filter((month) => !billed.has(month))
+          .sort();
+        if (unfinished.length > 0) return unfinished[0];
+
+        const billedMonths = [...billed].sort();
+        if (billedMonths.length > 0) {
+          const next = addMonths(billedMonths[billedMonths.length - 1], 1);
+          return next > current ? current : next;
+        }
       }
-      const now = new Date();
-      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      return current;
+    },
+
+    async getLatestBilledMonth(): Promise<MonthKey | null> {
+      const context = await maybePropertyContext();
+      if (!context) return null;
+      const { data, error } = await client
+        .from('bills')
+        .select('month')
+        .eq('property_id', context.id)
+        .order('month', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return data ? (data.month as string) : null;
+    },
+
+    async listDataMonths(): Promise<MonthKey[]> {
+      const context = await maybePropertyContext();
+      if (!context) return [];
+      const [meterResult, billResult] = await Promise.all([
+        client.from('meter_readings').select('month').eq('property_id', context.id),
+        client.from('bills').select('month').eq('property_id', context.id),
+      ]);
+      if (meterResult.error) throw meterResult.error;
+      if (billResult.error) throw billResult.error;
+      return [
+        ...new Set([
+          ...(billResult.data ?? []).map((row) => row.month as string),
+          ...(meterResult.data ?? []).map((row) => row.month as string),
+        ]),
+      ].sort();
     },
 
     async listBills(month: MonthKey): Promise<Bill[]> {
@@ -900,21 +970,23 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
       const [property, rooms, tenants, adjustments, loans] = await Promise.all([
         this.getProperty(),
         fetchRooms(),
-        this.listTenants('active'),
+        this.listTenants(),
         this.listAdjustments(month),
         this.listLoans(),
       ]);
 
-      const tenantByRoom = new Map<string, { id: string; name: string; moveInDate: string }>();
-      for (const tenant of tenants) {
-        if (tenant.roomId) {
-          tenantByRoom.set(tenant.roomId, {
+      const tenancies: Tenancy[] = tenants
+        .filter((tenant) => tenant.roomId !== null)
+        .map((tenant) => {
+          const tenancy: Tenancy = {
             id: tenant.id,
             name: tenant.name,
+            roomId: tenant.roomId as string,
             moveInDate: tenant.moveInDate,
-          });
-        }
-      }
+          };
+          if (tenant.moveOutDate) tenancy.moveOutDate = tenant.moveOutDate;
+          return tenancy;
+        });
 
       const adjustmentsByRoom = new Map<string, { label: string; amount: number }[]>();
       for (const adjustment of adjustments) {
@@ -938,7 +1010,7 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
         month,
         property,
         rooms,
-        tenantByRoom,
+        tenancies,
         meterEntry,
         adjustmentsByRoom,
         prevDueByRoom,
@@ -971,7 +1043,7 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
       return this.listBills(month);
     },
 
-    async adjustBill(month, roomId, adjustment): Promise<Bill> {
+    async adjustBill(month, roomId, adjustment, kind = 'adjustment'): Promise<Bill> {
       const context = await propertyContext();
       const { data: row, error } = await client
         .from('bills')
@@ -995,14 +1067,18 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
       if (adjustmentError) throw adjustmentError;
 
       const bill = mapBill(row as BillRow);
-      const lines = [
+      // 'prev_due' seeds opening (pre-history) debt — an OPENING line, so the
+      // ledger carry keeps it instead of subtracting it as a transfer.
+      const lines: BillLine[] = [
         ...bill.lines,
-        {
-          kind: 'adjustment' as const,
-          label: BILL_LABELS.adjustment,
-          amount: adjustment.amount,
-          detail: adjustment.label,
-        },
+        kind === 'prev_due'
+          ? { kind: 'prev_due', label: BILL_LABELS.prev_due, amount: adjustment.amount, opening: true }
+          : {
+              kind: 'adjustment',
+              label: BILL_LABELS.adjustment,
+              amount: adjustment.amount,
+              detail: adjustment.label,
+            },
       ];
       const total = lines.reduce((sum, line) => sum + line.amount, 0);
       const { data: updated, error: updateError } = await client
@@ -1047,7 +1123,7 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
           (sum, bill) =>
             sum +
             mapLines(bill.lines)
-              .filter((line) => line.kind === 'prev_due')
+              .filter((line) => line.kind === 'prev_due' && line.opening !== true)
               .reduce((inner, line) => inner + line.amount, 0),
           0,
         );

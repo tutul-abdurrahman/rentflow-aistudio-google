@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useRepository } from '../app/repository';
 import { cycleTotal } from '../lib/engine';
 import { bnDigits, bnMonth, bnTaka } from '../lib/format';
+import { resolveScreenMonth } from '../lib/screen-month';
+import { addMonths, currentMonth } from '../lib/view';
 import type { Bill, Property, Room, Tenant } from '../lib/types';
 import { takaInWords } from './04-receipt-grid-print';
 
@@ -10,6 +12,10 @@ import { takaInWords } from './04-receipt-grid-print';
  * 33 — কাগজ প্রস্তুত. Optional "papers are ready, print now" beat (handoff §8).
  * Reachable only by its own route (/bills/ready) — 17 goes straight to 04. It
  * must NOT send the owner to collection.
+ *
+ * The month is the one that was just calculated: ?month= → latest billed →
+ * active. After the papers are done it offers the next month's draft so the
+ * forward cycle never dies (bug 2).
  */
 
 function PrintIcon() {
@@ -88,8 +94,29 @@ function ViewIcon() {
   );
 }
 
+function GaugeIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M3.5 18a8.5 8.5 0 1 1 17 0" />
+      <path d="m12 14 3-3" />
+      <circle cx="12" cy="14" r="1.4" />
+    </svg>
+  );
+}
+
 export default function BillCreated() {
   const repo = useRepository();
+  const [searchParams] = useSearchParams();
 
   const [loading, setLoading] = useState(true);
   const [month, setMonth] = useState('');
@@ -101,15 +128,15 @@ export default function BillCreated() {
   useEffect(() => {
     let alive = true;
     (async () => {
-      const activeMonth = await repo.getActiveMonth();
+      const resolvedMonth = await resolveScreenMonth(repo, searchParams.get('month'));
       const [prop, roomList, tenantList, billList] = await Promise.all([
         repo.getProperty(),
         repo.listRooms(),
         repo.listTenants(),
-        repo.listBills(activeMonth),
+        repo.listBills(resolvedMonth),
       ]);
       if (!alive) return;
-      setMonth(activeMonth);
+      setMonth(resolvedMonth);
       setProperty(prop);
       setRooms(roomList);
       setTenants(tenantList);
@@ -121,9 +148,14 @@ export default function BillCreated() {
     return () => {
       alive = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [repo]);
 
   const total = useMemo(() => cycleTotal(bills), [bills]);
+
+  /** The next month's draft, only while it is not in the future (bug 2). */
+  const nextMonth = month ? addMonths(month, 1) : '';
+  const canStartNextMonth = nextMonth !== '' && nextMonth <= currentMonth();
 
   const vacantNumbers = useMemo(
     () => rooms.filter((room) => room.status === 'vacant').map((room) => bnDigits(room.number)),
@@ -224,26 +256,35 @@ export default function BillCreated() {
 
         <div className="mt-5 w-full space-y-2.5">
           <Link
-            to="/bills/print"
+            to={`/bills/print?month=${month}`}
             className="inline-flex w-full items-center justify-center gap-2 rounded-button bg-primary px-5 py-3 text-base font-semibold text-on-primary transition-colors hover:bg-primary-hover active:bg-primary-active"
           >
             <PrintIcon />
             প্রিন্ট করুন
           </Link>
           <Link
-            to="/bills/preview"
+            to={`/bills/preview?month=${month}`}
             className="inline-flex w-full items-center justify-center gap-2 rounded-button border border-secondary bg-surface-raised px-5 py-3 text-base font-semibold text-secondary transition-colors hover:bg-secondary-hover active:bg-secondary-active"
           >
             <ViewIcon />
             বিল দেখুন
           </Link>
           <Link
-            to="/bills/adjustments"
+            to={`/bills/adjustments?month=${month}`}
             className="inline-flex w-full items-center justify-center gap-2 rounded-button border border-secondary bg-surface-raised px-5 py-3 text-base font-semibold text-secondary transition-colors hover:bg-secondary-hover active:bg-secondary-active"
           >
             <PlusIcon />
             অ্যাডজাস্টমেন্ট
           </Link>
+          {canStartNextMonth ? (
+            <Link
+              to={`/bills/meters?month=${nextMonth}`}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-button border border-secondary bg-surface-raised px-5 py-3 text-base font-semibold text-secondary transition-colors hover:bg-secondary-hover active:bg-secondary-active"
+            >
+              <GaugeIcon />
+              পরের মাসের খসড়া শুরু করুন
+            </Link>
+          ) : null}
           <Link
             to="/"
             className="inline-flex w-full items-center justify-center gap-2 rounded-button px-5 py-3 text-base font-semibold text-ink-muted transition-colors hover:bg-surface-soft hover:text-ink"

@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useRepository } from '../app/repository';
 import { bnDigits, bnMonth, bnTaka } from '../lib/format';
+import { resolveScreenMonth } from '../lib/screen-month';
 import type { Bill, BillLine, Property, Room, Tenant } from '../lib/types';
 
 /**
@@ -220,6 +221,7 @@ export function slipLines(bill: Bill): SlipLine[] {
 
 export default function ReceiptGridPrint() {
   const repo = useRepository();
+  const [searchParams] = useSearchParams();
 
   const [loading, setLoading] = useState(true);
   const [month, setMonth] = useState('');
@@ -231,15 +233,15 @@ export default function ReceiptGridPrint() {
   useEffect(() => {
     let alive = true;
     (async () => {
-      const activeMonth = await repo.getActiveMonth();
+      const resolvedMonth = await resolveScreenMonth(repo, searchParams.get('month'));
       const [prop, roomList, tenantList, billList] = await Promise.all([
         repo.getProperty(),
         repo.listRooms(),
         repo.listTenants(),
-        repo.listBills(activeMonth),
+        repo.listBills(resolvedMonth),
       ]);
       if (!alive) return;
-      setMonth(activeMonth);
+      setMonth(resolvedMonth);
       setProperty(prop);
       setRooms(roomList);
       setTenants(tenantList);
@@ -251,6 +253,7 @@ export default function ReceiptGridPrint() {
     return () => {
       alive = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [repo]);
 
   const printedOn = useMemo(() => slashDate(new Date()), []);
@@ -315,7 +318,7 @@ export default function ReceiptGridPrint() {
       <header className="no-print sticky top-0 z-30 border-b border-border bg-surface px-5 py-3">
         <div className="mx-auto flex max-w-[48rem] items-center justify-between gap-3">
           <Link
-            to="/bills/preview"
+            to={`/bills/preview?month=${month}`}
             className="inline-flex shrink-0 items-center gap-1.5 rounded-button px-2 py-2 text-sm font-semibold text-ink-muted transition-colors hover:bg-surface-soft"
           >
             <BackIcon />
@@ -347,7 +350,7 @@ export default function ReceiptGridPrint() {
               বিল প্রিভিউ থেকে কাগজ তৈরি হলে এখানে প্রিন্ট করা যাবে।
             </p>
             <Link
-              to="/bills/preview"
+              to={`/bills/preview?month=${month}`}
               className="mt-5 inline-flex items-center justify-center rounded-button border border-secondary bg-surface-raised px-5 py-3 text-base font-semibold text-secondary transition-colors hover:bg-secondary-hover"
             >
               বিল প্রিভিউতে যান

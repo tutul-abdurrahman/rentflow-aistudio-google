@@ -76,27 +76,43 @@ export default function SettingsHub() {
   const repo = useRepository();
   const navigate = useNavigate();
 
-  const [roomsCaption, setRoomsCaption] = useState('');
-  const [ratesCaption, setRatesCaption] = useState('');
+  // null = still loading → the row keeps its '—' placeholder. Each source loads
+  // on its own: a failing rooms fetch must not blank the rate caption (and the
+  // other way round), which is what a single Promise.all used to do.
+  const [roomsCaption, setRoomsCaption] = useState<string | null>(null);
+  const [ratesCaption, setRatesCaption] = useState<string | null>(null);
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
 
   useEffect(() => {
     let alive = true;
     (async () => {
-      const [property, rooms] = await Promise.all([repo.getProperty(), repo.listRooms()]);
-      if (!alive) return;
-      setRatesCaption(
-        `বিদ্যুৎ ${bnRate(property.electricityRate)}/ইউনিট · ওয়েস্ট ${bnRate(property.wasteFee)}/রুম`,
-      );
-      if (rooms.length === 0) {
-        setRoomsCaption('কোনো রুম যোগ করা হয়নি');
-      } else {
-        const first = rooms[0].number;
-        const last = rooms[rooms.length - 1].number;
-        setRoomsCaption(
-          `${bnDigits(rooms.length)}টি রুম · ${bnDigits(first)}–${bnDigits(last)}`,
+      try {
+        const property = await repo.getProperty();
+        if (!alive) return;
+        setRatesCaption(
+          `বিদ্যুৎ ${bnRate(property.electricityRate)}/ইউনিট · ওয়েস্ট ${bnRate(property.wasteFee)}/রুম`,
         );
+      } catch {
+        // Unknown, not "no value" — leave the '—' placeholder in place.
+        if (alive) setRatesCaption('');
+      }
+    })();
+    (async () => {
+      try {
+        const rooms = await repo.listRooms();
+        if (!alive) return;
+        if (rooms.length === 0) {
+          setRoomsCaption('কোনো রুম যোগ করা হয়নি');
+        } else {
+          const first = rooms[0].number;
+          const last = rooms[rooms.length - 1].number;
+          setRoomsCaption(
+            `${bnDigits(rooms.length)}টি রুম · ${bnDigits(first)}–${bnDigits(last)}`,
+          );
+        }
+      } catch {
+        if (alive) setRoomsCaption('');
       }
     })();
     return () => {

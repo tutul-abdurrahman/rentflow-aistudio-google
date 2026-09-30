@@ -1,19 +1,24 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useRepository } from '../app/repository';
 import MonthSelect from '../components/MonthSelect';
 import Sheet from '../components/Sheet';
 import StatusChip from '../components/StatusChip';
 import { bnDigits, bnMonth, bnTaka } from '../lib/format';
+import { resolveScreenMonth } from '../lib/screen-month';
 import { addMonths } from '../lib/view';
 import type { MonthlyLedgerRow, Property, Room } from '../lib/types';
 
 /**
  * Screen 22 — মাসিক সারাংশ / লেজার (design-output/screens/22-*.html).
  *
- * One row per room from getMonthlyLedger(activeMonth). Sticky first column on
- * screen; A4-landscape print via src/theme/print-summary.css. The ইউনিট column
- * of the canvas is omitted: MonthlyLedgerRow carries the ৳ utilities total, not
- * raw units, and inventing a unit figure would be a fake number.
+ * One row per room from getMonthlyLedger(month), where month is resolved as
+ * ?month= → latest billed → active (the same contract as every bill-side
+ * screen); the picker writes the chosen month back into the query string so a
+ * refresh or a print keeps the cycle. Sticky first column on screen;
+ * A4-landscape print via src/theme/print-summary.css. The ইউনিট column of the
+ * canvas is omitted: MonthlyLedgerRow carries the ৳ utilities total, not raw
+ * units, and inventing a unit figure would be a fake number.
  */
 
 const TH_CLASS =
@@ -67,6 +72,7 @@ function PrinterIcon() {
 
 export default function MonthlySummaryLedger() {
   const repo = useRepository();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [loading, setLoading] = useState(true);
   const [month, setMonth] = useState('');
@@ -88,15 +94,15 @@ export default function MonthlySummaryLedger() {
     let alive = true;
     setLoading(true);
     (async () => {
-      const activeMonth = await repo.getActiveMonth();
+      const resolvedMonth = await resolveScreenMonth(repo, searchParams.get('month'));
       const [ledgerRows, roomRows, propertyRow] = await Promise.all([
-        repo.getMonthlyLedger(activeMonth),
+        repo.getMonthlyLedger(resolvedMonth),
         repo.listRooms(),
         repo.getProperty(),
       ]);
       if (!alive) return;
-      setMonth(activeMonth);
-      setAnchorMonth(activeMonth);
+      setMonth(resolvedMonth);
+      setAnchorMonth(resolvedMonth);
       setRows(ledgerRows);
       setRooms(roomRows);
       setProperty(propertyRow);
@@ -105,6 +111,7 @@ export default function MonthlySummaryLedger() {
     return () => {
       alive = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [repo]);
 
   const monthOptions = useMemo(
@@ -117,6 +124,7 @@ export default function MonthlySummaryLedger() {
 
   const pickMonth = (next: string) => {
     if (!next || next === month) return;
+    setSearchParams({ month: next }, { replace: true });
     setMonth(next);
     setLoading(true);
     repo.getMonthlyLedger(next).then((ledgerRows) => {

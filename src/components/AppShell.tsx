@@ -17,12 +17,20 @@ export interface AppShellProps {
 
 export function AppShell({ children, navVariant }: AppShellProps) {
   const repository = useRepository();
-  // Renames propagate from the repository; Sidebar keeps its defaults while loading.
-  const { data: property } = useAsync(() => repository.getProperty(), [repository]);
+  // Renames propagate from the repository. Until the property resolves the
+  // sidebar renders skeleton bars — it has no placeholder names of its own.
+  const { data: property, loading: propertyLoading } = useAsync(
+    () => repository.getProperty(),
+    [repository],
+  );
 
   return (
     <>
-      <Sidebar ownerName={property?.ownerName} propertyName={property?.name} />
+      <Sidebar
+        ownerName={property?.ownerName}
+        propertyName={property?.name}
+        loading={propertyLoading}
+      />
       <div className="min-h-dvh lg:pl-[264px]">
         <main className="mx-auto w-full px-3 pb-32 sm:px-5 md:max-w-[48rem] lg:max-w-[72rem] lg:px-8 lg:pb-16 xl:max-w-[80rem]">
           {children}

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useRepository } from '../app/repository';
 import Button from '../components/Button';
 import PageHeader from '../components/PageHeader';
@@ -8,6 +8,7 @@ import StatusChip from '../components/StatusChip';
 import { cn } from '../lib/cn';
 import { cycleTotal } from '../lib/engine';
 import { bnDigits, bnMonth, bnTaka } from '../lib/format';
+import { resolveScreenMonth } from '../lib/screen-month';
 import { initials } from '../lib/view';
 import type { Bill, Property, Room, Tenant } from '../lib/types';
 
@@ -73,6 +74,7 @@ const METHODS = ['নগদ', 'বিকাশ'] as const;
 export default function CollectionDueList() {
   const repo = useRepository();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -93,16 +95,16 @@ export default function CollectionDueList() {
   useEffect(() => {
     let alive = true;
     (async () => {
-      const activeMonth = await repo.getActiveMonth();
+      const resolvedMonth = await resolveScreenMonth(repo, searchParams.get('month'));
       const [prop, roomList, tenantList, billList, snapshot] = await Promise.all([
         repo.getProperty(),
         repo.listRooms(),
         repo.listTenants(),
-        repo.listBills(activeMonth),
-        repo.getDashboard(activeMonth),
+        repo.listBills(resolvedMonth),
+        repo.getDashboard(resolvedMonth),
       ]);
       if (!alive) return;
-      setMonth(activeMonth);
+      setMonth(resolvedMonth);
       setProperty(prop);
       setRooms(roomList);
       setTenants(tenantList);
@@ -115,6 +117,7 @@ export default function CollectionDueList() {
     return () => {
       alive = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [repo]);
 
   const roomNumber = useMemo(() => {
@@ -156,6 +159,8 @@ export default function CollectionDueList() {
 
   const selected = views.find((view) => view.bill.id === selectedId) ?? null;
 
+  const previewBackTo = month ? `/bills/preview?month=${month}` : '/bills/preview';
+
   const openSheet = (view: DueView) => {
     setSelectedId(view.bill.id);
     setAmount(String(view.due));
@@ -180,7 +185,7 @@ export default function CollectionDueList() {
         method,
         note: note.trim() || undefined,
       });
-      navigate('/collection/success', {
+      navigate(`/collection/success?month=${month}`, {
         state: { billId: selected.bill.id, amount: parsed, method },
       });
     } catch (caught) {
@@ -192,7 +197,7 @@ export default function CollectionDueList() {
   if (loading || !property) {
     return (
       <div className="mx-auto w-full max-w-3xl">
-        <PageHeader title="কালেকশন" subtitle="লোড হচ্ছে…" backTo="/bills/preview" />
+        <PageHeader title="কালেকশন" subtitle="লোড হচ্ছে…" backTo={previewBackTo} />
         <div aria-busy="true" aria-label="লোড হচ্ছে">
           <div className="mt-3 rounded-card border border-border bg-surface-raised px-5 py-4" aria-hidden="true">
             <div className="grid grid-cols-3 gap-3">
@@ -230,7 +235,7 @@ export default function CollectionDueList() {
       <PageHeader
         title={`কালেকশন — ${bnMonth(month)}`}
         subtitle={property.name}
-        backTo="/bills/preview"
+        backTo={previewBackTo}
       />
       <p className="mt-2 text-xs text-ink-faint">
         টাকা এলে লেজারে লিখুন। নতুন রিসিট প্রিন্ট করবেন না — কাগজ আগেই গেছে।

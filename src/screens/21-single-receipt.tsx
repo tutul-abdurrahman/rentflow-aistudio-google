@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom';
 import { useRepository } from '../app/repository';
 import { bnDigits, bnMonth, bnTaka } from '../lib/format';
+import { isMonthKey, resolveScreenMonth } from '../lib/screen-month';
 import type { Bill, Property, Room, Tenant } from '../lib/types';
 import { slipLines, takaInWords } from './04-receipt-grid-print';
 
@@ -64,6 +65,7 @@ function PrintIcon() {
 export default function SingleReceipt() {
   const repo = useRepository();
   const { tenantId } = useParams<{ tenantId?: string }>();
+  const [searchParams] = useSearchParams();
 
   const [loading, setLoading] = useState(true);
   const [month, setMonth] = useState('');
@@ -75,15 +77,15 @@ export default function SingleReceipt() {
   useEffect(() => {
     let alive = true;
     (async () => {
-      const activeMonth = await repo.getActiveMonth();
+      const resolvedMonth = await resolveScreenMonth(repo, searchParams.get('month'));
       const [prop, roomList, tenantList, billList] = await Promise.all([
         repo.getProperty(),
         repo.listRooms(),
         repo.listTenants(),
-        repo.listBills(activeMonth),
+        repo.listBills(resolvedMonth),
       ]);
       if (!alive) return;
-      setMonth(activeMonth);
+      setMonth(resolvedMonth);
       setProperty(prop);
       setRooms(roomList);
       setTenants(tenantList);
@@ -95,6 +97,7 @@ export default function SingleReceipt() {
     return () => {
       alive = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [repo]);
 
   const printedOn = useMemo(() => slashDate(new Date()), []);
@@ -114,8 +117,15 @@ export default function SingleReceipt() {
     return bill ? map.get(bill.tenantId) ?? '' : '';
   }, [tenants, bill]);
 
+  const requestedMonth = searchParams.get('month');
+  const previewBackTo = month
+    ? `/bills/preview?month=${month}`
+    : isMonthKey(requestedMonth)
+      ? `/bills/preview?month=${requestedMonth}`
+      : '/bills/preview';
+
   if (!tenantId) {
-    return <Navigate to="/bills/preview" replace />;
+    return <Navigate to={previewBackTo} replace />;
   }
 
   if (loading || !property) {
@@ -150,7 +160,7 @@ export default function SingleReceipt() {
       <header className="no-print sticky top-0 z-30 border-b border-border bg-surface px-5 py-3">
         <div className="mx-auto flex max-w-[48rem] items-center justify-between gap-3">
           <Link
-            to="/bills/preview"
+            to={previewBackTo}
             className="inline-flex shrink-0 items-center gap-1.5 rounded-button px-2 py-2 text-sm font-semibold text-ink-muted transition-colors hover:bg-surface-soft"
           >
             <BackIcon />
@@ -180,7 +190,7 @@ export default function SingleReceipt() {
               {bnMonth(month)} মাসে এই ভাড়াটের কাগজ তৈরি হয়নি।
             </p>
             <Link
-              to="/bills/preview"
+              to={previewBackTo}
               className="mt-5 inline-flex items-center justify-center rounded-button border border-secondary bg-surface-raised px-5 py-3 text-base font-semibold text-secondary transition-colors hover:bg-secondary-hover"
             >
               বিল প্রিভিউতে যান

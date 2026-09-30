@@ -30,7 +30,7 @@ import type {
   Tenant,
   TenantId,
 } from '../types';
-import { BILL_LABELS, buildMonthBills } from '../engine';
+import { BILL_LABELS, buildMonthBills, type Tenancy } from '../engine';
 
 export const DEMO_PROPERTY_ID = 'prop-mirpur10';
 /** আগস্ট ২০২৬ */
@@ -283,6 +283,41 @@ function cloneMeterEntry(entry: MeterEntry): MeterEntry {
   };
 }
 
+/**
+ * Empty state for the test-only `createMemoryRepository({ seed: false })`
+ * path: the default property exists (screens always have one) and nothing else.
+ */
+export function buildEmptyState(): DemoState {
+  return {
+    property: { ...DEMO_PROPERTY },
+    rooms: [],
+    tenants: [],
+    loans: [],
+    meterEntries: new Map<MonthKey, MeterEntry>(),
+    bills: [],
+    ledger: [],
+    adjustments: [],
+    finance: [],
+    shifts: [],
+  };
+}
+
+/** Every tenancy (active + archived) for the engine's per-month occupancy. */
+function tenanciesOf(tenants: Tenant[]): Tenancy[] {
+  return tenants
+    .filter((tenant) => tenant.roomId !== null)
+    .map((tenant) => {
+      const tenancy: Tenancy = {
+        id: tenant.id,
+        name: tenant.name,
+        roomId: tenant.roomId as RoomId,
+        moveInDate: tenant.moveInDate,
+      };
+      if (tenant.moveOutDate) tenancy.moveOutDate = tenant.moveOutDate;
+      return tenancy;
+    });
+}
+
 /** Build the July opening paper: rent-only, no utilities yet. */
 function buildPriorBills(property: Property, rooms: Room[], tenants: Tenant[]): Bill[] {
   const bills: Bill[] = [];
@@ -360,13 +395,6 @@ export function buildDemoState(): DemoState {
     if (leftover !== 0) prevDueByRoom.set(room.id, leftover);
   }
 
-  const tenantByRoom = new Map<string, { id: string; name: string; moveInDate: string }>();
-  for (const tenant of tenants) {
-    if (tenant.status === 'active' && tenant.roomId) {
-      tenantByRoom.set(tenant.roomId, { id: tenant.id, name: tenant.name, moveInDate: tenant.moveInDate });
-    }
-  }
-
   // Active add-to-bill loans fold into the tenant's room paper.
   const loanInstallmentByRoom = new Map<string, number>();
   for (const loan of loans) {
@@ -380,7 +408,7 @@ export function buildDemoState(): DemoState {
     month: DEMO_MONTH,
     property,
     rooms,
-    tenantByRoom,
+    tenancies: tenanciesOf(tenants),
     meterEntry: meterEntries.get(DEMO_MONTH)!,
     adjustmentsByRoom: new Map(),
     prevDueByRoom,

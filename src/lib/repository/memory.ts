@@ -11,7 +11,9 @@
  * - recordPayment: ledger entry only; bill paidAmount/status follow. When the
  *   bill carries a loan line, the paying tenant's active add-to-bill loan
  *   advances one installment (handoff §10).
- * - getPrevDueByRoom: Σ prior billed − Σ prior paid, per room.
+ * - getPrevDueByRoom: Σ prior billed − Σ prior paid, per room. Only prev_due
+ *   lines that were TRANSFERRED into a later bill are subtracted; OPENING
+ *   (pre-history) prev_due lines are genuine debt and stay in the carry.
  */
 
 import type {
@@ -41,8 +43,9 @@ import type {
   PaymentInput,
   RentFlowRepository,
 } from './types';
-import { BILL_LABELS, buildMonthBills, cycleTotal, dashboardSnapshot, shiftReadings } from '../engine';
-import { buildDemoState, type DemoState } from '../seed/demo';
+import { BILL_LABELS, buildMonthBills, cycleTotal, dashboardSnapshot, shiftReadings, type Tenancy } from '../engine';
+import { addMonths, currentMonth } from '../view';
+import { buildDemoState, buildEmptyState, type DemoState } from '../seed/demo';
 
 function cloneBill(bill: Bill): Bill {
   return { ...bill, lines: bill.lines.map((line) => ({ ...line })) };
@@ -56,12 +59,22 @@ function cloneMeterEntry(entry: MeterEntry): MeterEntry {
   };
 }
 
-export function createMemoryRepository(): RentFlowRepository {
+export interface MemoryRepositoryOptions {
+  /**
+   * Test-only escape hatch: `seed: false` starts from an empty state (property
+   * only) instead of lazily booting the §9 demo dataset. Production always
+   * seeds — `getRepository()` calls this factory with no options.
+   */
+  seed?: boolean;
+}
+
+export function createMemoryRepository(options: MemoryRepositoryOptions = {}): RentFlowRepository {
+  const seed = options.seed ?? true;
   let state: DemoState | null = null;
   let sequence = 1;
 
   const ensure = (): DemoState => {
-    if (!state) state = buildDemoState();
+    if (!state) state = seed ? buildDemoState() : buildEmptyState();
     return state;
   };
   const nextId = (prefix: string): string => `${prefix}-${sequence++}`;
@@ -92,6 +105,8 @@ export function createMemoryRepository(): RentFlowRepository {
    * prev_due lines that were transferred into later bills (otherwise the same
    * leftover is counted once in its own month and again inside the next bill).
    * Telescopes to the latest prior cycle's leftover, matching handoff §14.
+   * OPENING prev_due lines are pre-history debt the owner entered: they are NOT
+   * subtracted, so the carry into the next month keeps them.
    */
   const computePrevDue = (s: DemoState, month: MonthKey): Map<RoomId, number> => {
     const map = new Map<RoomId, number>();
@@ -99,7 +114,11 @@ export function createMemoryRepository(): RentFlowRepository {
       const priorBills = s.bills.filter((bill) => bill.month < month && bill.roomId === room.id);
       const billed = priorBills.reduce((sum, bill) => sum + bill.total, 0);
       const transferred = priorBills.reduce(
-        (sum, bill) => sum + bill.lines.filter((line) => line.kind === 'prev_due').reduce((x, line) => x + line.amount, 0),
+        (sum, bill) =>
+          sum +
+          bill.lines
+            .filter((line) => line.kind === 'prev_due' && line.opening !== true)
+            .reduce((x, line) => x + line.amount, 0),
         0,
       );
       const paid = s.ledger
@@ -113,6 +132,21 @@ export function createMemoryRepository(): RentFlowRepository {
     }
     return map;
   };
+
+  /** Every tenancy (active + archived) — the engine picks the month's tenant. */
+  const tenancies = (s: DemoState): Tenancy[] =>
+    s.tenants
+      .filter((tenant): tenant is Tenant & { roomId: RoomId } => tenant.roomId !== null)
+      .map((tenant) => {
+        const tenancy: Tenancy = {
+          id: tenant.id,
+          name: tenant.name,
+          roomId: tenant.roomId,
+          moveInDate: tenant.moveInDate,
+        };
+        if (tenant.moveOutDate) tenancy.moveOutDate = tenant.moveOutDate;
+        return tenancy;
+      });
 
   const ledgerRow = (s: DemoState, bill: Bill): MonthlyLedgerRow => {
     const room = findRoom(s, bill.roomId);
@@ -346,13 +380,43 @@ export function createMemoryRepository(): RentFlowRepository {
       return cloneMeterEntry(stored);
     },
 
+    async getLastKnownReadings(month: MonthKey): Promise<{ rooms: Map<RoomId, number>; water: number }> {
+      const s = ensure();
+      const rooms = new Map<RoomId, number>();
+      let water = 0;
+      // Ascending, so the latest earlier month wins per room meter.
+      for (const key of [...s.meterEntries.keys()].filter((entryMonth) => entryMonth < month).sort()) {
+        const entry = s.meterEntries.get(key)!;
+        for (const row of entry.rooms) rooms.set(row.roomId, row.current);
+        water = entry.water.current;
+      }
+      return { rooms, water };
+    },
+
     // ---- bills / monthly cycle ----
     async getActiveMonth(): Promise<MonthKey> {
       const s = ensure();
-      const months = [...new Set(s.bills.map((bill) => bill.month))].sort();
-      if (months.length > 0) return months[months.length - 1];
-      const now = new Date();
-      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      const billed = new Set(s.bills.map((bill) => bill.month));
+      const unfinished = [...s.meterEntries.keys()].filter((month) => !billed.has(month)).sort();
+      if (unfinished.length > 0) return unfinished[0];
+
+      const billedMonths = [...billed].sort();
+      const current = currentMonth();
+      if (billedMonths.length > 0) {
+        const next = addMonths(billedMonths[billedMonths.length - 1], 1);
+        return next > current ? current : next;
+      }
+      return current;
+    },
+
+    async getLatestBilledMonth(): Promise<MonthKey | null> {
+      const months = [...new Set(ensure().bills.map((bill) => bill.month))].sort();
+      return months.length > 0 ? months[months.length - 1] : null;
+    },
+
+    async listDataMonths(): Promise<MonthKey[]> {
+      const s = ensure();
+      return [...new Set([...s.bills.map((bill) => bill.month), ...s.meterEntries.keys()])].sort();
     },
 
     async listBills(month: MonthKey): Promise<Bill[]> {
@@ -376,18 +440,11 @@ export function createMemoryRepository(): RentFlowRepository {
       const meterEntry = s.meterEntries.get(month);
       if (!meterEntry) throw new Error('NO_METER_ENTRY');
 
-      const tenantByRoom = new Map<string, { id: string; name: string; moveInDate: string }>();
-      for (const tenant of s.tenants) {
-        if (tenant.status === 'active' && tenant.roomId) {
-          tenantByRoom.set(tenant.roomId, { id: tenant.id, name: tenant.name, moveInDate: tenant.moveInDate });
-        }
-      }
-
       const built = buildMonthBills({
         month,
         property: s.property,
         rooms: s.rooms,
-        tenantByRoom,
+        tenancies: tenancies(s),
         meterEntry,
         adjustmentsByRoom: new Map(),
         prevDueByRoom: computePrevDue(s, month),
@@ -400,7 +457,7 @@ export function createMemoryRepository(): RentFlowRepository {
       return sortBills(s, built).map(cloneBill);
     },
 
-    async adjustBill(month, roomId, adjustment): Promise<Bill> {
+    async adjustBill(month, roomId, adjustment, kind = 'adjustment'): Promise<Bill> {
       const s = ensure();
       const bill = s.bills.find((b) => b.month === month && b.roomId === roomId);
       if (!bill) throw new Error('BILL_NOT_FOUND');
@@ -418,12 +475,18 @@ export function createMemoryRepository(): RentFlowRepository {
       s.adjustments.push(record);
 
       // In place — add a line, recompute the total. Never regenerate the bill.
-      bill.lines.push({
-        kind: 'adjustment',
-        label: BILL_LABELS.adjustment,
-        amount: adjustment.amount,
-        detail: adjustment.label,
-      });
+      // 'prev_due' seeds opening (pre-history) debt: an OPENING line, so the
+      // ledger carry keeps it instead of subtracting it as a transfer.
+      bill.lines.push(
+        kind === 'prev_due'
+          ? { kind: 'prev_due', label: BILL_LABELS.prev_due, amount: adjustment.amount, opening: true }
+          : {
+              kind: 'adjustment',
+              label: BILL_LABELS.adjustment,
+              amount: adjustment.amount,
+              detail: adjustment.label,
+            },
+      );
       bill.total = bill.lines.reduce((sum, line) => sum + line.amount, 0);
       bill.status = bill.paidAmount >= bill.total ? 'paid' : bill.paidAmount > 0 ? 'partial' : 'due';
       return cloneBill(bill);

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useRepository } from '../app/repository';
 import Button from '../components/Button';
 import EmptyState from '../components/EmptyState';
@@ -8,6 +8,7 @@ import Sheet from '../components/Sheet';
 import { cn } from '../lib/cn';
 import { cycleTotal } from '../lib/engine';
 import { bnDigits, bnMonth, bnNumber, bnTaka } from '../lib/format';
+import { resolveScreenMonth } from '../lib/screen-month';
 import type { Bill, BillLine, Loan, Property, Room, Tenant } from '../lib/types';
 
 /**
@@ -108,6 +109,7 @@ function PlusIcon() {
 export default function BillPreview() {
   const repo = useRepository();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [loading, setLoading] = useState(true);
   const [month, setMonth] = useState('');
@@ -121,16 +123,16 @@ export default function BillPreview() {
   useEffect(() => {
     let alive = true;
     (async () => {
-      const activeMonth = await repo.getActiveMonth();
+      const resolvedMonth = await resolveScreenMonth(repo, searchParams.get('month'));
       const [prop, roomList, tenantList, loanList, billList] = await Promise.all([
         repo.getProperty(),
         repo.listRooms(),
         repo.listTenants(),
         repo.listLoans(),
-        repo.listBills(activeMonth),
+        repo.listBills(resolvedMonth),
       ]);
       if (!alive) return;
-      setMonth(activeMonth);
+      setMonth(resolvedMonth);
       setProperty(prop);
       setRooms(roomList);
       setTenants(tenantList);
@@ -143,6 +145,7 @@ export default function BillPreview() {
     return () => {
       alive = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [repo]);
 
   const roomNumber = useMemo(() => {
@@ -196,6 +199,9 @@ export default function BillPreview() {
   const rateLabel = property ? bnDigits(property.electricityRate) : '';
   const wasteLabel = property ? bnDigits(property.wasteFee) : '';
 
+  /** Back to the meter screen for the SAME cycle — never an empty draft month. */
+  const metersBackTo = month ? `/bills/meters?month=${month}` : '/bills/meters';
+
   const utilityNote = (view: BillView): string => {
     const parts: string[] = [];
     const electricity = view.bill.lines.find((line) => line.kind === 'electricity');
@@ -208,7 +214,7 @@ export default function BillPreview() {
   if (loading || !property) {
     return (
       <>
-        <PageHeader title="বিল" subtitle="লোড হচ্ছে…" backTo="/bills/meters" />
+        <PageHeader title="বিল" subtitle="লোড হচ্ছে…" backTo={metersBackTo} />
         <div aria-busy="true" aria-label="লোড হচ্ছে">
           <div className="mt-3 flex flex-wrap items-center gap-2 md:justify-end" aria-hidden="true">
             <div className="skeleton h-10 w-28" />
@@ -250,7 +256,7 @@ export default function BillPreview() {
       <PageHeader
         title={`বিল — ${bnMonth(month)}`}
         subtitle={property.name}
-        backTo="/bills/meters"
+        backTo={metersBackTo}
       />
 
       <div className="mt-3 flex flex-wrap items-center gap-2 md:justify-end">
@@ -260,7 +266,7 @@ export default function BillPreview() {
         </span>
         {bills.length > 0 ? (
           <Link
-            to="/bills/print"
+            to={`/bills/print?month=${month}`}
             className="inline-flex h-10 items-center justify-center gap-2 rounded-button bg-primary px-4 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover active:bg-primary-active"
           >
             <PrintIcon />
@@ -275,7 +281,7 @@ export default function BillPreview() {
             title="এই মাসের কাগজ তৈরি হয়নি"
             caption="মিটার রিডিং দিয়ে বিল হিসাব করুন।"
             actionLabel="মিটার রিডিং দিন"
-            onAction={() => navigate('/bills/meters')}
+            onAction={() => navigate(`/bills/meters?month=${month}`)}
           />
         </div>
       ) : (
@@ -422,7 +428,7 @@ export default function BillPreview() {
                       </td>
                       <td className="border-b border-border px-3 py-2.5 text-right whitespace-nowrap">
                         <Link
-                          to={`/bills/reprint/${view.bill.tenantId}`}
+                          to={`/bills/reprint/${view.bill.tenantId}?month=${month}`}
                           className="text-xs font-semibold text-ink-muted underline-offset-2 transition-colors hover:text-ink hover:underline"
                         >
                           রিপ্রিন্ট
@@ -443,14 +449,14 @@ export default function BillPreview() {
           <div className="mt-4 pb-1 md:mt-6">
             <div className="flex flex-col gap-2 md:flex-row md:items-stretch">
               <Link
-                to="/bills/print"
+                to={`/bills/print?month=${month}`}
                 className="inline-flex w-full items-center justify-center gap-2 rounded-button bg-primary px-5 py-3 text-base font-semibold text-on-primary transition-colors hover:bg-primary-hover active:bg-primary-active md:flex-1"
               >
                 <PrintIcon />
                 প্রিন্ট করুন
               </Link>
               <Link
-                to="/bills/adjustments"
+                to={`/bills/adjustments?month=${month}`}
                 className="inline-flex w-full items-center justify-center gap-2 rounded-button border border-secondary bg-surface-raised px-5 py-3 text-base font-semibold text-secondary transition-colors hover:bg-secondary-hover active:bg-secondary-active md:flex-1"
               >
                 <PlusIcon />
@@ -535,7 +541,7 @@ export default function BillPreview() {
             </div>
 
             <Link
-              to={`/bills/reprint/${selected.bill.tenantId}`}
+              to={`/bills/reprint/${selected.bill.tenantId}?month=${month}`}
               className="mt-5 inline-flex w-full items-center justify-center rounded-button border border-secondary bg-surface-raised px-5 py-3 text-base font-semibold text-secondary transition-colors hover:bg-secondary-hover active:bg-secondary-active"
             >
               কাগজ আবার প্রিন্ট করুন

@@ -106,6 +106,14 @@ export interface BillLine {
   amount: number;
   /** e.g. '223 unit × 7.5' — engine keeps ASCII; screens format Bengali */
   detail?: string;
+  /**
+   * Opening (pre-history) line — only meaningful on `prev_due` lines entered
+   * through screen 18 to seed a carried balance from before RentFlow existed.
+   * Genuine pre-history debt: the ledger carry-forward must NOT subtract it
+   * (a `prev_due` line transferred into a later bill is subtracted instead).
+   * Stored inside the existing `bills.lines` jsonb — no schema change.
+   */
+  opening?: boolean;
 }
 
 export type BillStatus = 'due' | 'partial' | 'paid';

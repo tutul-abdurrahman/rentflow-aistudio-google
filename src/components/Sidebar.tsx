@@ -5,11 +5,15 @@ import { cn } from '../lib/cn';
 /**
  * RentFlow desktop sidebar — port of design-output/components/sidebar.html.
  * lg+ only, fixed 264px. Active row = saffron tint pill. Bottom chip shows the
- * current property; pass real values from the repository when wired.
+ * current property: pass real values from the repository and set `loading`
+ * while they arrive — the chip then renders neutral skeleton bars, so no
+ * placeholder name can ever flash.
  */
 export interface SidebarProps {
   ownerName?: string;
   propertyName?: string;
+  /** true while the property is still loading (skeleton bars, no names) */
+  loading?: boolean;
 }
 
 interface NavItem {
@@ -126,10 +130,7 @@ const ITEMS: NavItem[] = [
   },
 ];
 
-export default function Sidebar({
-  ownerName = 'রফিক ভাই',
-  propertyName = 'আবাসিক ভবন — মিরপুর-১০',
-}: SidebarProps) {
+export default function Sidebar({ ownerName, propertyName, loading = false }: SidebarProps) {
   const { pathname } = useLocation();
 
   return (
@@ -173,15 +174,25 @@ export default function Sidebar({
       </nav>
 
       <div className="border-t border-border px-5 py-4">
-        <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-tint text-sm font-semibold text-primary">
-            {ownerName.charAt(0)}
-          </span>
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-ink">{ownerName}</p>
-            <p className="truncate text-xs text-ink-faint">{propertyName}</p>
+        {loading ? (
+          <div className="flex items-center gap-3" aria-hidden="true">
+            <span className="skeleton h-10 w-10 shrink-0 rounded-full" />
+            <div className="min-w-0 flex-1 space-y-2">
+              <div className="skeleton h-3.5 w-24" />
+              <div className="skeleton h-3 w-32" />
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-tint text-sm font-semibold text-primary">
+              {ownerName ? ownerName.charAt(0) : '—'}
+            </span>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold text-ink">{ownerName || '—'}</p>
+              <p className="truncate text-xs text-ink-faint">{propertyName || '—'}</p>
+            </div>
+          </div>
+        )}
       </div>
     </aside>
   );

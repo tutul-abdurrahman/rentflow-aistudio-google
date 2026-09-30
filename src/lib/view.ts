@@ -49,6 +49,12 @@ export function addMonths(month: string, delta: number): string {
   return `${Math.floor(total / 12)}-${String((total % 12) + 1).padStart(2, '0')}`;
 }
 
+/** Today's calendar month as 'YYYY-MM'. Local time — the owner's own month. */
+export function currentMonth(): string {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+}
+
 /** Active tenant name per room, for room pickers / shift lists. */
 export function tenantNameByRoom(tenants: Tenant[]): Map<string, string> {
   const map = new Map<string, string>();

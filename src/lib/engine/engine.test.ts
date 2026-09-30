@@ -12,6 +12,7 @@ import {
   occupiedRooms,
   paperRef,
   shiftReadings,
+  type Tenancy,
   waterShareUnits,
 } from './index';
 import type { Bill, FinanceEntry, LedgerEntry, MeterEntry, Property, Room } from '../types';
@@ -50,20 +51,22 @@ const meterEntry: MeterEntry = {
   water: { previous: 4500, current: 5000 },
 };
 
-const tenantByRoom = new Map([
-  ['room-102', { id: 't-102', name: 'রাহাত হোসেন', moveInDate: '2025-01-01' }],
-  ['room-103', { id: 't-103', name: 'সাব্বির আহমেদ', moveInDate: '2025-01-01' }],
-  ['room-104', { id: 't-104', name: 'তানভীর ইসলাম', moveInDate: '2025-01-01' }],
-  ['room-105', { id: 't-105', name: 'মেহেদী হাসান', moveInDate: '2025-01-01' }],
-  ['room-107', { id: 't-107', name: 'নাফিসা আক্তার', moveInDate: '2025-01-01' }],
-]);
+// Tenancy intervals (active + archived) — the engine derives the month's
+// tenant and the month's occupancy from these, never from room.status.
+const tenancies: Tenancy[] = [
+  { id: 't-102', name: 'রাহাত হোসেন', roomId: 'room-102', moveInDate: '2025-01-01' },
+  { id: 't-103', name: 'সাব্বির আহমেদ', roomId: 'room-103', moveInDate: '2025-01-01' },
+  { id: 't-104', name: 'তানভীর ইসলাম', roomId: 'room-104', moveInDate: '2025-01-01' },
+  { id: 't-105', name: 'মেহেদী হাসান', roomId: 'room-105', moveInDate: '2025-01-01' },
+  { id: 't-107', name: 'নাফিসা আক্তার', roomId: 'room-107', moveInDate: '2025-01-01' },
+];
 
 function buildFixtureBills(): Bill[] {
   return buildMonthBills({
     month: '2026-08',
     property,
     rooms,
-    tenantByRoom,
+    tenancies,
     meterEntry,
     adjustmentsByRoom: new Map([['room-102', [{ label: 'অতিরিক্ত ইউনিট', amount: 195 }]]]),
     prevDueByRoom: new Map([['room-102', 4200]]),
@@ -397,13 +400,14 @@ describe('buildMonthBills', () => {
   });
 
   it('prorates rent for a tenant who moved in mid-month', () => {
-    const midMonthTenants = new Map(tenantByRoom);
-    midMonthTenants.set('room-102', { id: 't-102', name: 'রাহাত হোসেন', moveInDate: '2026-08-15' });
+    const midMonthTenancies = tenancies.map((tenancy) =>
+      tenancy.roomId === 'room-102' ? { ...tenancy, moveInDate: '2026-08-15' } : tenancy,
+    );
     const bills = buildMonthBills({
       month: '2026-08',
       property,
       rooms,
-      tenantByRoom: midMonthTenants,
+      tenancies: midMonthTenancies,
       meterEntry,
       adjustmentsByRoom: new Map(),
       prevDueByRoom: new Map(),
@@ -427,7 +431,7 @@ describe('buildMonthBills', () => {
         month: '2026-08',
         property,
         rooms,
-        tenantByRoom,
+        tenancies,
         meterEntry: badMeter,
         adjustmentsByRoom: new Map(),
         prevDueByRoom: new Map(),
@@ -435,6 +439,75 @@ describe('buildMonthBills', () => {
         existingRefs: [],
       }),
     ).toThrow(NEGATIVE_READING);
+  });
+});
+
+describe('buildMonthBills — tenancy intervals pick the month’s tenant', () => {
+  // 201 is re-let after a gap month; 202 takes a mid-June move-in.
+  const tenancyRooms: Room[] = [
+    { id: 'room-201', propertyId: 'p1', number: '201', rent: 9000, status: 'vacant', sortOrder: 1 },
+    { id: 'room-202', propertyId: 'p1', number: '202', rent: 2800, status: 'occupied', sortOrder: 2 },
+  ];
+
+  const intervals: Tenancy[] = [
+    // A lived in 201 through 31 May, B moves in 1 July → June bills nobody.
+    { id: 't-a', name: 'ক', roomId: 'room-201', moveInDate: '2025-01-01', moveOutDate: '2026-05-31' },
+    { id: 't-b', name: 'খ', roomId: 'room-201', moveInDate: '2026-07-01' },
+    // C moved into 202 on 16 June at ৳2,800 rent.
+    { id: 't-c', name: 'গ', roomId: 'room-202', moveInDate: '2026-06-16' },
+  ];
+
+  const build = (month: string, meterEntry: MeterEntry): Bill[] =>
+    buildMonthBills({
+      month,
+      property,
+      rooms: tenancyRooms,
+      tenancies: intervals,
+      meterEntry,
+      adjustmentsByRoom: new Map(),
+      prevDueByRoom: new Map(),
+      loanInstallmentByRoom: new Map(),
+      existingRefs: [],
+    });
+
+  it('T4 — bills the moved-out tenant for their final month and nobody in the gap', () => {
+    const may = build('2026-05', {
+      month: '2026-05',
+      rooms: [{ roomId: 'room-201', roomNumber: '201', previous: 100, current: 200 }],
+      water: { previous: 0, current: 0 },
+    });
+    expect(may.map((bill) => bill.roomId)).toEqual(['room-201']);
+    expect(may[0].tenantId).toBe('t-a'); // A's final month, move-out 31 May
+
+    const june = build('2026-06', {
+      month: '2026-06',
+      rooms: [{ roomId: 'room-202', roomNumber: '202', previous: 1000, current: 1050 }],
+      water: { previous: 0, current: 0 },
+    });
+    // Nobody lived in 201 in June → no paper at all for that room.
+    expect(june.some((bill) => bill.roomId === 'room-201')).toBe(false);
+    const june202 = june.find((bill) => bill.roomId === 'room-202')!;
+    expect(june202.tenantId).toBe('t-c');
+    // ৳2,800 × 15/30 days (16 June → 30 June) = ৳1,400
+    expect(june202.lines[0]).toEqual({
+      kind: 'rent',
+      label: BILL_LABELS.rent,
+      amount: 1400,
+      detail: '15/30 day',
+    });
+
+    const july = build('2026-07', {
+      month: '2026-07',
+      rooms: [
+        { roomId: 'room-201', roomNumber: '201', previous: 200, current: 240 },
+        { roomId: 'room-202', roomNumber: '202', previous: 1050, current: 1100 },
+      ],
+      water: { previous: 0, current: 0 },
+    });
+    expect(july.map((bill) => bill.tenantId)).toEqual(['t-b', 't-c']);
+    const july201 = july.find((bill) => bill.roomId === 'room-201')!;
+    // Re-let from 1 July → a normal full month, no day-wise detail.
+    expect(july201.lines[0]).toEqual({ kind: 'rent', label: BILL_LABELS.rent, amount: 9000 });
   });
 });
 

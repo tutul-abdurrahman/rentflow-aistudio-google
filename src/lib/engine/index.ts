@@ -7,9 +7,14 @@
  * Locked rules (handoff §10, §13 — do not change without Tutul):
  * - Per-room electricity: current − previous; reject negative (current < previous).
  * - Water: building units ÷ (occupied rooms + 1). Vacant rooms excluded.
+ *   "Occupied" means occupied DURING the billed month (tenancy intervals),
+ *   never today's room status.
  * - Bill line: rent + (elec + waterShare) × rate + waste 200 + adjustments
  *   + prev due + optional loan installment.
  * - Vacant rooms: no waste fee, no water share, no auto electricity.
+ * - One paper per room per month: the tenant is the one whose tenancy interval
+ *   overlaps that month (active or archived), so backfilled months and a
+ *   moved-out tenant's final month bill the right person.
  * - Mid-month move-in rent uses the property setting, default day-wise.
  * - Engine math is the source of truth (Tutul, build start):
  *   room 102 utility = 223 × 7.5 = 1,673. Never hardcode 2,200 or 57,998.
@@ -52,6 +57,19 @@ export const BILL_LABELS = {
   prev_due: 'আগের বাকি',
   loan: 'লোন কিস্তি',
 } as const;
+
+/**
+ * One tenancy interval. Active AND archived tenants are passed in — the engine
+ * decides which one owns a room in a given month, so backfilled months bill the
+ * tenant who actually lived there (handoff: historical tenancy).
+ */
+export interface Tenancy {
+  id: TenantId;
+  name: string;
+  roomId: string;
+  moveInDate: string;
+  moveOutDate?: string;
+}
 
 export interface RoomBillInput {
   month: MonthKey;
@@ -276,7 +294,11 @@ export function cycleTotal(bills: Bill[]): number {
   return bills.reduce((sum, bill) => sum + bill.total, 0);
 }
 
-/** Reads occupied rooms from a room list in deterministic order (sortOrder). */
+/**
+ * Reads occupied rooms from a room list in deterministic order (sortOrder).
+ * Reflects TODAY's `room.status` — for a specific month use
+ * `occupiedRoomsInMonth`, which derives occupancy from tenancy intervals.
+ */
 export function occupiedRooms(rooms: Room[]): Room[] {
   return rooms
     .filter((room) => room.status === 'occupied')
@@ -284,17 +306,83 @@ export function occupiedRooms(rooms: Room[]): Room[] {
     .sort((a, b) => a.sortOrder - b.sortOrder || a.number.localeCompare(b.number));
 }
 
+/** First / last calendar day of a 'YYYY-MM' month, as ISO dates. */
+function monthStart(month: MonthKey): string {
+  return `${month}-01`;
+}
+
+function monthEnd(month: MonthKey): string {
+  return `${month}-${String(daysInMonthFor(month)).padStart(2, '0')}`;
+}
+
+/**
+ * The tenant who owns each room DURING `month`, from the full tenancy list
+ * (active + archived). A tenancy covers the month when its interval
+ * [moveInDate, moveOutDate] overlaps it; a room with no overlapping tenancy was
+ * vacant that month and gets no paper.
+ *
+ * Deterministic tie-break when intervals overlap inside one month: the tenancy
+ * that covers the month start wins, otherwise the earliest moveInDate (then id).
+ */
+export function monthTenantByRoom(tenancies: Tenancy[], month: MonthKey): Map<string, Tenancy> {
+  const start = monthStart(month);
+  const end = monthEnd(month);
+
+  const candidates = new Map<string, Tenancy[]>();
+  for (const tenancy of tenancies) {
+    if (tenancy.moveInDate > end) continue;
+    if (tenancy.moveOutDate !== undefined && tenancy.moveOutDate < start) continue;
+    const list = candidates.get(tenancy.roomId);
+    if (list) list.push(tenancy);
+    else candidates.set(tenancy.roomId, [tenancy]);
+  }
+
+  const coversStart = (tenancy: Tenancy): number =>
+    tenancy.moveInDate <= start && (tenancy.moveOutDate === undefined || tenancy.moveOutDate >= start)
+      ? 0
+      : 1;
+
+  const byRoom = new Map<string, Tenancy>();
+  for (const [roomId, list] of candidates) {
+    const winner = list
+      .slice()
+      .sort(
+        (a, b) =>
+          coversStart(a) - coversStart(b) ||
+          a.moveInDate.localeCompare(b.moveInDate) ||
+          a.id.localeCompare(b.id),
+      )[0];
+    byRoom.set(roomId, winner);
+  }
+  return byRoom;
+}
+
+/**
+ * Rooms occupied DURING `month`, in display order. Drives the bill set and the
+ * water-share divisor (occupied that month + 1), never today's room status.
+ */
+export function occupiedRoomsInMonth(rooms: Room[], tenancies: Tenancy[], month: MonthKey): Room[] {
+  const byRoom = monthTenantByRoom(tenancies, month);
+  return rooms
+    .filter((room) => byRoom.has(room.id))
+    .slice()
+    .sort((a, b) => a.sortOrder - b.sortOrder || a.number.localeCompare(b.number));
+}
+
 /**
  * Build every occupied room's bill for the month from a meter entry + settings.
- * Vacant rooms are skipped entirely (no waste, no water, no electricity).
- * Pure: takes everything it needs as arguments; the repository persists.
+ * Occupancy and the room's tenant are derived from the tenancy intervals that
+ * overlap the month (active + archived), so a backfilled month bills whoever
+ * lived there then. Vacant rooms are skipped entirely (no waste, no water, no
+ * electricity). Pure: takes everything it needs as arguments; the repository
+ * persists.
  */
 export function buildMonthBills(args: {
   month: MonthKey;
   property: Property;
   rooms: Room[];
-  /** roomId → tenant for occupied rooms */
-  tenantByRoom: Map<string, { id: string; name: string; moveInDate: string }>;
+  /** every tenancy (active + archived) — the engine picks the month's tenant */
+  tenancies: Tenancy[];
   meterEntry: MeterEntry;
   adjustmentsByRoom: Map<string, { label: string; amount: number }[]>;
   /** roomId → carried leftover due (from ledger history) */
@@ -303,9 +391,10 @@ export function buildMonthBills(args: {
   loanInstallmentByRoom: Map<string, number>;
   existingRefs: string[];
 }): Bill[] {
-  const { month, property, tenantByRoom, meterEntry, adjustmentsByRoom, prevDueByRoom, loanInstallmentByRoom } = args;
+  const { month, property, tenancies, meterEntry, adjustmentsByRoom, prevDueByRoom, loanInstallmentByRoom } = args;
 
-  const occupied = occupiedRooms(args.rooms);
+  const tenantByRoom = monthTenantByRoom(tenancies, month);
+  const occupied = occupiedRoomsInMonth(args.rooms, tenancies, month);
   const waterBuildingUnits = electricityUnits(meterEntry.water.previous, meterEntry.water.current);
   const waterUnits = waterShareUnits(waterBuildingUnits, occupied.length);
   const monthDays = daysInMonthFor(month);

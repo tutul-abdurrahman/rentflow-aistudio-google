@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useRepository } from '../app/repository';
 import EmptyState from '../components/EmptyState';
 import KpiCard, { type KpiTrend } from '../components/KpiCard';
@@ -7,6 +7,7 @@ import MonthSelect from '../components/MonthSelect';
 import Sheet from '../components/Sheet';
 import StatusChip from '../components/StatusChip';
 import { bnDate, bnDigits, bnMonth, bnNumber, bnTaka } from '../lib/format';
+import { isMonthKey } from '../lib/screen-month';
 import type {
   Bill,
   CashflowRow,
@@ -20,9 +21,10 @@ import type {
 
 /**
  * 02 — হোম / ড্যাশবোর্ড. Every number is recomputed from the repository:
- * getActiveMonth() → getDashboard(month) + getCashflow(...) + listBills/rooms/
- * loans/ledger. No canvas figures are hardcoded. Loading and first-month empty
- * are real states (§13 debt 4), not the annotated design previews.
+ * the viewed month (?month= → latest billed → active) → getDashboard(month) +
+ * getCashflow(...) + listBills/rooms/loans/ledger. No canvas figures are
+ * hardcoded. Loading and first-month empty are real states (§13 debt 4), not
+ * the annotated design previews.
  */
 
 /* ---------- date / axis helpers ---------- */
@@ -303,22 +305,27 @@ function DashboardSkeleton() {
 export default function Dashboard() {
   const repo = useRepository();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
-  /** active = the repository's latest cycle; chosen = the month being viewed. */
-  const [months, setMonths] = useState<{ active: string | null; chosen: string | null }>({
-    active: null,
-    chosen: null,
+  /**
+   * anchor = the latest billed month (the picker window anchors here);
+   * chosen = the month the owner picked to view, null → anchor.
+   */
+  const [months, setMonths] = useState<{ anchor: string | null; chosen: string | null }>({
+    anchor: null,
+    chosen: isMonthKey(searchParams.get('month')) ? searchParams.get('month') : null,
   });
   const [notifyOpen, setNotifyOpen] = useState(false);
 
   useEffect(() => {
     let alive = true;
     (async () => {
-      const activeMonth = months.active ?? (await repo.getActiveMonth());
-      const month = months.chosen ?? activeMonth;
+      const anchor =
+        months.anchor ?? (await repo.getLatestBilledMonth()) ?? (await repo.getActiveMonth());
+      const month = months.chosen ?? anchor;
       if (!alive) return;
-      if (!months.active) setMonths({ active: activeMonth, chosen: null });
+      if (!months.anchor) setMonths((current) => ({ ...current, anchor }));
       const window = lastMonths(month, 6);
       const [property, dashboard, previous, cashflow, bills, rooms, loans, ledger, meter] =
         await Promise.all([
@@ -354,6 +361,7 @@ export default function Dashboard() {
 
   const pickMonth = (month: string) => {
     if (!data || month === data.month) return;
+    setSearchParams({ month }, { replace: true });
     setMonths((current) => ({ ...current, chosen: month }));
     setData(null);
     setLoading(true);
@@ -372,7 +380,7 @@ export default function Dashboard() {
         <DashboardHeader
           property={property}
           month={month}
-          anchorMonth={months.active ?? month}
+          anchorMonth={months.anchor ?? month}
           onPickMonth={pickMonth}
           onOpenNotifications={() => setNotifyOpen(true)}
         />
@@ -515,7 +523,7 @@ export default function Dashboard() {
       <DashboardHeader
         property={property}
         month={month}
-        anchorMonth={months.active ?? month}
+        anchorMonth={months.anchor ?? month}
         onPickMonth={pickMonth}
         onOpenNotifications={() => setNotifyOpen(true)}
       />
@@ -524,6 +532,7 @@ export default function Dashboard() {
         open={notifyOpen}
         onClose={() => setNotifyOpen(false)}
         dashboard={dashboard}
+        month={month}
       />
 
       {/* KPI */}
@@ -646,7 +655,7 @@ export default function Dashboard() {
         <section className="mt-3 xl:col-span-1 xl:mt-0">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-semibold text-ink">বকেয়া তালিকা</h2>
-            <Link to="/collection" className="text-sm font-medium text-primary">
+            <Link to={`/collection?month=${month}`} className="text-sm font-medium text-primary">
               সব দেখুন
             </Link>
           </div>
@@ -686,7 +695,7 @@ export default function Dashboard() {
                       />
                     </div>
                     <Link
-                      to="/collection"
+                      to={`/collection?month=${month}`}
                       className={ICON_BUTTON_CLASS}
                       aria-label={`${row.tenantName} থেকে আদায়`}
                     >
@@ -723,7 +732,7 @@ export default function Dashboard() {
               icon={<GaugeIcon />}
             />
             <CycleTile
-              to="/bills/preview"
+              to={`/bills/preview?month=${month}`}
               done={tile2Done}
               step="২"
               title="বিল দেখুন"
@@ -735,7 +744,7 @@ export default function Dashboard() {
               icon={<BillIcon />}
             />
             <CycleTile
-              to="/bills/print"
+              to={`/bills/print?month=${month}`}
               done={tile3Done}
               step="৩"
               title="প্রিন্ট করুন"
@@ -743,7 +752,7 @@ export default function Dashboard() {
               icon={<PrinterIcon />}
             />
             <CycleTile
-              to="/collection"
+              to={`/collection?month=${month}`}
               done={tile4Done}
               step="৪"
               title="কালেকশন"
@@ -825,10 +834,13 @@ function NotificationSheet({
   open,
   onClose,
   dashboard,
+  month,
 }: {
   open: boolean;
   onClose: () => void;
   dashboard: DashboardSnapshot;
+  /** the month the dashboard is showing — the 'আদায়' link must carry it */
+  month: string;
 }) {
   const dues = dashboard.dueList;
   return (
@@ -853,7 +865,7 @@ function NotificationSheet({
                 <div className="flex shrink-0 items-center gap-2">
                   <span className="text-sm font-bold text-danger">{bnTaka(row.amount)}</span>
                   <Link
-                    to="/collection"
+                    to={`/collection?month=${month}`}
                     onClick={onClose}
                     className="rounded-button bg-primary px-3 py-1.5 text-xs font-semibold text-on-primary transition-colors hover:bg-primary-hover"
                   >

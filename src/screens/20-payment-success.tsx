@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Link, Navigate, useLocation } from 'react-router-dom';
+import { Link, Navigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useRepository } from '../app/repository';
 import { bnDigits, bnMonth, bnTaka } from '../lib/format';
+import { isMonthKey } from '../lib/screen-month';
 import type { Bill, Property, Room, Tenant } from '../lib/types';
 import { takaInWords } from './04-receipt-grid-print';
 
@@ -9,6 +10,9 @@ import { takaInWords } from './04-receipt-grid-print';
  * 20 — আদায় সফল. Confirms the ledger entry that 19 just wrote. It must NOT
  * offer a payment receipt (handoff §14): the paper was printed before
  * collection, so there is nothing new to hand out.
+ *
+ * The bill's own month is the natural display source; `?month=` only steers
+ * the onward navigation so a refresh keeps the owner on the same cycle.
  */
 
 interface PaymentState {
@@ -59,6 +63,7 @@ function HomeIcon() {
 export default function PaymentSuccess() {
   const repo = useRepository();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const state = (location.state ?? {}) as PaymentState;
 
   const [loading, setLoading] = useState(true);
@@ -68,6 +73,11 @@ export default function PaymentSuccess() {
   const [tenants, setTenants] = useState<Tenant[]>([]);
 
   const billId = state.billId;
+
+  const requestedMonth = searchParams.get('month');
+  const monthParam = isMonthKey(requestedMonth) ? requestedMonth : '';
+  /** No valid ?month= → the collection screen falls back to its own resolution. */
+  const collectionBack = monthParam ? `/collection?month=${monthParam}` : '/collection';
 
   useEffect(() => {
     let alive = true;
@@ -97,7 +107,7 @@ export default function PaymentSuccess() {
   }, [repo, billId]);
 
   if (!billId) {
-    return <Navigate to="/collection" replace />;
+    return <Navigate to={collectionBack} replace />;
   }
 
   if (loading || !property) {
@@ -121,7 +131,7 @@ export default function PaymentSuccess() {
   }
 
   if (!bill) {
-    return <Navigate to="/collection" replace />;
+    return <Navigate to={collectionBack} replace />;
   }
 
   const roomNumber = rooms.find((room) => room.id === bill.roomId)?.number ?? '';
@@ -181,7 +191,7 @@ export default function PaymentSuccess() {
 
         <div className="mt-5 w-full space-y-2.5">
           <Link
-            to="/collection"
+            to={`/collection?month=${monthParam || bill.month}`}
             className="inline-flex w-full items-center justify-center gap-2 rounded-button bg-primary px-5 py-3 text-base font-semibold text-on-primary transition-colors hover:bg-primary-hover active:bg-primary-active"
           >
             <BanknoteIcon />

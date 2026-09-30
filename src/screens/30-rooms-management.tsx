@@ -124,7 +124,8 @@ export default function RoomsManagement() {
 
   const save = async () => {
     const number = asciiDigits(roomNumber.trim());
-    const parsedRent = Number(rent);
+    const rentText = rent.trim();
+    const parsedRent = Number(rentText);
     let invalid = false;
 
     if (!number) {
@@ -133,8 +134,10 @@ export default function RoomsManagement() {
     } else {
       setNumberError(undefined);
     }
-    if (!Number.isFinite(parsedRent) || parsedRent <= 0) {
-      setRentError('মাসিক ভাড়া লিখুন।');
+    // Rent 0 is legitimate (vacant / owner-occupied rooms) — reject only an
+    // empty field, NaN, or a negative amount.
+    if (rentText === '' || !Number.isFinite(parsedRent) || parsedRent < 0) {
+      setRentError('০ বা বেশি ভাড়া লিখুন।');
       invalid = true;
     } else {
       setRentError(undefined);

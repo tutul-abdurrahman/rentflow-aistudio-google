@@ -12,6 +12,8 @@
  * - adjustBill updates the ledger in place. NEVER regenerate bills as correction.
  * - recordPayment stores a ledger entry only. No payment receipt anywhere.
  * - Next month's prev_due comes from the ledger; absent when nothing is leftover.
+ * - getActiveMonth is the DRAFT month screen 03 opens; every bill-side screen
+ *   resolves its month as ?month= → getLatestBilledMonth() → getActiveMonth().
  */
 
 import type {
@@ -101,23 +103,56 @@ export interface RentFlowRepository {
   // ---- meters (screen 03) ----
   getMeterEntry(month: MonthKey): Promise<MeterEntry | null>;
   saveMeterEntry(month: MonthKey, entry: MeterEntry): Promise<MeterEntry>;
+  /**
+   * Latest known `current` per room electricity meter and for the building
+   * water meter, taken from the saved meter entries of months STRICTLY EARLIER
+   * than `month`. Missing rooms map to nothing (callers fall back to 0).
+   * Screen 03 uses this to open a month with the previous reading already
+   * filled in (auto-filled, still editable).
+   */
+  getLastKnownReadings(month: MonthKey): Promise<{ rooms: Map<RoomId, number>; water: number }>;
 
   // ---- bills / monthly cycle (screens 17, 18, 04, 21) ----
   listBills(month: MonthKey): Promise<Bill[]>;
   getBill(id: BillId): Promise<Bill | null>;
   /**
-   * Month of the most recent bill cycle — the month screens show by default.
-   * Falls back to the current calendar month when no cycle exists yet.
+   * The month the cycle is working on — the month screen 03 opens as a draft:
+   * 1. the EARLIEST month that has a saved meter entry but no bills (finish
+   *    what is in progress first),
+   * 2. else the month immediately after the latest month that has bills,
+   *    capped at the current calendar month (never a future month),
+   * 3. else the current calendar month.
    */
   getActiveMonth(): Promise<MonthKey>;
+  /**
+   * Latest month that has stored papers, or null when no cycle exists yet.
+   * Bill-side screens (02, 04, 17–22, 33) default to this month — never to an
+   * empty draft month.
+   */
+  getLatestBilledMonth(): Promise<MonthKey | null>;
+  /**
+   * Every month that has data (a meter entry or bills), ascending — the
+   * screen-03 cycle picker unions this with the trailing 12 calendar months.
+   */
+  listDataMonths(): Promise<MonthKey[]>;
   /**
    * Build + persist all occupied rooms' papers for the month, then shift readings.
    * Unique paperRef per paper. Safe to call once per month; re-calling an already
    * calculated month returns the stored bills (never a silent regenerate).
    */
   calculatePapers(month: MonthKey): Promise<Bill[]>;
-  /** screen 18 — add an adjustment and update the stored bill in place. */
-  adjustBill(month: MonthKey, roomId: RoomId, adjustment: { label: string; amount: number; note?: string }): Promise<Bill>;
+  /**
+   * screen 18 — add an adjustment and update the stored bill in place.
+   * `kind` 'prev_due' appends an OPENING 'আগের বাকি' line (pre-history debt
+   * seeded by the owner) instead of an 'adjustment' line; either way the bill is
+   * never regenerated and an Adjustment history row is recorded.
+   */
+  adjustBill(
+    month: MonthKey,
+    roomId: RoomId,
+    adjustment: { label: string; amount: number; note?: string },
+    kind?: 'adjustment' | 'prev_due',
+  ): Promise<Bill>;
   /** roomId → carried leftover due entering this month (ledger-derived) */
   getPrevDueByRoom(month: MonthKey): Promise<Map<RoomId, number>>;
 
