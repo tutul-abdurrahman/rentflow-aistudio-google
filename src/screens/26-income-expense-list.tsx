@@ -1,12 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useRepository } from '../app/repository';
-import EmptyState from '../components/EmptyState';
-import MonthSelect from '../components/MonthSelect';
-import Sheet from '../components/Sheet';
-import { bnDate, bnDigits, bnMonth, bnTaka } from '../lib/format';
-import { addMonths } from '../lib/view';
-import type { CashflowRow, FinanceEntry } from '../lib/types';
+import { useEffect, useMemo, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useRepository } from '../app/repository'
+import EmptyState from '../components/EmptyState'
+import MonthSelect from '../components/MonthSelect'
+import Sheet from '../components/Sheet'
+import { bnDate, bnDigits, bnMonth, bnTaka } from '../lib/format'
+import { addMonths } from '../lib/view'
+import type { CashflowRow, FinanceEntry } from '../lib/types'
 
 /**
  * Screen 26 — আয়-ব্যয় list (design-output/screens/26-income-expense-list.html).
@@ -16,14 +16,14 @@ import type { CashflowRow, FinanceEntry } from '../lib/types';
  * figure is the month's billed total, matching 28. Nothing is hardcoded.
  */
 
-type KindFilter = 'all' | 'income' | 'expense';
+type KindFilter = 'all' | 'income' | 'expense'
 
 const BACK_CLASS =
-  'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-ink-muted transition-colors hover:bg-surface-soft';
+  'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-ink-muted transition-colors hover:bg-surface-soft'
 
 /** '2026-08-05' → '৫ আগস্ট' (the list groups by day, not full date). */
 function dayMonth(iso: string): string {
-  return bnDate(iso).split(' ').slice(0, 2).join(' ');
+  return bnDate(iso).split(' ').slice(0, 2).join(' ')
 }
 
 function PlusIcon() {
@@ -41,7 +41,7 @@ function PlusIcon() {
     >
       <path d="M12 5v14M5 12h14" />
     </svg>
-  );
+  )
 }
 
 function ArrowUpIcon() {
@@ -59,7 +59,7 @@ function ArrowUpIcon() {
     >
       <path d="M19 5 5 19M19 13v6h-6" />
     </svg>
-  );
+  )
 }
 
 function ArrowDownIcon() {
@@ -77,7 +77,7 @@ function ArrowDownIcon() {
     >
       <path d="M5 19 19 5M5 11h6v6" />
     </svg>
-  );
+  )
 }
 
 function TrashIcon({ size = 18 }: { size?: number }) {
@@ -98,7 +98,7 @@ function TrashIcon({ size = 18 }: { size?: number }) {
       <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
       <path d="M10 11v6M14 11v6" />
     </svg>
-  );
+  )
 }
 
 function WalletIcon() {
@@ -118,7 +118,7 @@ function WalletIcon() {
       <path d="M3 5v14a2 2 0 0 0 2 2h15v-4" />
       <path d="M21 12h-4a2 2 0 0 0 0 4h4z" />
     </svg>
-  );
+  )
 }
 
 /** one skeleton row of the annotated loading variant */
@@ -132,109 +132,114 @@ function SkeletonRow() {
       </div>
       <div className="skeleton h-4 w-16 rounded" />
     </div>
-  );
+  )
 }
 
 export default function IncomeExpenseList() {
-  const repo = useRepository();
-  const navigate = useNavigate();
+  const repo = useRepository()
+  const navigate = useNavigate()
 
-  const [loading, setLoading] = useState(true);
-  const [month, setMonth] = useState('');
+  const [loading, setLoading] = useState(true)
+  const [month, setMonth] = useState('')
   /** latest cycle month — the month dropdown window anchors here */
-  const [anchorMonth, setAnchorMonth] = useState('');
-  const [propertyName, setPropertyName] = useState('');
-  const [entries, setEntries] = useState<FinanceEntry[]>([]);
-  const [cash, setCash] = useState<CashflowRow | null>(null);
-  const [filter, setFilter] = useState<KindFilter>('all');
-  const [reloadKey, setReloadKey] = useState(0);
-  const [deleteTarget, setDeleteTarget] = useState<FinanceEntry | null>(null);
-  const [deleting, setDeleting] = useState(false);
+  const [anchorMonth, setAnchorMonth] = useState('')
+  const [propertyName, setPropertyName] = useState('')
+  const [entries, setEntries] = useState<FinanceEntry[]>([])
+  const [cash, setCash] = useState<CashflowRow | null>(null)
+  const [filter, setFilter] = useState<KindFilter>('all')
+  const [reloadKey, setReloadKey] = useState(0)
+  const [deleteTarget, setDeleteTarget] = useState<FinanceEntry | null>(null)
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
-    let alive = true;
-    setLoading(true);
-    (async () => {
-      const activeMonth = await repo.getActiveMonth();
+    let alive = true
+    setLoading(true)
+    ;(async () => {
+      const activeMonth = await repo.getActiveMonth()
       // Keep the viewed month on delete-reload; default to the active cycle.
-      const target = month || activeMonth;
+      const target = month || activeMonth
       const [rows, cashRows, property] = await Promise.all([
         repo.listFinance(target),
         repo.getCashflow([target]),
         repo.getProperty(),
-      ]);
-      if (!alive) return;
-      setAnchorMonth(activeMonth);
-      setMonth(target);
-      setEntries(rows);
-      setCash(cashRows[0] ?? null);
-      setPropertyName(property.name);
-      setLoading(false);
-    })();
+      ])
+      if (!alive) return
+      setAnchorMonth(activeMonth)
+      setMonth(target)
+      setEntries(rows)
+      setCash(cashRows[0] ?? null)
+      setPropertyName(property.name)
+      setLoading(false)
+    })()
     return () => {
-      alive = false;
-    };
+      alive = false
+    }
     // `month` is intentionally read but not a dependency: the reload effect must
     // not refetch on every pick — pickMonth() handles that path itself.
-  }, [repo, reloadKey]);
+  }, [repo, reloadKey])
 
   const monthOptions = useMemo(
     () =>
       anchorMonth
-        ? Array.from({ length: 12 }, (_, index) => addMonths(anchorMonth, -index))
+        ? Array.from({ length: 12 }, (_, index) =>
+            addMonths(anchorMonth, -index),
+          )
         : [],
     [anchorMonth],
-  );
+  )
 
   const pickMonth = (next: string) => {
-    if (!next || next === month) return;
-    setMonth(next);
-    setLoading(true);
+    if (!next || next === month) return
+    setMonth(next)
+    setLoading(true)
     Promise.all([repo.listFinance(next), repo.getCashflow([next])]).then(
       ([rows, cashRows]) => {
-        setEntries(rows);
-        setCash(cashRows[0] ?? null);
-        setLoading(false);
+        setEntries(rows)
+        setCash(cashRows[0] ?? null)
+        setLoading(false)
       },
-    );
-  };
+    )
+  }
 
   const filtered = useMemo(
-    () => (filter === 'all' ? entries : entries.filter((entry) => entry.kind === filter)),
+    () =>
+      filter === 'all'
+        ? entries
+        : entries.filter((entry) => entry.kind === filter),
     [entries, filter],
-  );
+  )
 
   const groups = useMemo(() => {
-    const map = new Map<string, FinanceEntry[]>();
+    const map = new Map<string, FinanceEntry[]>()
     for (const entry of filtered) {
-      const bucket = map.get(entry.date);
-      if (bucket) bucket.push(entry);
-      else map.set(entry.date, [entry]);
+      const bucket = map.get(entry.date)
+      if (bucket) bucket.push(entry)
+      else map.set(entry.date, [entry])
     }
-    return [...map.entries()];
-  }, [filtered]);
+    return [...map.entries()]
+  }, [filtered])
 
-  const income = cash?.billed ?? 0;
-  const expense = cash?.expenses ?? 0;
-  const net = cash?.net ?? 0;
+  const income = cash?.billed ?? 0
+  const expense = cash?.expenses ?? 0
+  const net = cash?.net ?? 0
 
   const confirmDelete = async () => {
-    if (!deleteTarget) return;
-    setDeleting(true);
+    if (!deleteTarget) return
+    setDeleting(true)
     try {
-      await repo.deleteFinanceEntry(deleteTarget.id);
-      setDeleteTarget(null);
-      setReloadKey((key) => key + 1);
+      await repo.deleteFinanceEntry(deleteTarget.id)
+      setDeleteTarget(null)
+      setReloadKey((key) => key + 1)
     } finally {
-      setDeleting(false);
+      setDeleting(false)
     }
-  };
+  }
 
   const filters: { key: KindFilter; label: string }[] = [
     { key: 'all', label: 'সব' },
     { key: 'income', label: 'আয়' },
     { key: 'expense', label: 'ব্যয়' },
-  ];
+  ]
 
   return (
     <>
@@ -290,7 +295,11 @@ export default function IncomeExpenseList() {
       {/* summary chips */}
       <section
         className="mt-4 overflow-hidden rounded-card border border-border bg-surface-raised"
-        aria-label={month ? `${bnMonth(month)} আয়-ব্যয় সারসংক্ষেপ` : 'আয়-ব্যয় সারসংক্ষেপ'}
+        aria-label={
+          month
+            ? `${bnMonth(month)} আয়-ব্যয় সারসংক্ষেপ`
+            : 'আয়-ব্যয় সারসংক্ষেপ'
+        }
       >
         <div className="grid grid-cols-3 divide-x divide-border">
           <div className="px-3 py-4 text-center sm:px-4">
@@ -318,7 +327,10 @@ export default function IncomeExpenseList() {
         </div>
         <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border bg-surface-soft px-4 py-2 text-xs text-ink-muted">
           <span className="inline-flex items-center gap-1.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+            <span
+              className="h-1.5 w-1.5 rounded-full bg-primary"
+              aria-hidden="true"
+            />
             মোট আয় − মোট ব্যয়
           </span>
           <Link to="/finance/cashflow" className="font-semibold text-primary">
@@ -334,7 +346,7 @@ export default function IncomeExpenseList() {
         aria-label="এন্ট্রির ধরন ফিল্টার"
       >
         {filters.map(({ key, label }) => {
-          const active = filter === key;
+          const active = filter === key
           return (
             <button
               key={key}
@@ -349,7 +361,7 @@ export default function IncomeExpenseList() {
             >
               {label}
             </button>
-          );
+          )
         })}
       </div>
 
@@ -397,8 +409,8 @@ export default function IncomeExpenseList() {
                 </div>
 
                 {rows.map((entry) => {
-                  const isIncome = entry.kind === 'income';
-                  const title = entry.note ?? entry.category;
+                  const isIncome = entry.kind === 'income'
+                  const title = entry.note ?? entry.category
                   return (
                     <div key={entry.id} className="flex items-start gap-3 p-4">
                       <span
@@ -412,7 +424,9 @@ export default function IncomeExpenseList() {
                       </span>
 
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-semibold text-ink">{title}</p>
+                        <p className="text-sm font-semibold text-ink">
+                          {title}
+                        </p>
                         <p className="mt-0.5 text-xs text-ink-muted">
                           <span
                             className={`inline-flex items-center gap-1 rounded-pill px-2 py-0.5 text-[11px] font-medium ${
@@ -455,7 +469,7 @@ export default function IncomeExpenseList() {
                         <TrashIcon />
                       </button>
                     </div>
-                  );
+                  )
                 })}
               </div>
             ))}
@@ -474,9 +488,13 @@ export default function IncomeExpenseList() {
             <TrashIcon size={22} />
           </span>
           <div>
-            <h2 className="text-lg font-semibold text-ink">এই এন্ট্রি মুছবেন?</h2>
+            <h2 className="text-lg font-semibold text-ink">
+              এই এন্ট্রি মুছবেন?
+            </h2>
             <p className="text-sm text-ink-muted">
-              {deleteTarget ? `${deleteTarget.note ?? deleteTarget.category} · ${bnTaka(deleteTarget.amount)}। ` : ''}
+              {deleteTarget
+                ? `${deleteTarget.note ?? deleteTarget.category} · ${bnTaka(deleteTarget.amount)}। `
+                : ''}
               এই এন্ট্রি স্থায়ীভাবে মুছে যাবে।
             </p>
           </div>
@@ -502,5 +520,5 @@ export default function IncomeExpenseList() {
         </div>
       </Sheet>
     </>
-  );
+  )
 }

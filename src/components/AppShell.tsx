@@ -1,8 +1,8 @@
-import type { ReactNode } from 'react';
-import { useRepository } from '../app/repository';
-import { useAsync } from '../lib/useAsync';
-import BottomNav, { type BottomNavVariant } from './BottomNav';
-import Sidebar from './Sidebar';
+import type { ReactNode } from 'react'
+import { useRepository } from '../app/repository'
+import { useAsync } from '../lib/useAsync'
+import BottomNav, { type BottomNavVariant } from './BottomNav'
+import Sidebar from './Sidebar'
 
 /**
  * App shell — sidebar at lg+, bottom nav below lg. Content wrapper is handoff
@@ -10,19 +10,19 @@ import Sidebar from './Sidebar';
  * desktop 6xl → 7xl).
  */
 export interface AppShellProps {
-  children: ReactNode;
+  children: ReactNode
   /** override the bottom nav variant for this screen (default: all five tabs) */
-  navVariant?: BottomNavVariant;
+  navVariant?: BottomNavVariant
 }
 
 export function AppShell({ children, navVariant }: AppShellProps) {
-  const repository = useRepository();
+  const repository = useRepository()
   // Renames propagate from the repository. Until the property resolves the
   // sidebar renders skeleton bars — it has no placeholder names of its own.
   const { data: property, loading: propertyLoading } = useAsync(
     () => repository.getProperty(),
     [repository],
-  );
+  )
 
   return (
     <>
@@ -38,12 +38,12 @@ export function AppShell({ children, navVariant }: AppShellProps) {
       </div>
       <BottomNav variant={navVariant} />
     </>
-  );
+  )
 }
 
 /** No-nav shell for auth / onboarding / print / success screens. */
 export function BareShell({ children }: { children: ReactNode }) {
-  return <div className="min-h-dvh">{children}</div>;
+  return <div className="min-h-dvh">{children}</div>
 }
 
-export default AppShell;
+export default AppShell

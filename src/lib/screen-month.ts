@@ -1,6 +1,6 @@
-import type { RentFlowRepository } from './repository/types';
-import type { MonthKey } from './types';
-import { addMonths } from './view';
+import type { RentFlowRepository } from './repository/types'
+import type { MonthKey } from './types'
+import { addMonths } from './view'
 
 /**
  * Month resolution shared by the bill-side screens (02, 04, 17–22, 33).
@@ -11,21 +11,23 @@ import { addMonths } from './view';
  * the query string (not router state) keeps it across refresh and print.
  */
 
-const MONTH_RE = /^\d{4}-(0[1-9]|1[0-2])$/;
+const MONTH_RE = /^\d{4}-(0[1-9]|1[0-2])$/
 
 /** True for a well-formed 'YYYY-MM' month key. */
-export function isMonthKey(value: string | null | undefined): value is MonthKey {
-  return typeof value === 'string' && MONTH_RE.test(value);
+export function isMonthKey(
+  value: string | null | undefined,
+): value is MonthKey {
+  return typeof value === 'string' && MONTH_RE.test(value)
 }
 
 export async function resolveScreenMonth(
   repo: RentFlowRepository,
   param: string | null | undefined,
 ): Promise<MonthKey> {
-  if (isMonthKey(param)) return param;
-  const billed = await repo.getLatestBilledMonth();
-  if (billed) return billed;
-  return repo.getActiveMonth();
+  if (isMonthKey(param)) return param
+  const billed = await repo.getLatestBilledMonth()
+  if (billed) return billed
+  return repo.getActiveMonth()
 }
 
 /**
@@ -33,8 +35,14 @@ export async function resolveScreenMonth(
  * or bills) unioned with the trailing 12 calendar months up to and including
  * `current`, newest first, never a future month.
  */
-export function monthPickerOptions(dataMonths: MonthKey[], current: MonthKey): MonthKey[] {
-  const options = new Set<MonthKey>(dataMonths);
-  for (let index = 0; index < 12; index += 1) options.add(addMonths(current, -index));
-  return [...options].filter((month) => month <= current).sort((a, b) => b.localeCompare(a));
+export function monthPickerOptions(
+  dataMonths: MonthKey[],
+  current: MonthKey,
+): MonthKey[] {
+  const options = new Set<MonthKey>(dataMonths)
+  for (let index = 0; index < 12; index += 1)
+    options.add(addMonths(current, -index))
+  return [...options]
+    .filter((month) => month <= current)
+    .sort((a, b) => b.localeCompare(a))
 }
