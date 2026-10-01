@@ -31,10 +31,10 @@ export async function resolveScreenMonth(
 /**
  * Screen 03's cycle picker options: every month that has data (a meter entry
  * or bills) unioned with the trailing 12 calendar months up to and including
- * `current`, ascending, never a future month.
+ * `current`, newest first, never a future month.
  */
 export function monthPickerOptions(dataMonths: MonthKey[], current: MonthKey): MonthKey[] {
   const options = new Set<MonthKey>(dataMonths);
   for (let index = 0; index < 12; index += 1) options.add(addMonths(current, -index));
-  return [...options].filter((month) => month <= current).sort();
+  return [...options].filter((month) => month <= current).sort((a, b) => b.localeCompare(a));
 }

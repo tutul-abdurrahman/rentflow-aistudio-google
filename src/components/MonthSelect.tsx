@@ -24,7 +24,7 @@ const TRIGGER_CLASS =
   'inline-flex items-center gap-1.5 rounded-pill border border-border bg-surface-raised px-3.5 py-2 text-sm font-semibold text-ink transition-colors hover:bg-surface-soft active:bg-primary-tint';
 
 const PANEL_CLASS =
-  'absolute z-30 mt-1 max-h-72 w-56 overflow-y-auto rounded-card border border-border bg-surface-raised p-1.5 shadow-pop';
+  'absolute z-30 mt-1 max-h-72 w-[min(16rem,calc(100vw-1.5rem))] overflow-y-auto rounded-card border border-border bg-surface-raised p-1.5 shadow-pop';
 
 export default function MonthSelect({
   value,
@@ -82,10 +82,7 @@ export default function MonthSelect({
           <div
             role="listbox"
             aria-label="মাস"
-            className={cn(
-              PANEL_CLASS,
-              align === 'right' ? 'left-0 sm:left-auto sm:right-0' : 'left-0',
-            )}
+            className={cn(PANEL_CLASS, align === 'right' ? 'right-0' : 'left-0')}
           >
             {months.map((month) => {
               const isCurrent = month === value;

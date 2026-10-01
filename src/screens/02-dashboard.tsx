@@ -321,8 +321,9 @@ export default function Dashboard() {
   useEffect(() => {
     let alive = true;
     (async () => {
-      const anchor =
-        months.anchor ?? (await repo.getLatestBilledMonth()) ?? (await repo.getActiveMonth());
+      const now = new Date();
+      const deviceMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      const anchor = months.anchor ?? deviceMonth;
       const month = months.chosen ?? anchor;
       if (!alive) return;
       if (!months.anchor) setMonths((current) => ({ ...current, anchor }));

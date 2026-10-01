@@ -31,7 +31,7 @@ export function AppShell({ children, navVariant }: AppShellProps) {
         propertyName={property?.name}
         loading={propertyLoading}
       />
-      <div className="min-h-dvh lg:pl-[264px]">
+      <div className="min-h-dvh overflow-x-hidden lg:pl-[264px]">
         <main className="mx-auto w-full px-3 pb-32 sm:px-5 md:max-w-[48rem] lg:max-w-[72rem] lg:px-8 lg:pb-16 xl:max-w-[80rem]">
           {children}
         </main>

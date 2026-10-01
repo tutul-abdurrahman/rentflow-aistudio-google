@@ -426,7 +426,7 @@ export default function MeterEntry() {
         <div className="divide-y divide-border">
           {electricityRows.map(({ room, tenant, draft, valid, error, showError, used }) => (
             <div key={room.id} className="px-5 py-3.5">
-              <div className="grid grid-cols-[minmax(0,1fr)_4.5rem_5rem_3rem] items-center gap-3 lg:grid-cols-[4.5rem_minmax(0,1fr)_7rem_8rem_5rem]">
+              <div className="grid grid-cols-[minmax(0,1fr)_5.25rem_5.25rem_2.25rem] items-center gap-2 lg:grid-cols-[4.5rem_minmax(0,1fr)_7rem_8rem_5rem] lg:gap-3">
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-ink">{bnDigits(room.number)}</p>
                   <p className="mt-0.5 truncate text-xs text-ink-faint lg:hidden">
@@ -454,7 +454,7 @@ export default function MeterEntry() {
                       }))
                     }
                     className={cn(
-                      'w-full min-w-0 rounded-input border bg-surface-raised px-2 py-2 text-right text-md font-medium text-ink outline-none focus:border-border-focus disabled:bg-surface-soft disabled:text-ink-muted lg:px-3',
+                      'w-full min-w-0 rounded-input border bg-surface-raised px-1.5 py-2 text-right text-sm font-medium text-ink outline-none focus:border-border-focus disabled:bg-surface-soft disabled:text-ink-muted lg:px-3 lg:text-md',
                       showError && !valid ? 'border-danger' : 'border-border',
                     )}
                   />
@@ -479,7 +479,7 @@ export default function MeterEntry() {
                       }))
                     }
                     className={cn(
-                      'w-full min-w-0 rounded-input border bg-surface-raised px-2 py-2 text-right text-md font-medium text-ink outline-none focus:border-border-focus disabled:bg-surface-soft disabled:text-ink-muted lg:px-3',
+                      'w-full min-w-0 rounded-input border bg-surface-raised px-1.5 py-2 text-right text-sm font-medium text-ink outline-none focus:border-border-focus disabled:bg-surface-soft disabled:text-ink-muted lg:px-3 lg:text-md',
                       showError ? 'border-danger' : 'border-border',
                     )}
                   />

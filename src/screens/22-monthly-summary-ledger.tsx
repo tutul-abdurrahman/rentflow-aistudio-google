@@ -117,7 +117,7 @@ export default function MonthlySummaryLedger() {
   const monthOptions = useMemo(
     () =>
       anchorMonth
-        ? Array.from({ length: 12 }, (_, index) => addMonths(anchorMonth, index - 11))
+        ? Array.from({ length: 12 }, (_, index) => addMonths(anchorMonth, -index))
         : [],
     [anchorMonth],
   );
