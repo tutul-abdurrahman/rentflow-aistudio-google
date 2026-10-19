@@ -187,7 +187,14 @@ export default function MeterEntry() {
       setWaterPrevious(
         entry ? String(entry.water.previous) : String(lastKnown.water),
       )
-      setWaterCurrent(entry ? (bills.length === 0 && Number(entry.water.current) === Number(entry.water.previous) ? '' : String(entry.water.current)) : '')
+      setWaterCurrent(
+        entry
+          ? bills.length === 0 &&
+            Number(entry.water.current) === Number(entry.water.previous)
+            ? ''
+            : String(entry.water.current)
+          : '',
+      )
       setWaterTouched(false)
       setHasPapers(bills.length > 0)
       setRate(String(property?.electricityRate ?? 0))
@@ -313,7 +320,10 @@ export default function MeterEntry() {
       const draft = drafts[room.id]
       const previous = Number(draft?.previous || 0)
       // ফাঁকা বর্তমান → পূর্ববর্তীই বসে (usage ০), চেইন ভাঙে না।
-      const current = draft?.current === '' || draft?.current === undefined ? previous : Number(draft.current)
+      const current =
+        draft?.current === '' || draft?.current === undefined
+          ? previous
+          : Number(draft.current)
       return {
         roomId: room.id,
         roomNumber: room.number,
@@ -324,7 +334,8 @@ export default function MeterEntry() {
     }),
     water: {
       previous: Number(waterPrevious || 0),
-      current: waterCurrent === '' ? Number(waterPrevious || 0) : Number(waterCurrent),
+      current:
+        waterCurrent === '' ? Number(waterPrevious || 0) : Number(waterCurrent),
     },
   })
 
