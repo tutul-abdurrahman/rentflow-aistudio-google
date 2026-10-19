@@ -803,9 +803,6 @@ export default function Dashboard() {
       />
 
       {/* মডেল নোট: বিল/বকেয়া = আগের মাসের কাগজ; আয়-ব্যয় = এই মাসের ক্যাশ */}
-      <p className="mt-4 rounded-card border border-border bg-surface-soft px-4 py-2.5 text-xs text-ink-muted">
-        {bnMonth(billMonth)}-এর বিল ও বকেয়া · {bnMonth(month)}-এর আয়-ব্যয়
-      </p>
 
       {/* KPI — বকেয়া/বিল = বিল-মাসের (আগের মাস); আদায়/ব্যয় = এই মাসের ক্যাশ */}
       <section className="mt-4 grid grid-cols-2 gap-3 md:mt-6 md:gap-4 lg:grid-cols-4">
