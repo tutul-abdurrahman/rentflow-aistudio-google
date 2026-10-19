@@ -208,13 +208,29 @@ export default function IncomeExpenseList() {
     if (!next || next === month) return
     setMonth(next)
     setLoading(true)
-    Promise.all([repo.listFinance(next), repo.getCashflow([next])]).then(
-      ([rows, cashRows]) => {
-        setEntries(rows)
-        setCash(cashRows[0] ?? null)
-        setLoading(false)
-      },
-    )
+    Promise.all([
+      repo.listFinance(next),
+      repo.getCashflow([next]),
+      repo.listLedger().then((rows) =>
+        rows.filter((row) => row.paidAt.slice(0, 7) === next),
+      ),
+    ]).then(([rows, cashRows, ledgerRows]) => {
+      setEntries(rows)
+      setCash(cashRows[0] ?? null)
+      setCollections(
+        ledgerRows.map((row) => ({
+          id: `ledger-${row.id}`,
+          propertyId: row.propertyId,
+          kind: 'income' as const,
+          category: 'ভাড়া আদায়',
+          amount: row.amount,
+          date: row.paidAt,
+          note: row.note,
+          createdAt: row.createdAt,
+        })),
+      )
+      setLoading(false)
+    })
   }
 
   const filtered = useMemo(() => {
