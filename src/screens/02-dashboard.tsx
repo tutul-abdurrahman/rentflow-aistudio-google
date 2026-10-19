@@ -186,12 +186,15 @@ const ICON_BUTTON_CLASS =
 function DashboardHeader({
   property,
   month,
+  billMonth,
   monthOptions,
   onPickMonth,
   onOpenNotifications,
 }: {
   property: Property
   month: string
+  /** the bill cycle month being worked on (month − 1) */
+  billMonth: string
   /** selectable cash months (derived: previous month has bills) */
   monthOptions: string[]
   onPickMonth: (month: string) => void
@@ -214,6 +217,9 @@ function DashboardHeader({
       </div>
 
       <div className="mt-4 flex items-center justify-end gap-2 lg:mt-0 lg:gap-3">
+        <span className="text-xs text-ink-faint">
+          {bnMonth(billMonth)}-এর বিল · {bnMonth(month)}-এর আয়-ব্যয়
+        </span>
         <MonthSelect
           value={month}
           months={monthOptions}
@@ -363,7 +369,7 @@ export default function Dashboard() {
       if (!months.anchor) setMonths((current) => ({ ...current, anchor }))
       /** bill cycle worked on during `month` = the previous month's papers. */
       const billMonth = shiftMonth(month, -1)
-      const window = lastMonths(month, 13)
+      const window = lastMonths(month, 6)
       const [
         property,
         dashboard,
@@ -437,7 +443,9 @@ export default function Dashboard() {
    * “bill generate korle then ei mas asbe”. */
   const nowNow = new Date()
   const deviceNow = `${nowNow.getFullYear()}-${String(nowNow.getMonth() + 1).padStart(2, '0')}`
-  const billedHere = new Set(cashflow.filter((row) => row.billed > 0).map((row) => row.month))
+  const billedHere = new Set(
+    cashflow.filter((row) => row.billed > 0).map((row) => row.month),
+  )
   const monthOptions = [
     ...new Set([
       month,
@@ -457,6 +465,7 @@ export default function Dashboard() {
         <DashboardHeader
           property={property}
           month={month}
+          billMonth={billMonth}
           monthOptions={monthOptions}
           onPickMonth={pickMonth}
           onOpenNotifications={() => setNotifyOpen(true)}
@@ -479,16 +488,21 @@ export default function Dashboard() {
             <div className="mt-3 grid grid-cols-3 divide-x divide-border text-center">
               <div>
                 <p className="text-xs text-ink-faint">আয়</p>
-                <p className="mt-1 text-lg font-bold text-success">{bnTaka(cash.income)}</p>
+                <p className="mt-1 text-lg font-bold text-success">
+                  {bnTaka(cash.income)}
+                </p>
               </div>
               <div>
                 <p className="text-xs text-ink-faint">ব্যয়</p>
-                <p className="mt-1 text-lg font-bold text-ink">{bnTaka(cash.expenses)}</p>
+                <p className="mt-1 text-lg font-bold text-ink">
+                  {bnTaka(cash.expenses)}
+                </p>
               </div>
               <div>
                 <p className="text-xs text-ink-faint">নিট</p>
                 <p className="mt-1 text-lg font-bold text-ink">
-                  {cash.net < 0 ? '−' : '+'}{bnTaka(Math.abs(cash.net))}
+                  {cash.net < 0 ? '−' : '+'}
+                  {bnTaka(Math.abs(cash.net))}
                 </p>
               </div>
             </div>
@@ -631,6 +645,7 @@ export default function Dashboard() {
       <DashboardHeader
         property={property}
         month={month}
+        billMonth={billMonth}
         monthOptions={monthOptions}
         onPickMonth={pickMonth}
         onOpenNotifications={() => setNotifyOpen(true)}
@@ -809,7 +824,7 @@ export default function Dashboard() {
         />
         <KpiCard
           label="এই মাসের ব্যয়"
-          value={bnTaka(dashboard.expenseTotal)}
+          value={bnTaka(monthCashflow?.expenses ?? 0)}
           context="বিল + মেরামত"
         />
         <KpiCard
