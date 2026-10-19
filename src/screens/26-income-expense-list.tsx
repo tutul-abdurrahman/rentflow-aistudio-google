@@ -219,7 +219,7 @@ export default function IncomeExpenseList() {
     return [...map.entries()]
   }, [filtered])
 
-  const income = cash?.billed ?? 0
+  const income = cash?.income ?? 0
   const expense = cash?.expenses ?? 0
   const net = cash?.net ?? 0
 
