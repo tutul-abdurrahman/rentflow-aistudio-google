@@ -611,7 +611,7 @@ export default function Dashboard() {
       </section>
 
       {/* chart + due list */}
-      <div className="xl:mt-4 xl:grid xl:grid-cols-3 xl:gap-4">
+      <div className="xl:mt-4 xl:grid xl:grid-cols-3 xl:items-start xl:gap-4">
         <section
           className="mt-3 rounded-card border border-border bg-surface-raised xl:col-span-2 xl:mt-0"
           aria-label="গত ৬ মাসের আয়-ব্যয় চার্ট"
@@ -634,7 +634,7 @@ export default function Dashboard() {
 
           <svg
             className="mt-1 w-full px-1"
-            viewBox="4 0 556 226"
+            viewBox="-24 0 580 226"
             role="img"
             aria-label="শেষ ছয় মাসের প্রতি মাসের আয়-ব্যয়ের গ্রুপড কলাম চার্ট"
           >
