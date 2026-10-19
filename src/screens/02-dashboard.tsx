@@ -438,24 +438,31 @@ export default function Dashboard() {
         />
         <div className="mt-4 flex items-start gap-2.5 rounded-card border border-border bg-surface-soft px-4 py-3">
           <p className="text-sm text-ink-muted">
-            <span className="font-semibold text-ink">{bnMonth(month)}-এর বিল এখনো হয়নি</span>
+            <span className="font-semibold text-ink">
+              {bnMonth(month)}-এর বিল এখনো হয়নি
+            </span>
             {' — '}মিটার রিডিং দিয়ে বিল বানালে এই মাসের হিসাব এখানে আসবে।
             {previous.dueTotal > 0
               ? ` গত মাসের (${bnMonth(shiftMonth(month, -1))}) বকেয়া ৳${bnNumber(previous.dueTotal)} — কালেকশন পেজে আদায় লেখা যাবে।`
               : ''}
           </p>
         </div>
-        {dashboard.expenseTotal > 0 || cashflow.some((row) => row.month === month && row.income > 0) ? (
+        {dashboard.expenseTotal > 0 ||
+        cashflow.some((row) => row.month === month && row.income > 0) ? (
           <section
             className="mt-3 rounded-card border border-border bg-surface-raised p-4"
             aria-label="এই মাসের আয়-ব্যয়"
           >
-            <h2 className="text-base font-semibold text-ink">{bnMonth(month)}-এর আয়-ব্যয়</h2>
+            <h2 className="text-base font-semibold text-ink">
+              {bnMonth(month)}-এর আয়-ব্যয়
+            </h2>
             <div className="mt-3 grid grid-cols-3 divide-x divide-border text-center">
               <div>
                 <p className="text-xs text-ink-faint">আয়</p>
                 <p className="mt-1 text-lg font-bold text-success">
-                  {bnTaka(cashflow.find((row) => row.month === month)?.income ?? 0)}
+                  {bnTaka(
+                    cashflow.find((row) => row.month === month)?.income ?? 0,
+                  )}
                 </p>
               </div>
               <div>
@@ -467,8 +474,17 @@ export default function Dashboard() {
               <div>
                 <p className="text-xs text-ink-faint">নিট</p>
                 <p className="mt-1 text-lg font-bold text-ink">
-                  {(cashflow.find((row) => row.month === month)?.income ?? 0) - dashboard.expenseTotal < 0 ? '−' : '+'}
-                  {bnTaka(Math.abs((cashflow.find((row) => row.month === month)?.income ?? 0) - dashboard.expenseTotal))}
+                  {(cashflow.find((row) => row.month === month)?.income ?? 0) -
+                    dashboard.expenseTotal <
+                  0
+                    ? '−'
+                    : '+'}
+                  {bnTaka(
+                    Math.abs(
+                      (cashflow.find((row) => row.month === month)?.income ??
+                        0) - dashboard.expenseTotal,
+                    ),
+                  )}
                 </p>
               </div>
             </div>
