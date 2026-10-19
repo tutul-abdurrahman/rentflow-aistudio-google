@@ -270,8 +270,9 @@ export function dashboardSnapshot(args: DashboardSnapshotArgs): DashboardSnapsho
   }
   openRows.sort((a, b) => b.amount - a.amount || a.roomNumber.localeCompare(b.roomNumber));
 
+  // আদায় = ক্যাশ যে মাসে হাতে বদলেছে সেই মাসের (paidAt) — বিলের মাস নয়।
   const collectedTotal = ledger
-    .filter((entry) => entry.month === month)
+    .filter((entry) => entry.paidAt.slice(0, 7) === month)
     .reduce((sum, entry) => sum + entry.amount, 0);
 
   const expenseTotal = expenses

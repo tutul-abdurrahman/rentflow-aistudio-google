@@ -145,6 +145,7 @@ export default function IncomeExpenseList() {
   const [anchorMonth, setAnchorMonth] = useState('')
   const [propertyName, setPropertyName] = useState('')
   const [entries, setEntries] = useState<FinanceEntry[]>([])
+  const [collections, setCollections] = useState<FinanceEntry[]>([])
   const [cash, setCash] = useState<CashflowRow | null>(null)
   const [filter, setFilter] = useState<KindFilter>('all')
   const [reloadKey, setReloadKey] = useState(0)
@@ -158,15 +159,28 @@ export default function IncomeExpenseList() {
       const activeMonth = await repo.getActiveMonth()
       // Keep the viewed month on delete-reload; default to the active cycle.
       const target = month || activeMonth
-      const [rows, cashRows, property] = await Promise.all([
+      const [rows, cashRows, property, ledgerRows] = await Promise.all([
         repo.listFinance(target),
         repo.getCashflow([target]),
         repo.getProperty(),
+        repo.listLedger(target),
       ])
       if (!alive) return
       setAnchorMonth(activeMonth)
       setMonth(target)
       setEntries(rows)
+      // রেন্ট কালেকশন = ক্যাশ আয় — তালিকায়ও দেখাই (display-only, paidAt মাসে)।
+      const collections: FinanceEntry[] = ledgerRows.map((row) => ({
+        id: `ledger-${row.id}`,
+        propertyId: row.propertyId,
+        kind: 'income' as const,
+        category: 'ভাড়া আদায়',
+        amount: row.amount,
+        date: row.paidAt,
+        note: row.note,
+        createdAt: row.createdAt,
+      }))
+      setCollections(collections)
       setCash(cashRows[0] ?? null)
       setPropertyName(property.name)
       setLoading(false)
@@ -201,13 +215,14 @@ export default function IncomeExpenseList() {
     )
   }
 
-  const filtered = useMemo(
-    () =>
-      filter === 'all'
-        ? entries
-        : entries.filter((entry) => entry.kind === filter),
-    [entries, filter],
-  )
+  const filtered = useMemo(() => {
+    const all = [...entries, ...collections].sort((a, b) =>
+      b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt),
+    )
+    return filter === 'all'
+      ? all
+      : all.filter((entry) => entry.kind === filter)
+  }, [entries, collections, filter])
 
   const groups = useMemo(() => {
     const map = new Map<string, FinanceEntry[]>()
@@ -384,7 +399,7 @@ export default function IncomeExpenseList() {
             <SkeletonRow />
             <SkeletonRow />
           </div>
-        ) : entries.length === 0 ? (
+        ) : filtered.length === 0 ? (
           <EmptyState
             className="mt-2"
             icon={<WalletIcon />}
@@ -460,14 +475,19 @@ export default function IncomeExpenseList() {
                         </p>
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={() => setDeleteTarget(entry)}
-                        className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-ink-faint transition-colors hover:bg-danger-tint hover:text-danger"
-                        aria-label={`${title} মুছুন`}
-                      >
-                        <TrashIcon />
-                      </button>
+                      {entry.id.startsWith('ledger-') ? (
+                        // কালেকশন এন্ট্রি display-only — কালেকশন পেজ থেকে ম্যানেজ হয়
+                        <span className="w-8 shrink-0" />
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => setDeleteTarget(entry)}
+                          className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-ink-faint transition-colors hover:bg-danger-tint hover:text-danger"
+                          aria-label={`${title} মুছুন`}
+                        >
+                          <TrashIcon />
+                        </button>
+                      )}
                     </div>
                   )
                 })}

@@ -677,6 +677,21 @@ export function createMemoryRepository(
         createdAt: nowIso(),
       }
       s.loans.push(loan)
+      // ক্যাশ বেরিয়ে গেল — অটো ব্যয় এন্ট্রি। note-এ loan id থাকায় ডুবল হয় না।
+      const loanTag = `loan-auto:${loan.id}`
+      const already = s.finance.some((entry) => entry.note === loanTag)
+      if (!already) {
+        s.finance.push({
+          id: nextId('fin'),
+          propertyId: s.property.id,
+          kind: 'expense',
+          category: 'লোন',
+          amount: input.totalAmount,
+          date: nowIso().slice(0, 10),
+          note: loanTag,
+          createdAt: nowIso(),
+        })
+      }
       return { ...loan }
     },
 
@@ -698,6 +713,21 @@ export function createMemoryRepository(
         loan.paidInstallments + 1,
         loan.installmentCount,
       )
+      // ম্যানুয়াল কিস্তি = ক্যাশ ফেরত এসেছে — অটো আয় এন্ট্রি (bill-পথে এলে সেখানে ledger-ই আছে, ডুবল নয়)।
+      const tag = `loan-installment-auto:${loan.id}:${loan.paidInstallments}`
+      const already = s.finance.some((entry) => entry.note === tag)
+      if (!already) {
+        s.finance.push({
+          id: nextId('fin'),
+          propertyId: s.property.id,
+          kind: 'income',
+          category: 'লোন কিস্তি',
+          amount: loan.installmentAmount,
+          date: nowIso().slice(0, 10),
+          note: tag,
+          createdAt: nowIso(),
+        })
+      }
       if (loan.paidInstallments >= loan.installmentCount)
         loan.status = 'completed'
       return { ...loan }
@@ -765,8 +795,10 @@ export function createMemoryRepository(
       return months.map((month) => {
         const monthBills = s.bills.filter((bill) => bill.month === month)
         const billed = cycleTotal(monthBills)
+        // আয় = ক্যাশ আদায় (paidAt-এর মাসে!) + ম্যানুয়াল finance income।
+        // মাস = টাকা হাতে বদলের মাস — বিলের মাস নয় (৮-এর ভাড়া ৯-এ আদায় হলে ৯-এর আয়)।
         const collected = s.ledger
-          .filter((entry) => entry.month === month)
+          .filter((entry) => entry.paidAt.slice(0, 7) === month)
           .reduce((sum, entry) => sum + entry.amount, 0)
         const expenses = s.finance
           .filter(

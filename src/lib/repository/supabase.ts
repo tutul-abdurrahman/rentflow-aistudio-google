@@ -1412,7 +1412,18 @@ export function createSupabaseRepository(
         .select()
         .single()
       if (error) throw error
-      return mapLoan(data as LoanRow)
+      const loan = mapLoan(data as LoanRow)
+      // ক্যাশ বেরিয়ে গেল — অটো ব্যয় এন্ট্রি (note-এ loan-id ট্যাগ → ডুবল নয়)।
+      await client.from('finance_entries').insert({
+        property_id: context.id,
+        owner_id: context.ownerId,
+        kind: 'expense',
+        category: 'লোন',
+        amount: input.totalAmount,
+        date: new Date().toISOString().slice(0, 10),
+        note: `loan-auto:${loan.id}`,
+      })
+      return loan
     },
 
     async cancelLoan(id: LoanId): Promise<Loan> {
@@ -1432,6 +1443,17 @@ export function createSupabaseRepository(
       if (!loan) throw new Error('LOAN_NOT_FOUND')
       if (loan.status === 'cancelled') throw new Error('LOAN_CANCELLED')
       const next = Math.min(loan.paidInstallments + 1, loan.installmentCount)
+      const context = await propertyContext()
+      // ম্যানুয়াল কিস্তি = ক্যাশ ফেরত — অটো আয় এন্ট্রি (bill-পথে ledger-ই আছে, ডুবল নয়)।
+      await client.from('finance_entries').insert({
+        property_id: context.id,
+        owner_id: context.ownerId,
+        kind: 'income',
+        category: 'লোন কিস্তি',
+        amount: loan.installmentAmount,
+        date: new Date().toISOString().slice(0, 10),
+        note: `loan-installment-auto:${loan.id}:${next}`,
+      })
       const { data, error } = await client
         .from('loans')
         .update({
@@ -1589,10 +1611,9 @@ export function createSupabaseRepository(
         const billed = cycleTotal(
           (billsResult.data ?? []).map((row) => mapBill(row as BillRow)),
         )
-        const collected = ((ledgerResult.data ?? []) as LedgerRow[]).reduce(
-          (sum, row) => sum + num(row.amount),
-          0,
-        )
+        const collected = ((ledgerResult.data ?? []) as LedgerRow[])
+          .filter((row) => row.paid_at.slice(0, 7) === month)
+          .reduce((sum, row) => sum + num(row.amount), 0)
         const expenses = ((financeResult.data ?? []) as FinanceRow[])
           .filter(
             (row) => row.kind === 'expense' && row.date.slice(0, 7) === month,
