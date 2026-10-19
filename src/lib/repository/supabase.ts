@@ -1597,8 +1597,7 @@ export function createSupabaseRepository(
           client
             .from('ledger_entries')
             .select('*')
-            .eq('property_id', context.id)
-            .eq('month', month),
+            .eq('property_id', context.id),
           client
             .from('finance_entries')
             .select('*')
