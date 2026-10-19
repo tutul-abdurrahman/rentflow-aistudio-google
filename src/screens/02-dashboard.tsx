@@ -192,7 +192,6 @@ function DashboardHeader({
   onPickMonth: (month: string) => void
   onOpenNotifications: () => void
 }) {
-  const cycleLabel = `${bnDigits(month.slice(5, 7))}/${bnDigits(month.slice(0, 4))}`
   return (
     <header className="pt-5 lg:flex lg:items-center lg:justify-between lg:pt-8">
       <div className="flex items-center justify-between">
@@ -207,6 +206,15 @@ function DashboardHeader({
             <p className="text-sm text-ink-muted">{property.name}</p>
           </div>
         </div>
+      </div>
+
+      <div className="mt-4 flex items-center justify-end gap-2 lg:mt-0 lg:gap-3">
+        <MonthSelect
+          value={month}
+          months={lastMonths(anchorMonth, 12)}
+          onChange={onPickMonth}
+          align="right"
+        />
         <button
           type="button"
           onClick={onOpenNotifications}
@@ -216,18 +224,6 @@ function DashboardHeader({
           <BellIcon />
           <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-danger" />
         </button>
-      </div>
-
-      <div className="mt-4 flex items-center justify-between lg:mt-0 lg:gap-3">
-        <MonthSelect
-          value={month}
-          months={lastMonths(anchorMonth, 12)}
-          onChange={onPickMonth}
-          align="left"
-        />
-        <span className="text-xs font-medium text-ink-faint">
-          মাস {cycleLabel}
-        </span>
       </div>
     </header>
   )
