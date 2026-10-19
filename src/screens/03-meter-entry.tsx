@@ -163,7 +163,7 @@ export default function MeterEntry() {
       if (!alive) return
 
       const nextDrafts: Record<string, RoomDraft> = {}
-      for (const room of occupiedRoomsInMonth(rooms, tenancies, month)) {
+      for (const room of rooms) {
         const row = entry?.rooms.find((item) => item.roomId === room.id)
         nextDrafts[room.id] = {
           previous: row
@@ -217,7 +217,7 @@ export default function MeterEntry() {
 
   const electricityRows = useMemo(
     () =>
-      occupiedRooms.map((room) => {
+      rooms.map((room) => {
         const draft = drafts[room.id] ?? EMPTY_DRAFT
         const previous =
           draft.previous === '' ? Number.NaN : Number(draft.previous)
@@ -240,6 +240,7 @@ export default function MeterEntry() {
         return {
           room,
           tenant: monthTenants.get(room.id),
+          occupied: monthTenants.has(room.id),
           draft,
           valid,
           error,
@@ -247,7 +248,7 @@ export default function MeterEntry() {
           used: valid ? current - previous : null,
         }
       }),
-    [occupiedRooms, drafts, monthTenants],
+    [rooms, drafts, monthTenants],
   )
 
   const waterPreviousNumber =
@@ -298,19 +299,23 @@ export default function MeterEntry() {
 
   const buildEntry = (): MeterEntry => ({
     month,
-    rooms: occupiedRooms.map((room) => {
+    // সব রুমের রিডিং ক্যারি করা হয় — খালি রুমও (চেইন ভাঙবে না), বিল শুধু ভাড়া-থাকা রুমেই হয়।
+    rooms: rooms.map((room) => {
       const draft = drafts[room.id]
+      const previous = Number(draft?.previous || 0)
+      // ফাঁকা বর্তমান → পূর্ববর্তীই বসে (usage ০), চেইন ভাঙে না।
+      const current = draft?.current === '' || draft?.current === undefined ? previous : Number(draft.current)
       return {
         roomId: room.id,
         roomNumber: room.number,
         tenantName: monthTenants.get(room.id)?.name,
-        previous: Number(draft?.previous || 0),
-        current: Number(draft?.current || 0),
+        previous,
+        current,
       }
     }),
     water: {
       previous: Number(waterPrevious || 0),
-      current: Number(waterCurrent || 0),
+      current: waterCurrent === '' ? Number(waterPrevious || 0) : Number(waterCurrent),
     },
   })
 
@@ -330,10 +335,8 @@ export default function MeterEntry() {
 
   const onSaveDraft = async () => {
     setFormError(null)
-    if (!allValid) {
-      markAllTouched()
-      return
-    }
+    // আংশিক সেভ: যা দেওয়া আছে তাই জমা হবে — ফাঁকা বর্তমান থাকলে পূর্ববর্তীই থাকবে।
+    // পূর্ণ validation শুধু 'বিল হিসাব করুন'-এ।
     setBusy(true)
     try {
       await persistDraft()
@@ -473,19 +476,33 @@ export default function MeterEntry() {
 
         <div className="divide-y divide-border">
           {electricityRows.map(
-            ({ room, tenant, draft, valid, error, showError, used }) => (
+            ({
+              room,
+              tenant,
+              occupied,
+              draft,
+              valid,
+              error,
+              showError,
+              used,
+            }) => (
               <div key={room.id} className="px-5 py-3.5">
                 <div className="grid grid-cols-[minmax(0,1fr)_5.25rem_5.25rem_2.25rem] items-center gap-2 lg:grid-cols-[4.5rem_minmax(0,1fr)_7rem_8rem_5rem] lg:gap-3">
                   <div className="min-w-0">
                     <p className="text-sm font-semibold text-ink">
                       {bnDigits(room.number)}
+                      {!occupied ? (
+                        <span className="ml-1.5 rounded-pill bg-surface-soft px-1.5 py-0.5 text-[10px] font-medium text-ink-faint">
+                          খালি
+                        </span>
+                      ) : null}
                     </p>
                     <p className="mt-0.5 truncate text-xs text-ink-faint lg:hidden">
                       {tenant?.name ?? 'খালি'}
                     </p>
                   </div>
                   <p className="hidden truncate text-sm text-ink lg:block">
-                    {tenant?.name ?? '—'}
+                    {tenant?.name ?? 'খালি'}
                   </p>
                   <div>
                     <label
@@ -576,8 +593,8 @@ export default function MeterEntry() {
         </div>
 
         <p className="border-t border-border px-5 py-3 text-xs text-ink-faint">
-          রুম {vacantNumbers.join(', ') || '—'} এই মাসে খালি — সাব-মিটার নেই,
-          বিদ্যুৎ বিলও নেই।
+          রুম {vacantNumbers.join(', ') || '—'} এই মাসে খালি — বিল হবে না, তবে
+          রিডিং দিয়ে রাখলে চেইন ঠিক থাকবে।
         </p>
       </section>
 
