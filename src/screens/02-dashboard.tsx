@@ -855,18 +855,18 @@ export default function Dashboard() {
           </div>
         </section>
 
-        <section className="mt-4 lg:mt-0">
+        <section className="mt-4 rounded-card border border-border bg-surface-raised p-4 lg:mt-0">
           <h2 className="text-base font-semibold text-ink">
             সাম্প্রতিক কার্যক্রম
           </h2>
-          <div className="mt-2 divide-y divide-border rounded-card border border-border bg-surface-raised">
+          <div className="mt-2 divide-y divide-border">
             {recent.length === 0 ? (
-              <p className="px-4 py-6 text-center text-sm text-ink-muted">
+              <p className="py-6 text-center text-sm text-ink-muted">
                 এখনও কোনো কার্যক্রম নেই।
               </p>
             ) : (
               recent.map((event) => (
-                <div key={event.key} className="flex items-start gap-3 p-4">
+                <div key={event.key} className="flex items-start gap-3 py-3">
                   <span
                     className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
                       activityTone[event.tone]
