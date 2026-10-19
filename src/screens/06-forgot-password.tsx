@@ -1,8 +1,14 @@
-import { useRef, useState, type ChangeEvent, type FormEvent, type KeyboardEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import Button from '../components/Button';
-import Input from '../components/Input';
-import { supabase } from '../lib/supabase';
+import {
+  useRef,
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+  type KeyboardEvent,
+} from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import Button from '../components/Button'
+import Input from '../components/Input'
+import { supabase } from '../lib/supabase'
 
 /**
  * 06 — পাসওয়ার্ড ভুলে গেছেন (bare shell). Visual card from
@@ -11,7 +17,7 @@ import { supabase } from '../lib/supabase';
  * ownership, then updateUser sets the new password.
  */
 
-const OTP_LENGTH = 6;
+const OTP_LENGTH = 6
 const OTP_LABELS = [
   'ওটিপি প্রথম সংখ্যা',
   'ওটিপি দ্বিতীয় সংখ্যা',
@@ -19,21 +25,21 @@ const OTP_LABELS = [
   'ওটিপি চতুর্থ সংখ্যা',
   'ওটিপি পঞ্চম সংখ্যা',
   'ওটিপি ষষ্ঠ সংখ্যা',
-];
-const STEP_LABELS = ['ইমেইল', 'ওটিপি', 'নতুন পাসওয়ার্ড'];
+]
+const STEP_LABELS = ['ইমেইল', 'ওটিপি', 'নতুন পাসওয়ার্ড']
 
 function authErrorMessage(message: string): string {
-  const lower = message.toLowerCase();
+  const lower = message.toLowerCase()
   if (lower.includes('rate limit') || lower.includes('too many')) {
-    return 'অনেকবার চেষ্টা হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।';
+    return 'অনেকবার চেষ্টা হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।'
   }
   if (lower.includes('password')) {
-    return 'পাসওয়ার্ড দুর্বল। অন্তত ৬ অক্ষরের পাসওয়ার্ড দিন।';
+    return 'পাসওয়ার্ড দুর্বল। অন্তত ৬ অক্ষরের পাসওয়ার্ড দিন।'
   }
   if (lower.includes('email')) {
-    return 'ইমেইল ঠিকানা সঠিক নয়।';
+    return 'ইমেইল ঠিকানা সঠিক নয়।'
   }
-  return 'কিছু একটা ভুল হয়েছে। আবার চেষ্টা করুন।';
+  return 'কিছু একটা ভুল হয়েছে। আবার চেষ্টা করুন।'
 }
 
 function BrandLockup() {
@@ -58,7 +64,7 @@ function BrandLockup() {
       <p className="mt-3 text-xl font-bold tracking-tight text-ink">RentFlow</p>
       <p className="mt-0.5 text-sm text-ink-faint">ভাড়া ও বিল ব্যবস্থাপনা</p>
     </div>
-  );
+  )
 }
 
 function SendIcon() {
@@ -76,7 +82,7 @@ function SendIcon() {
     >
       <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
     </svg>
-  );
+  )
 }
 
 function RefreshIcon() {
@@ -95,7 +101,7 @@ function RefreshIcon() {
       <path d="M20 12a8 8 0 1 1-8-8" />
       <path d="M22 4v6h-6" />
     </svg>
-  );
+  )
 }
 
 function EyeIcon({ off }: { off: boolean }) {
@@ -117,7 +123,7 @@ function EyeIcon({ off }: { off: boolean }) {
         <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24" />
         <path d="m1 1 22 22" />
       </svg>
-    );
+    )
   }
   return (
     <svg
@@ -134,143 +140,149 @@ function EyeIcon({ off }: { off: boolean }) {
       <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
       <circle cx="12" cy="12" r="3" />
     </svg>
-  );
+  )
 }
 
 const OTP_BOX_CLASS =
-  'h-[3.25rem] w-full rounded-md border bg-surface-raised text-center text-lg font-semibold text-ink caret-primary transition-colors focus:border-border-focus';
+  'h-[3.25rem] w-full rounded-md border bg-surface-raised text-center text-lg font-semibold text-ink caret-primary transition-colors focus:border-border-focus'
 
 export default function ForgotPassword() {
-  const navigate = useNavigate();
-  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
-  const [email, setEmail] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirm, setConfirm] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [formError, setFormError] = useState<string | null>(null);
-  const [otp, setOtp] = useState<string[]>(() => Array(OTP_LENGTH).fill(''));
-  const [otpError, setOtpError] = useState<string | null>(null);
-  const [resendNote, setResendNote] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const otpRefs = useRef<Array<HTMLInputElement | null>>([]);
+  const navigate = useNavigate()
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1)
+  const [email, setEmail] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirm, setConfirm] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
+  const [formError, setFormError] = useState<string | null>(null)
+  const [otp, setOtp] = useState<string[]>(() => Array(OTP_LENGTH).fill(''))
+  const [otpError, setOtpError] = useState<string | null>(null)
+  const [resendNote, setResendNote] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const otpRefs = useRef<Array<HTMLInputElement | null>>([])
 
   function focusOtp(index: number) {
-    requestAnimationFrame(() => otpRefs.current[index]?.focus());
+    requestAnimationFrame(() => otpRefs.current[index]?.focus())
   }
 
   async function handleSendOtp(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (submitting) return;
-    setFormError(null);
+    event.preventDefault()
+    if (submitting) return
+    setFormError(null)
     if (!email.trim()) {
-      setFormError('ইমেইল দিন।');
-      return;
+      setFormError('ইমেইল দিন।')
+      return
     }
-    setSubmitting(true);
+    setSubmitting(true)
     // Email link must land back on this screen; Supabase requires the URL to
     // be allowlisted under Auth → URL Configuration → Redirect URLs.
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
       redirectTo: `${window.location.origin}/forgot-password`,
-    });
-    setSubmitting(false);
+    })
+    setSubmitting(false)
     if (error) {
-      setFormError(authErrorMessage(error.message));
-      return;
+      setFormError(authErrorMessage(error.message))
+      return
     }
-    setStep(2);
-    focusOtp(0);
+    setStep(2)
+    focusOtp(0)
   }
 
-  function handleOtpChange(index: number, event: ChangeEvent<HTMLInputElement>) {
-    const digits = event.target.value.replace(/[^\d]/g, '');
-    setOtpError(null);
-    setResendNote(false);
+  function handleOtpChange(
+    index: number,
+    event: ChangeEvent<HTMLInputElement>,
+  ) {
+    const digits = event.target.value.replace(/[^\d]/g, '')
+    setOtpError(null)
+    setResendNote(false)
     if (!digits) {
-      setOtp((prev) => prev.map((value, i) => (i === index ? '' : value)));
-      return;
+      setOtp((prev) => prev.map((value, i) => (i === index ? '' : value)))
+      return
     }
     if (digits.length > 1) {
-      const next = [...otp];
+      const next = [...otp]
       for (let i = 0; i < OTP_LENGTH; i += 1) {
-        next[i] = digits[i] ?? next[i];
+        next[i] = digits[i] ?? next[i]
       }
-      setOtp(next);
-      focusOtp(Math.min(digits.length, OTP_LENGTH - 1));
-      return;
+      setOtp(next)
+      focusOtp(Math.min(digits.length, OTP_LENGTH - 1))
+      return
     }
-    setOtp((prev) => prev.map((value, i) => (i === index ? digits : value)));
-    if (index < OTP_LENGTH - 1) focusOtp(index + 1);
+    setOtp((prev) => prev.map((value, i) => (i === index ? digits : value)))
+    if (index < OTP_LENGTH - 1) focusOtp(index + 1)
   }
 
-  function handleOtpKeyDown(index: number, event: KeyboardEvent<HTMLInputElement>) {
+  function handleOtpKeyDown(
+    index: number,
+    event: KeyboardEvent<HTMLInputElement>,
+  ) {
     if (event.key === 'Backspace' && !otp[index] && index > 0) {
-      focusOtp(index - 1);
+      focusOtp(index - 1)
     }
   }
 
   async function handleVerify(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (submitting) return;
-    const token = otp.join('');
+    event.preventDefault()
+    if (submitting) return
+    const token = otp.join('')
     if (token.length !== OTP_LENGTH) {
-      setOtpError('৬ সংখ্যার ওটিপি দিন।');
-      return;
+      setOtpError('৬ সংখ্যার ওটিপি দিন।')
+      return
     }
-    setSubmitting(true);
+    setSubmitting(true)
     const { error } = await supabase.auth.verifyOtp({
       email: email.trim(),
       token,
       type: 'recovery',
-    });
-    setSubmitting(false);
+    })
+    setSubmitting(false)
     if (error) {
-      setOtpError('ওটিপি মিলছে না। আবার চেষ্টা করুন।');
-      return;
+      setOtpError('ওটিপি মিলছে না। আবার চেষ্টা করুন।')
+      return
     }
-    setStep(3);
+    setStep(3)
   }
 
   async function handleResend() {
-    setOtpError(null);
-    setResendNote(false);
+    setOtpError(null)
+    setResendNote(false)
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
       redirectTo: `${window.location.origin}/forgot-password`,
-    });
+    })
     if (error) {
-      setOtpError(authErrorMessage(error.message));
-      return;
+      setOtpError(authErrorMessage(error.message))
+      return
     }
-    setOtp(Array(OTP_LENGTH).fill(''));
-    setResendNote(true);
-    focusOtp(0);
+    setOtp(Array(OTP_LENGTH).fill(''))
+    setResendNote(true)
+    focusOtp(0)
   }
 
   async function handleReset(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (submitting) return;
-    setFormError(null);
+    event.preventDefault()
+    if (submitting) return
+    setFormError(null)
 
     if (newPassword.length < 6) {
-      setFormError('অন্তত ৬টি অক্ষরের পাসওয়ার্ড দিন।');
-      return;
+      setFormError('অন্তত ৬টি অক্ষরের পাসওয়ার্ড দিন।')
+      return
     }
     if (newPassword !== confirm) {
-      setFormError('দুটো পাসওয়ার্ড এক নয়, আবার লিখুন।');
-      return;
+      setFormError('দুটো পাসওয়ার্ড এক নয়, আবার লিখুন।')
+      return
     }
 
-    setSubmitting(true);
-    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    setSubmitting(true)
+    const { error } = await supabase.auth.updateUser({ password: newPassword })
     if (error) {
-      setSubmitting(false);
-      setFormError(authErrorMessage(error.message));
-      return;
+      setSubmitting(false)
+      setFormError(authErrorMessage(error.message))
+      return
     }
     // Recovery session done — sign out so the owner logs in with the new password.
-    await supabase.auth.signOut();
-    setSubmitting(false);
-    setStep(4);
+    await supabase.auth.signOut()
+    setSubmitting(false)
+    setStep(4)
   }
 
   return (
@@ -351,7 +363,7 @@ export default function ForgotPassword() {
                     <input
                       key={OTP_LABELS[index]}
                       ref={(element) => {
-                        otpRefs.current[index] = element;
+                        otpRefs.current[index] = element
                       }}
                       value={value}
                       onChange={(event) => handleOtpChange(index, event)}
@@ -400,7 +412,9 @@ export default function ForgotPassword() {
 
           {step === 3 ? (
             <section className="mt-6">
-              <h1 className="text-lg font-semibold text-ink">নতুন পাসওয়ার্ড</h1>
+              <h1 className="text-lg font-semibold text-ink">
+                নতুন পাসওয়ার্ড
+              </h1>
               <p className="mt-1 text-sm text-ink-muted">
                 অ্যাকাউন্টে ঢোকার জন্য নতুন পাসওয়ার্ড দিন।
               </p>
@@ -539,5 +553,5 @@ export default function ForgotPassword() {
         </p>
       </div>
     </main>
-  );
+  )
 }

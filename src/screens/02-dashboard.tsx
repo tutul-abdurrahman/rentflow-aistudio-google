@@ -617,10 +617,10 @@ export default function Dashboard() {
       {/* chart + due list */}
       <div className="xl:mt-4 xl:grid xl:grid-cols-3 xl:gap-4">
         <section
-          className="mt-3 rounded-card border border-border bg-surface-raised p-4 xl:col-span-2 xl:mt-0"
+          className="mt-3 rounded-card border border-border bg-surface-raised xl:col-span-2 xl:mt-0"
           aria-label="গত ৬ মাসের আয়-ব্যয় চার্ট"
         >
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3.5">
             <h2 className="text-base font-semibold text-ink">
               আয়-ব্যয় (গত ৬ মাস)
             </h2>
@@ -637,7 +637,7 @@ export default function Dashboard() {
           </div>
 
           <svg
-            className="mt-3 w-full"
+            className="mt-1 w-full px-4 pb-2"
             viewBox="0 0 560 232"
             role="img"
             aria-label="শেষ ছয় মাসের প্রতি মাসের আয়-ব্যয়ের গ্রুপড কলাম চার্ট"
@@ -709,7 +709,7 @@ export default function Dashboard() {
           </svg>
         </section>
 
-        <section className="mt-3 xl:col-span-1 xl:mt-0">
+        <section className="mt-3 rounded-card border border-border bg-surface-raised p-4 xl:col-span-1 xl:mt-0">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-semibold text-ink">বকেয়া তালিকা</h2>
             <Link
@@ -725,7 +725,7 @@ export default function Dashboard() {
                 এই মাসে কোনো বকেয়া নেই।
               </p>
             ) : (
-              dashboard.dueList.map((row) => {
+              dashboard.dueList.slice(0, 5).map((row) => {
                 const bill = billByTenant.get(row.tenantId)
                 const overdue =
                   bill?.lines.some(
