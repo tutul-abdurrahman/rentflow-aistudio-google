@@ -715,9 +715,9 @@ export default function Dashboard() {
               সব দেখুন
             </Link>
           </div>
-          <div className="mt-2 divide-y divide-border rounded-card border border-border bg-surface-raised">
+          <div className="mt-2 divide-y divide-border">
             {dashboard.dueList.length === 0 ? (
-              <p className="px-4 py-6 text-center text-sm text-ink-muted">
+              <p className="py-6 text-center text-sm text-ink-muted">
                 এই মাসে কোনো বকেয়া নেই।
               </p>
             ) : (
@@ -730,7 +730,7 @@ export default function Dashboard() {
                 return (
                   <div
                     key={row.tenantId}
-                    className="flex items-center gap-3 p-4"
+                    className="flex items-center gap-3 py-3"
                   >
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold text-ink">
