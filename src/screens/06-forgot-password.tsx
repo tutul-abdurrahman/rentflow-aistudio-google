@@ -1,4 +1,5 @@
 import {
+  useEffect,
   useRef,
   useState,
   type ChangeEvent,
@@ -158,6 +159,47 @@ export default function ForgotPassword() {
   const [otp, setOtp] = useState<string[]>(() => Array(OTP_LENGTH).fill(''))
   const [otpError, setOtpError] = useState<string | null>(null)
   const [resendNote, setResendNote] = useState(false)
+
+  // ইমেইলের recovery লিংকে ক্লিক করলে Supabase session (#access_token… &
+  // ?code=… দুই ফ্লোতেই) নিয়ে এই পেজে ফেরত আসে — সরাসরি নতুন পাসওয়ার্ড
+  // ধাপে পাঠাই (ওটিপি আর চাওয়া হয় না)।
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      const hash = window.location.hash
+      const params = new URLSearchParams(
+        hash.startsWith('#') ? hash.slice(1) : hash,
+      )
+      const isRecoveryHash =
+        params.get('type') === 'recovery' ||
+        (params.get('access_token') !== null && params.get('refresh_token') !== null)
+      const hasCode = new URLSearchParams(window.location.search).get('code') !== null
+      if (!isRecoveryHash && !hasCode) return
+
+      try {
+        if (hasCode) {
+          // PKCE ফ্লো — code বদলে session নিই
+          const { data, error } = await supabase.auth.exchangeCodeForSession(
+            new URLSearchParams(window.location.search).get('code')!,
+          )
+          if (error) throw error
+          if (!data.session) throw new Error('no session')
+        } else if (isRecoveryHash && supabase.auth.getSession) {
+          // implicit ফ্লো — সেশন detectPasswordFromURL দিয়ে পড়ুক
+          const { data, error } = await supabase.auth.getSession()
+          if (error || !data.session) throw error ?? new Error('no session')
+        }
+        if (!cancelled) {
+          setStep(3)
+        }
+      } catch {
+        // recovery প্রমাণ নেই — সাধারণ ফর্মেই থাকুক
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
   const [submitting, setSubmitting] = useState(false)
   const otpRefs = useRef<Array<HTMLInputElement | null>>([])
 
