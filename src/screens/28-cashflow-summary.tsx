@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useRepository } from '../app/repository';
-import { bnDigits, bnMonth, bnTaka } from '../lib/format';
-import type { CashflowRow, MonthlyLedgerRow } from '../lib/types';
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { useRepository } from '../app/repository'
+import { bnDigits, bnMonth, bnTaka } from '../lib/format'
+import type { CashflowRow, MonthlyLedgerRow } from '../lib/types'
 
 /**
  * Screen 28 — ক্যাশফ্লো (design-output/screens/28-cashflow-summary.html).
@@ -13,22 +13,24 @@ import type { CashflowRow, MonthlyLedgerRow } from '../lib/types';
  */
 
 const BACK_CLASS =
-  'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-ink-muted transition-colors hover:bg-surface-soft';
+  'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-ink-muted transition-colors hover:bg-surface-soft'
 
-const CHART_BASELINE = 206;
-const CHART_TOP = 8;
-const CHART_HEIGHT = CHART_BASELINE - CHART_TOP; // 198
-const BAR_WIDTH = 24;
-const GROUP_STEP = 84;
+const CHART_BASELINE = 206
+const CHART_TOP = 8
+const CHART_HEIGHT = CHART_BASELINE - CHART_TOP // 198
+const BAR_WIDTH = 24
+const GROUP_STEP = 84
 
 function lastMonths(month: string, count: number): string[] {
-  const [year, monthNumber] = month.split('-').map(Number);
-  const out: string[] = [];
+  const [year, monthNumber] = month.split('-').map(Number)
+  const out: string[] = []
   for (let back = count - 1; back >= 0; back -= 1) {
-    const date = new Date(year, monthNumber - 1 - back, 1);
-    out.push(`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`);
+    const date = new Date(year, monthNumber - 1 - back, 1)
+    out.push(
+      `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`,
+    )
   }
-  return out;
+  return out
 }
 
 function CalendarIcon() {
@@ -47,7 +49,7 @@ function CalendarIcon() {
       <path d="M6 3v2M18 3v2M3 8h18" />
       <rect x="3" y="5" width="18" height="16" rx="2" />
     </svg>
-  );
+  )
 }
 
 function FormulaIcon() {
@@ -65,20 +67,23 @@ function FormulaIcon() {
     >
       <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9m0-18v18m-6-6v4a2 2 0 0 0 2 2h4" />
     </svg>
-  );
+  )
 }
 
 interface ChartProps {
-  rows: CashflowRow[];
-  activeMonth: string;
+  rows: CashflowRow[]
+  activeMonth: string
 }
 
 function CashflowChart({ rows, activeMonth }: ChartProps) {
-  const peak = rows.reduce((max, row) => Math.max(max, row.income, row.expenses), 0);
-  const niceMax = Math.max(30000, Math.ceil(peak / 30000) * 30000);
-  const scale = CHART_HEIGHT / niceMax;
-  const guides = [niceMax, (niceMax * 2) / 3, niceMax / 3];
-  const guideY = guides.map((value) => CHART_BASELINE - value * scale);
+  const peak = rows.reduce(
+    (max, row) => Math.max(max, row.income, row.expenses),
+    0,
+  )
+  const niceMax = Math.max(30000, Math.ceil(peak / 30000) * 30000)
+  const scale = CHART_HEIGHT / niceMax
+  const guides = [niceMax, (niceMax * 2) / 3, niceMax / 3]
+  const guideY = guides.map((value) => CHART_BASELINE - value * scale)
 
   return (
     <svg
@@ -127,10 +132,12 @@ function CashflowChart({ rows, activeMonth }: ChartProps) {
       </text>
 
       {rows.map((row, index) => {
-        const incomeX = 60 + index * GROUP_STEP;
-        const expenseX = incomeX + BAR_WIDTH + 4;
-        const incomeHeight = row.income > 0 ? Math.max(3, row.income * scale) : 0;
-        const expenseHeight = row.expenses > 0 ? Math.max(3, row.expenses * scale) : 0;
+        const incomeX = 60 + index * GROUP_STEP
+        const expenseX = incomeX + BAR_WIDTH + 4
+        const incomeHeight =
+          row.income > 0 ? Math.max(3, row.income * scale) : 0
+        const expenseHeight =
+          row.expenses > 0 ? Math.max(3, row.expenses * scale) : 0
         return (
           <g key={row.month}>
             {incomeHeight > 0 ? (
@@ -164,75 +171,83 @@ function CashflowChart({ rows, activeMonth }: ChartProps) {
                 : bnMonth(row.month).split(' ')[0]}
             </text>
           </g>
-        );
+        )
       })}
     </svg>
-  );
+  )
 }
 
 export default function CashflowSummary() {
-  const repo = useRepository();
+  const repo = useRepository()
 
-  const [loading, setLoading] = useState(true);
-  const [month, setMonth] = useState('');
-  const [propertyName, setPropertyName] = useState('');
-  const [rows, setRows] = useState<CashflowRow[]>([]);
-  const [ledger, setLedger] = useState<MonthlyLedgerRow[]>([]);
-  const [expenseByCategory, setExpenseByCategory] = useState<{ category: string; amount: number }[]>([]);
+  const [loading, setLoading] = useState(true)
+  const [month, setMonth] = useState('')
+  const [propertyName, setPropertyName] = useState('')
+  const [rows, setRows] = useState<CashflowRow[]>([])
+  const [ledger, setLedger] = useState<MonthlyLedgerRow[]>([])
+  const [expenseByCategory, setExpenseByCategory] = useState<
+    { category: string; amount: number }[]
+  >([])
 
   useEffect(() => {
-    let alive = true;
-    setLoading(true);
-    (async () => {
-      const activeMonth = await repo.getActiveMonth();
-      const months = lastMonths(activeMonth, 6);
+    let alive = true
+    setLoading(true)
+    ;(async () => {
+      const activeMonth = await repo.getActiveMonth()
+      const months = lastMonths(activeMonth, 6)
       const [cashRows, ledgerRows, finance, property] = await Promise.all([
         repo.getCashflow(months),
         repo.getMonthlyLedger(activeMonth),
         repo.listFinance(activeMonth),
         repo.getProperty(),
-      ]);
-      if (!alive) return;
+      ])
+      if (!alive) return
 
-      const grouped = new Map<string, number>();
+      const grouped = new Map<string, number>()
       for (const entry of finance) {
-        if (entry.kind !== 'expense') continue;
-        grouped.set(entry.category, (grouped.get(entry.category) ?? 0) + entry.amount);
+        if (entry.kind !== 'expense') continue
+        grouped.set(
+          entry.category,
+          (grouped.get(entry.category) ?? 0) + entry.amount,
+        )
       }
 
-      setMonth(activeMonth);
-      setRows(cashRows);
-      setLedger(ledgerRows);
+      setMonth(activeMonth)
+      setRows(cashRows)
+      setLedger(ledgerRows)
       setExpenseByCategory(
         [...grouped.entries()]
           .map(([category, amount]) => ({ category, amount }))
           .sort((a, b) => b.amount - a.amount),
-      );
-      setPropertyName(property.name);
-      setLoading(false);
-    })();
+      )
+      setPropertyName(property.name)
+      setLoading(false)
+    })()
     return () => {
-      alive = false;
-    };
-  }, [repo]);
+      alive = false
+    }
+  }, [repo])
 
-  const current = rows.find((row) => row.month === month) ?? null;
-  const billed = current?.billed ?? 0;
-  const income = current?.income ?? 0;
-  const expenses = current?.expenses ?? 0;
-  const net = current?.net ?? 0;
-  const collected = current?.collected ?? 0;
-  const rate = billed > 0 ? Math.round((collected / billed) * 100) : 0;
+  const current = rows.find((row) => row.month === month) ?? null
+  const billed = current?.billed ?? 0
+  const income = current?.income ?? 0
+  const expenses = current?.expenses ?? 0
+  const net = current?.net ?? 0
+  const collected = current?.collected ?? 0
+  const rate = billed > 0 ? Math.round((collected / billed) * 100) : 0
 
-  const rentTotal = ledger.reduce((sum, row) => sum + row.rent, 0);
-  const utilitiesTotal = ledger.reduce((sum, row) => sum + row.utilitiesTotal, 0);
-  const wasteTotal = ledger.reduce((sum, row) => sum + row.wasteFee, 0);
-  const loanTotal = ledger.reduce((sum, row) => sum + row.loan, 0);
-  const prevDueTotal = ledger.reduce((sum, row) => sum + row.prevDue, 0);
-  const adjustmentTotal = ledger.reduce((sum, row) => sum + row.adjustments, 0);
-  const secondaryTotal = billed - rentTotal;
+  const rentTotal = ledger.reduce((sum, row) => sum + row.rent, 0)
+  const utilitiesTotal = ledger.reduce(
+    (sum, row) => sum + row.utilitiesTotal,
+    0,
+  )
+  const wasteTotal = ledger.reduce((sum, row) => sum + row.wasteFee, 0)
+  const loanTotal = ledger.reduce((sum, row) => sum + row.loan, 0)
+  const prevDueTotal = ledger.reduce((sum, row) => sum + row.prevDue, 0)
+  const adjustmentTotal = ledger.reduce((sum, row) => sum + row.adjustments, 0)
+  const secondaryTotal = billed - rentTotal
 
-  const dash = (value: number) => (loading ? '—' : bnTaka(value));
+  const dash = (value: number) => (loading ? '—' : bnTaka(value))
 
   return (
     <>
@@ -276,16 +291,26 @@ export default function CashflowSummary() {
       {/* KPI 2×2 / 4-across */}
       <section
         className="mt-4 grid grid-cols-2 gap-3 md:mt-6 md:grid-cols-4 md:gap-4"
-        aria-label={month ? `${bnMonth(month)} ক্যাশফ্লো সারসংক্ষেপ` : 'ক্যাশফ্লো সারসংক্ষেপ'}
+        aria-label={
+          month
+            ? `${bnMonth(month)} ক্যাশফ্লো সারসংক্ষেপ`
+            : 'ক্যাশফ্লো সারসংক্ষেপ'
+        }
       >
         <div className="rounded-card border border-border bg-surface-raised p-4">
           <p className="text-sm text-ink-faint">এই মাসের আয়</p>
-          <p className="mt-2 text-2xl font-bold leading-none text-ink">{dash(income)}</p>
-          <p className="mt-2 text-xs text-success">ভাড়া আদায় + অন্যান্য আয়</p>
+          <p className="mt-2 text-2xl font-bold leading-none text-ink">
+            {dash(income)}
+          </p>
+          <p className="mt-2 text-xs text-success">
+            ভাড়া আদায় + অন্যান্য আয়
+          </p>
         </div>
         <div className="rounded-card border border-border bg-surface-raised p-4">
           <p className="text-sm text-ink-faint">এই মাসের ব্যয়</p>
-          <p className="mt-2 text-2xl font-bold leading-none text-ink">{dash(expenses)}</p>
+          <p className="mt-2 text-2xl font-bold leading-none text-ink">
+            {dash(expenses)}
+          </p>
           <p className="mt-2 text-xs text-ink-muted">বিল + মেরামত + বেতন</p>
         </div>
         <div className="rounded-card border border-primary bg-primary-tint p-4">
@@ -300,7 +325,9 @@ export default function CashflowSummary() {
           <p className="mt-2 text-2xl font-bold leading-none text-ink">
             {loading ? '—' : `${bnDigits(rate)}%`}
           </p>
-          <p className="mt-2 text-xs text-ink-muted">{bnTaka(collected)} আদায় হয়েছে</p>
+          <p className="mt-2 text-xs text-ink-muted">
+            {bnTaka(collected)} আদায় হয়েছে
+          </p>
         </div>
       </section>
 
@@ -311,21 +338,32 @@ export default function CashflowSummary() {
           aria-label="গত ৬ মাসের আয়-ব্যয় চার্ট"
         >
           <div className="flex items-center justify-between gap-3">
-            <h2 className="text-base font-semibold text-ink">আয়-ব্যয় (গত ৬ মাস)</h2>
+            <h2 className="text-base font-semibold text-ink">
+              আয়-ব্যয় (গত ৬ মাস)
+            </h2>
             <div className="flex shrink-0 items-center gap-4">
               <span className="inline-flex items-center gap-1.5 text-xs font-medium text-ink-muted">
-                <span className="h-2.5 w-2.5 rounded-full bg-primary" aria-hidden="true" />
+                <span
+                  className="h-2.5 w-2.5 rounded-full bg-primary"
+                  aria-hidden="true"
+                />
                 আয়
               </span>
               <span className="inline-flex items-center gap-1.5 text-xs font-medium text-ink-muted">
-                <span className="h-2.5 w-2.5 rounded-full bg-info" aria-hidden="true" />
+                <span
+                  className="h-2.5 w-2.5 rounded-full bg-info"
+                  aria-hidden="true"
+                />
                 ব্যয়
               </span>
             </div>
           </div>
 
           {loading || rows.length === 0 ? (
-            <div className="mt-3 h-40 rounded-input bg-surface-soft" aria-hidden="true" />
+            <div
+              className="mt-3 h-40 rounded-input bg-surface-soft"
+              aria-hidden="true"
+            />
           ) : (
             <CashflowChart rows={rows} activeMonth={month} />
           )}
@@ -364,24 +402,34 @@ export default function CashflowSummary() {
           <div className="flex items-center justify-between">
             <h2 className="text-base font-semibold text-ink">আয়ের খাত</h2>
             <span className="inline-flex items-center gap-1.5 text-xs font-medium text-success">
-              <span className="h-2.5 w-2.5 rounded-full bg-success" aria-hidden="true" />
+              <span
+                className="h-2.5 w-2.5 rounded-full bg-success"
+                aria-hidden="true"
+              />
               আয়
             </span>
           </div>
           <div className="mt-3 space-y-2.5">
             <div className="flex items-baseline justify-between text-sm">
               <span className="text-ink-muted">মূল ভাড়া</span>
-              <span className="font-semibold text-ink">{bnTaka(rentTotal)}</span>
+              <span className="font-semibold text-ink">
+                {bnTaka(rentTotal)}
+              </span>
             </div>
             <div>
               <div className="flex items-baseline justify-between text-sm">
                 <span className="text-ink-muted">অন্যান্য</span>
-                <span className="font-semibold text-ink">{bnTaka(secondaryTotal)}</span>
+                <span className="font-semibold text-ink">
+                  {bnTaka(secondaryTotal)}
+                </span>
               </div>
               <p className="mt-1 text-xs text-ink-faint">
-                বিদ্যুৎ+পানি {bnTaka(utilitiesTotal)} · ওয়েস্ট {bnTaka(wasteTotal)} · লোন{' '}
-                {bnTaka(loanTotal)} · আগের বাকি {bnTaka(prevDueTotal)}
-                {adjustmentTotal !== 0 ? ` · সমন্বয় ${bnTaka(adjustmentTotal)}` : ''}
+                বিদ্যুৎ+পানি {bnTaka(utilitiesTotal)} · ওয়েস্ট{' '}
+                {bnTaka(wasteTotal)} · লোন {bnTaka(loanTotal)} · আগের বাকি{' '}
+                {bnTaka(prevDueTotal)}
+                {adjustmentTotal !== 0
+                  ? ` · সমন্বয় ${bnTaka(adjustmentTotal)}`
+                  : ''}
               </p>
             </div>
             <div className="flex items-baseline justify-between border-t-2 border-border-strong pt-2.5 text-sm font-bold text-ink">
@@ -398,18 +446,28 @@ export default function CashflowSummary() {
           <div className="flex items-center justify-between">
             <h2 className="text-base font-semibold text-ink">ব্যয়ের খাত</h2>
             <span className="inline-flex items-center gap-1.5 text-xs font-medium text-danger">
-              <span className="h-2.5 w-2.5 rounded-full bg-danger" aria-hidden="true" />
+              <span
+                className="h-2.5 w-2.5 rounded-full bg-danger"
+                aria-hidden="true"
+              />
               ব্যয়
             </span>
           </div>
           <div className="mt-3 space-y-2.5">
             {expenseByCategory.length === 0 ? (
-              <p className="text-sm text-ink-faint">এই মাসে কোনো ব্যয় যোগ করা হয়নি।</p>
+              <p className="text-sm text-ink-faint">
+                এই মাসে কোনো ব্যয় যোগ করা হয়নি।
+              </p>
             ) : (
               expenseByCategory.map((row) => (
-                <div key={row.category} className="flex items-baseline justify-between text-sm">
+                <div
+                  key={row.category}
+                  className="flex items-baseline justify-between text-sm"
+                >
                   <span className="text-ink-muted">{row.category}</span>
-                  <span className="font-semibold text-ink">{bnTaka(row.amount)}</span>
+                  <span className="font-semibold text-ink">
+                    {bnTaka(row.amount)}
+                  </span>
                 </div>
               ))
             )}
@@ -421,5 +479,5 @@ export default function CashflowSummary() {
         </section>
       </div>
     </>
-  );
+  )
 }

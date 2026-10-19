@@ -175,7 +175,7 @@ interface DashboardData {
 const CONTENT_CLASS =
   'mt-3 rounded-card border border-border bg-surface-raised p-4'
 const ICON_BUTTON_CLASS =
-  'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-button bg-primary px-3 py-2 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover active:bg-primary-active'
+  'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-button border border-secondary bg-transparent px-3 py-2 text-sm font-semibold text-secondary transition-colors hover:bg-secondary-hover active:bg-secondary-active'
 
 /* ---------- header ---------- */
 
@@ -336,12 +336,12 @@ export default function Dashboard() {
   })
   const [notifyOpen, setNotifyOpen] = useState(false)
   const [reloadKey, setReloadKey] = useState(0)
-  const [
-    payFor,
-    setPayFor,
-  ] = useState<{ billId: string; roomNumber: string; tenantName: string; due: number } | null>(
-    null,
-  )
+  const [payFor, setPayFor] = useState<{
+    billId: string
+    roomNumber: string
+    tenantName: string
+    due: number
+  } | null>(null)
   const [payAmount, setPayAmount] = useState('')
   const [payMethod, setPayMethod] = useState<'নগদ' | 'বিকাশ'>('নগদ')
   const [payNote, setPayNote] = useState('')
@@ -605,13 +605,17 @@ export default function Dashboard() {
                   {bnTaka(payFor.due)} আদায় নিশ্চিত করুন
                 </h2>
                 <p className="text-sm text-ink-muted">
-                  রুম {bnDigits(payFor.roomNumber)} · {payFor.tenantName} · {bnMonth(month)}
+                  রুম {bnDigits(payFor.roomNumber)} · {payFor.tenantName} ·{' '}
+                  {bnMonth(month)}
                 </p>
               </div>
             </div>
 
             <div className="mt-4">
-              <label htmlFor="dash-amount" className="mb-1.5 block text-sm font-medium text-ink">
+              <label
+                htmlFor="dash-amount"
+                className="mb-1.5 block text-sm font-medium text-ink"
+              >
                 আদায়ের পরিমাণ
               </label>
               <div className="relative">
@@ -658,7 +662,10 @@ export default function Dashboard() {
             </div>
 
             <div className="mt-4">
-              <label htmlFor="dash-note" className="mb-1.5 block text-sm font-medium text-ink">
+              <label
+                htmlFor="dash-note"
+                className="mb-1.5 block text-sm font-medium text-ink"
+              >
                 নোট (ইচ্ছা হলে)
               </label>
               <input
@@ -671,7 +678,9 @@ export default function Dashboard() {
               />
             </div>
 
-            {payError ? <p className="mt-3 text-sm text-danger">{payError}</p> : null}
+            {payError ? (
+              <p className="mt-3 text-sm text-danger">{payError}</p>
+            ) : null}
 
             <div className="mt-5 flex gap-3">
               <button
@@ -686,7 +695,11 @@ export default function Dashboard() {
                 disabled={payBusy}
                 onClick={async () => {
                   const parsed = Number(payAmount)
-                  if (payAmount === '' || !Number.isFinite(parsed) || parsed <= 0) {
+                  if (
+                    payAmount === '' ||
+                    !Number.isFinite(parsed) ||
+                    parsed <= 0
+                  ) {
                     setPayError('আদায়ের পরিমাণ দিন।')
                     return
                   }
@@ -703,7 +716,11 @@ export default function Dashboard() {
                     setPayBusy(false)
                     setReloadKey((key) => key + 1)
                   } catch (caught) {
-                    setPayError(caught instanceof Error ? caught.message : 'আদায় লেখা যায়নি')
+                    setPayError(
+                      caught instanceof Error
+                        ? caught.message
+                        : 'আদায় লেখা যায়নি',
+                    )
                     setPayBusy(false)
                   }
                 }}

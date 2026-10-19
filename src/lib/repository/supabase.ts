@@ -17,7 +17,7 @@
  *   and never stores a derived snapshot.
  */
 
-import type { SupabaseClient } from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js'
 import type {
   Adjustment,
   Bill,
@@ -39,7 +39,7 @@ import type {
   RoomId,
   Tenant,
   TenantId,
-} from '../types';
+} from '../types'
 import type {
   AddFinanceInput,
   AddLoanInput,
@@ -47,151 +47,157 @@ import type {
   MoveOutInput,
   PaymentInput,
   RentFlowRepository,
-} from './types';
-import { BILL_LABELS, buildMonthBills, cycleTotal, dashboardSnapshot, type Tenancy } from '../engine';
-import { addMonths, currentMonth } from '../view';
+} from './types'
+import {
+  BILL_LABELS,
+  buildMonthBills,
+  cycleTotal,
+  dashboardSnapshot,
+  type Tenancy,
+} from '../engine'
+import { addMonths, currentMonth } from '../view'
 
-type Num = number | string | null | undefined;
+type Num = number | string | null | undefined
 
-const MAX_ORDER = Number.MAX_SAFE_INTEGER;
+const MAX_ORDER = Number.MAX_SAFE_INTEGER
 
 function num(value: Num): number {
-  return value == null ? 0 : Number(value);
+  return value == null ? 0 : Number(value)
 }
 
 interface PropertyRow {
-  id: string;
-  owner_id: string;
-  name: string;
-  address: string;
-  owner_name: string;
-  owner_phone: string;
-  electricity_rate: Num;
-  waste_fee: Num;
-  water_split_rule: string;
-  mid_month_rule: string;
-  created_at: string;
+  id: string
+  owner_id: string
+  name: string
+  address: string
+  owner_name: string
+  owner_phone: string
+  electricity_rate: Num
+  waste_fee: Num
+  water_split_rule: string
+  mid_month_rule: string
+  created_at: string
 }
 
 interface RoomRow {
-  id: string;
-  property_id: string;
-  number: string;
-  rent: Num;
-  status: string;
-  sort_order: Num;
+  id: string
+  property_id: string
+  number: string
+  rent: Num
+  status: string
+  sort_order: Num
 }
 
 interface TenantRow {
-  id: string;
-  property_id: string;
-  name: string;
-  phone: string;
-  room_id: string | null;
-  status: string;
-  move_in_date: string | null;
-  move_out_date: string | null;
-  move_out_resolution: string | null;
-  move_out_note: string | null;
-  created_at: string;
+  id: string
+  property_id: string
+  name: string
+  phone: string
+  room_id: string | null
+  status: string
+  move_in_date: string | null
+  move_out_date: string | null
+  move_out_resolution: string | null
+  move_out_note: string | null
+  created_at: string
 }
 
 interface MeterRow {
-  id: string;
-  month: string;
-  room_id: string | null;
-  utility: string;
-  previous: Num;
-  current: Num;
+  id: string
+  month: string
+  room_id: string | null
+  utility: string
+  previous: Num
+  current: Num
 }
 
 interface BillRow {
-  id: string;
-  property_id: string;
-  month: string;
-  room_id: string;
-  tenant_id: string;
-  lines: unknown;
-  utilities_total: Num;
-  total: Num;
-  paper_ref: string;
-  status: string;
-  paid_amount: Num;
-  created_at: string;
+  id: string
+  property_id: string
+  month: string
+  room_id: string
+  tenant_id: string
+  lines: unknown
+  utilities_total: Num
+  total: Num
+  paper_ref: string
+  status: string
+  paid_amount: Num
+  created_at: string
 }
 
 interface LedgerRow {
-  id: string;
-  property_id: string;
-  bill_id: string;
-  tenant_id: string;
-  month: string;
-  amount: Num;
-  paid_at: string;
-  method: string | null;
-  note: string | null;
-  created_at: string;
+  id: string
+  property_id: string
+  bill_id: string
+  tenant_id: string
+  month: string
+  amount: Num
+  paid_at: string
+  method: string | null
+  note: string | null
+  created_at: string
 }
 
 interface AdjustmentRow {
-  id: string;
-  property_id: string;
-  month: string;
-  room_id: string;
-  label: string;
-  amount: Num;
-  note: string | null;
-  created_at: string;
+  id: string
+  property_id: string
+  month: string
+  room_id: string
+  label: string
+  amount: Num
+  note: string | null
+  created_at: string
 }
 
 interface LoanRow {
-  id: string;
-  property_id: string;
-  tenant_id: string;
-  total_amount: Num;
-  installment_count: Num;
-  installment_amount: Num;
-  paid_installments: Num;
-  add_to_bill: boolean;
-  status: string;
-  note: string | null;
-  created_at: string;
-  cancelled_at: string | null;
+  id: string
+  property_id: string
+  tenant_id: string
+  total_amount: Num
+  installment_count: Num
+  installment_amount: Num
+  paid_installments: Num
+  add_to_bill: boolean
+  status: string
+  note: string | null
+  created_at: string
+  cancelled_at: string | null
 }
 
 interface FinanceRow {
-  id: string;
-  property_id: string;
-  kind: string;
-  category: string;
-  amount: Num;
-  date: string;
-  note: string | null;
-  created_at: string;
+  id: string
+  property_id: string
+  kind: string
+  category: string
+  amount: Num
+  date: string
+  note: string | null
+  created_at: string
 }
 
 interface TenantEventRow {
-  id: string;
-  date: string;
-  label: string;
-  detail: string;
-  amount: Num;
+  id: string
+  date: string
+  label: string
+  detail: string
+  amount: Num
 }
 
 function mapLines(value: unknown): BillLine[] {
-  if (!Array.isArray(value)) return [];
+  if (!Array.isArray(value)) return []
   return value.map((raw) => {
-    const line = (raw ?? {}) as Partial<BillLine>;
+    const line = (raw ?? {}) as Partial<BillLine>
     const mapped: BillLine = {
       kind: line.kind as BillLineKind,
       label: String(line.label ?? ''),
       amount: Number(line.amount ?? 0),
-    };
-    if (line.detail !== undefined) mapped.detail = String(line.detail);
+    }
+    if (line.detail !== undefined) mapped.detail = String(line.detail)
     // Opening (pre-history) prev_due lines must round-trip the jsonb flag.
-    if (line.opening === true) mapped.opening = true;
-    return mapped;
-  });
+    if (line.opening === true) mapped.opening = true
+    return mapped
+  })
 }
 
 function mapProperty(row: PropertyRow): Property {
@@ -204,9 +210,10 @@ function mapProperty(row: PropertyRow): Property {
     electricityRate: num(row.electricity_rate),
     wasteFee: num(row.waste_fee),
     waterSplitRule: 'occupied_plus_one',
-    midMonthRule: row.mid_month_rule === 'full_month' ? 'full_month' : 'day_wise',
+    midMonthRule:
+      row.mid_month_rule === 'full_month' ? 'full_month' : 'day_wise',
     createdAt: row.created_at,
-  };
+  }
 }
 
 function mapRoom(row: RoomRow): Room {
@@ -217,7 +224,7 @@ function mapRoom(row: RoomRow): Room {
     rent: num(row.rent),
     status: row.status === 'occupied' ? 'occupied' : 'vacant',
     sortOrder: num(row.sort_order),
-  };
+  }
 }
 
 function mapTenant(row: TenantRow): Tenant {
@@ -230,13 +237,15 @@ function mapTenant(row: TenantRow): Tenant {
     status: row.status === 'archived' ? 'archived' : 'active',
     moveInDate: row.move_in_date ?? '',
     createdAt: row.created_at,
-  };
-  if (row.move_out_date) tenant.moveOutDate = row.move_out_date;
-  if (row.move_out_resolution) {
-    tenant.moveOutResolution = row.move_out_resolution as NonNullable<Tenant['moveOutResolution']>;
   }
-  if (row.move_out_note) tenant.moveOutNote = row.move_out_note;
-  return tenant;
+  if (row.move_out_date) tenant.moveOutDate = row.move_out_date
+  if (row.move_out_resolution) {
+    tenant.moveOutResolution = row.move_out_resolution as NonNullable<
+      Tenant['moveOutResolution']
+    >
+  }
+  if (row.move_out_note) tenant.moveOutNote = row.move_out_note
+  return tenant
 }
 
 function mapBill(row: BillRow): Bill {
@@ -250,10 +259,15 @@ function mapBill(row: BillRow): Bill {
     utilitiesTotal: num(row.utilities_total),
     total: num(row.total),
     paperRef: row.paper_ref,
-    status: row.status === 'paid' ? 'paid' : row.status === 'partial' ? 'partial' : 'due',
+    status:
+      row.status === 'paid'
+        ? 'paid'
+        : row.status === 'partial'
+          ? 'partial'
+          : 'due',
     paidAmount: num(row.paid_amount),
     createdAt: row.created_at,
-  };
+  }
 }
 
 function mapLedger(row: LedgerRow): LedgerEntry {
@@ -266,10 +280,10 @@ function mapLedger(row: LedgerRow): LedgerEntry {
     amount: num(row.amount),
     paidAt: row.paid_at,
     createdAt: row.created_at,
-  };
-  if (row.method != null) entry.method = row.method;
-  if (row.note != null) entry.note = row.note;
-  return entry;
+  }
+  if (row.method != null) entry.method = row.method
+  if (row.note != null) entry.note = row.note
+  return entry
 }
 
 function mapAdjustment(row: AdjustmentRow): Adjustment {
@@ -281,9 +295,9 @@ function mapAdjustment(row: AdjustmentRow): Adjustment {
     label: row.label,
     amount: num(row.amount),
     createdAt: row.created_at,
-  };
-  if (row.note != null) adjustment.note = row.note;
-  return adjustment;
+  }
+  if (row.note != null) adjustment.note = row.note
+  return adjustment
 }
 
 function mapLoan(row: LoanRow): Loan {
@@ -296,12 +310,17 @@ function mapLoan(row: LoanRow): Loan {
     installmentAmount: num(row.installment_amount),
     paidInstallments: num(row.paid_installments),
     addToBill: Boolean(row.add_to_bill),
-    status: row.status === 'cancelled' ? 'cancelled' : row.status === 'completed' ? 'completed' : 'active',
+    status:
+      row.status === 'cancelled'
+        ? 'cancelled'
+        : row.status === 'completed'
+          ? 'completed'
+          : 'active',
     createdAt: row.created_at,
-  };
-  if (row.note != null) loan.note = row.note;
-  if (row.cancelled_at != null) loan.cancelledAt = row.cancelled_at;
-  return loan;
+  }
+  if (row.note != null) loan.note = row.note
+  if (row.cancelled_at != null) loan.cancelledAt = row.cancelled_at
+  return loan
 }
 
 function mapFinance(row: FinanceRow): FinanceEntry {
@@ -313,54 +332,58 @@ function mapFinance(row: FinanceRow): FinanceEntry {
     amount: num(row.amount),
     date: row.date,
     createdAt: row.created_at,
-  };
-  if (row.note != null) entry.note = row.note;
-  return entry;
+  }
+  if (row.note != null) entry.note = row.note
+  return entry
 }
 
 function sortRooms(rooms: Room[]): Room[] {
   return rooms
     .slice()
-    .sort((a, b) => a.sortOrder - b.sortOrder || a.number.localeCompare(b.number));
+    .sort(
+      (a, b) => a.sortOrder - b.sortOrder || a.number.localeCompare(b.number),
+    )
 }
 
 function billStatus(paid: number, total: number): 'due' | 'partial' | 'paid' {
-  return paid >= total ? 'paid' : paid > 0 ? 'partial' : 'due';
+  return paid >= total ? 'paid' : paid > 0 ? 'partial' : 'due'
 }
 
-export function createSupabaseRepository(client: SupabaseClient): RentFlowRepository {
+export function createSupabaseRepository(
+  client: SupabaseClient,
+): RentFlowRepository {
   interface PropertyContext {
-    id: string;
-    ownerId: string;
+    id: string
+    ownerId: string
   }
 
-  let cachedContext: PropertyContext | null = null;
+  let cachedContext: PropertyContext | null = null
 
   async function maybePropertyContext(): Promise<PropertyContext | null> {
-    if (cachedContext) return cachedContext;
+    if (cachedContext) return cachedContext
     const { data, error } = await client
       .from('properties')
       .select('id, owner_id')
       .order('created_at', { ascending: true })
       .limit(1)
-      .maybeSingle();
-    if (error) throw error;
-    if (!data) return null;
-    cachedContext = { id: data.id as string, ownerId: data.owner_id as string };
-    return cachedContext;
+      .maybeSingle()
+    if (error) throw error
+    if (!data) return null
+    cachedContext = { id: data.id as string, ownerId: data.owner_id as string }
+    return cachedContext
   }
 
   async function propertyContext(): Promise<PropertyContext> {
-    const context = await maybePropertyContext();
-    if (!context) throw new Error('PROPERTY_NOT_FOUND');
-    return context;
+    const context = await maybePropertyContext()
+    if (!context) throw new Error('PROPERTY_NOT_FOUND')
+    return context
   }
 
   async function authUserId(): Promise<string> {
-    const { data, error } = await client.auth.getUser();
-    if (error) throw error;
-    if (!data.user) throw new Error('NOT_AUTHENTICATED');
-    return data.user.id;
+    const { data, error } = await client.auth.getUser()
+    if (error) throw error
+    if (!data.user) throw new Error('NOT_AUTHENTICATED')
+    return data.user.id
   }
 
   /**
@@ -370,15 +393,15 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
    * returned so screens can render without touching the database.
    */
   async function fetchProperty(): Promise<Property> {
-    const existing = await maybePropertyContext();
+    const existing = await maybePropertyContext()
     if (existing) {
       const { data, error } = await client
         .from('properties')
         .select('*')
         .eq('id', existing.id)
-        .maybeSingle();
-      if (error) throw error;
-      if (data) return mapProperty(data as PropertyRow);
+        .maybeSingle()
+      if (error) throw error
+      if (data) return mapProperty(data as PropertyRow)
     }
     return {
       id: '',
@@ -393,75 +416,78 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
       wasteFee: 0,
       waterSplitRule: 'occupied_plus_one',
       midMonthRule: 'day_wise',
-    };
+    }
   }
 
   async function fetchRooms(): Promise<Room[]> {
-    const context = await propertyContext();
+    const context = await propertyContext()
     const { data, error } = await client
       .from('rooms')
       .select('*')
-      .eq('property_id', context.id);
-    if (error) throw error;
-    return sortRooms((data ?? []).map((row) => mapRoom(row as RoomRow)));
+      .eq('property_id', context.id)
+    if (error) throw error
+    return sortRooms((data ?? []).map((row) => mapRoom(row as RoomRow)))
   }
 
   async function allPaperRefs(): Promise<string[]> {
-    const context = await propertyContext();
+    const context = await propertyContext()
     const { data, error } = await client
       .from('bills')
       .select('paper_ref')
-      .eq('property_id', context.id);
-    if (error) throw error;
-    return (data ?? []).map((row) => row.paper_ref as string);
+      .eq('property_id', context.id)
+    if (error) throw error
+    return (data ?? []).map((row) => row.paper_ref as string)
   }
 
   /** previous ← current for every meter row of the month (engine shiftReadings). */
   async function shiftMonthReadings(month: MonthKey): Promise<void> {
-    const context = await propertyContext();
+    const context = await propertyContext()
     const { data, error } = await client
       .from('meter_readings')
       .select('id, current')
       .eq('property_id', context.id)
-      .eq('month', month);
-    if (error) throw error;
+      .eq('month', month)
+    if (error) throw error
     for (const row of (data ?? []) as Pick<MeterRow, 'id' | 'current'>[]) {
       const { error: updateError } = await client
         .from('meter_readings')
         .update({ previous: num(row.current) })
-        .eq('id', row.id);
-      if (updateError) throw updateError;
+        .eq('id', row.id)
+      if (updateError) throw updateError
     }
   }
 
   return {
     // ---- property / settings ----
     async getProperty(): Promise<Property> {
-      return fetchProperty();
+      return fetchProperty()
     },
 
     async updateProperty(patch): Promise<Property> {
-      const context = await maybePropertyContext();
-      const values: Record<string, unknown> = {};
-      if (patch.name !== undefined) values.name = patch.name;
-      if (patch.address !== undefined) values.address = patch.address;
-      if (patch.ownerName !== undefined) values.owner_name = patch.ownerName;
-      if (patch.ownerPhone !== undefined) values.owner_phone = patch.ownerPhone;
-      if (patch.electricityRate !== undefined) values.electricity_rate = patch.electricityRate;
-      if (patch.wasteFee !== undefined) values.waste_fee = patch.wasteFee;
-      if (patch.waterSplitRule !== undefined) values.water_split_rule = patch.waterSplitRule;
-      if (patch.midMonthRule !== undefined) values.mid_month_rule = patch.midMonthRule;
+      const context = await maybePropertyContext()
+      const values: Record<string, unknown> = {}
+      if (patch.name !== undefined) values.name = patch.name
+      if (patch.address !== undefined) values.address = patch.address
+      if (patch.ownerName !== undefined) values.owner_name = patch.ownerName
+      if (patch.ownerPhone !== undefined) values.owner_phone = patch.ownerPhone
+      if (patch.electricityRate !== undefined)
+        values.electricity_rate = patch.electricityRate
+      if (patch.wasteFee !== undefined) values.waste_fee = patch.wasteFee
+      if (patch.waterSplitRule !== undefined)
+        values.water_split_rule = patch.waterSplitRule
+      if (patch.midMonthRule !== undefined)
+        values.mid_month_rule = patch.midMonthRule
 
       if (!context) {
-        const ownerId = await authUserId();
+        const ownerId = await authUserId()
         const { data, error } = await client
           .from('properties')
           .insert({ owner_id: ownerId, ...values })
           .select()
-          .single();
-        if (error) throw error;
-        cachedContext = { id: (data as PropertyRow).id, ownerId };
-        return mapProperty(data as PropertyRow);
+          .single()
+        if (error) throw error
+        cachedContext = { id: (data as PropertyRow).id, ownerId }
+        return mapProperty(data as PropertyRow)
       }
 
       const { data, error } = await client
@@ -469,21 +495,23 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
         .update(values)
         .eq('id', context.id)
         .select()
-        .single();
-      if (error) throw error;
-      return mapProperty(data as PropertyRow);
+        .single()
+      if (error) throw error
+      return mapProperty(data as PropertyRow)
     },
 
     // ---- rooms ----
     async listRooms(): Promise<Room[]> {
-      return fetchRooms();
+      return fetchRooms()
     },
 
     async addRoom(input): Promise<Room> {
-      const context = await propertyContext();
-      const rooms = await fetchRooms();
-      if (rooms.some((room) => room.number === input.number)) throw new Error('ROOM_EXISTS');
-      const sortOrder = rooms.reduce((max, room) => Math.max(max, room.sortOrder), 0) + 1;
+      const context = await propertyContext()
+      const rooms = await fetchRooms()
+      if (rooms.some((room) => room.number === input.number))
+        throw new Error('ROOM_EXISTS')
+      const sortOrder =
+        rooms.reduce((max, room) => Math.max(max, room.sortOrder), 0) + 1
       const { data, error } = await client
         .from('rooms')
         .insert({
@@ -495,42 +523,46 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
           sort_order: sortOrder,
         })
         .select()
-        .single();
+        .single()
       if (error) {
-        if ((error as { code?: string }).code === '23505') throw new Error('ROOM_EXISTS');
-        throw error;
+        if ((error as { code?: string }).code === '23505')
+          throw new Error('ROOM_EXISTS')
+        throw error
       }
-      return mapRoom(data as RoomRow);
+      return mapRoom(data as RoomRow)
     },
 
     async updateRoom(id, patch): Promise<Room> {
-      const values: Record<string, unknown> = {};
-      if (patch.number !== undefined) values.number = patch.number;
-      if (patch.rent !== undefined) values.rent = patch.rent;
-      if (patch.status !== undefined) values.status = patch.status;
-      if (patch.sortOrder !== undefined) values.sort_order = patch.sortOrder;
+      const values: Record<string, unknown> = {}
+      if (patch.number !== undefined) values.number = patch.number
+      if (patch.rent !== undefined) values.rent = patch.rent
+      if (patch.status !== undefined) values.status = patch.status
+      if (patch.sortOrder !== undefined) values.sort_order = patch.sortOrder
       const { data, error } = await client
         .from('rooms')
         .update(values)
         .eq('id', id)
         .select()
-        .maybeSingle();
-      if (error) throw error;
-      if (!data) throw new Error('ROOM_NOT_FOUND');
-      return mapRoom(data as RoomRow);
+        .maybeSingle()
+      if (error) throw error
+      if (!data) throw new Error('ROOM_NOT_FOUND')
+      return mapRoom(data as RoomRow)
     },
 
     // ---- tenants ----
     async listTenants(status?): Promise<Tenant[]> {
-      const context = await maybePropertyContext();
-      if (!context) return [];
-      let query = client.from('tenants').select('*').eq('property_id', context.id);
-      if (status) query = query.eq('status', status);
-      const { data, error } = await query;
-      if (error) throw error;
+      const context = await maybePropertyContext()
+      if (!context) return []
+      let query = client
+        .from('tenants')
+        .select('*')
+        .eq('property_id', context.id)
+      if (status) query = query.eq('status', status)
+      const { data, error } = await query
+      if (error) throw error
       return (data ?? [])
         .map((row) => mapTenant(row as TenantRow))
-        .sort((a, b) => a.name.localeCompare(b.name));
+        .sort((a, b) => a.name.localeCompare(b.name))
     },
 
     async getTenant(id): Promise<Tenant | null> {
@@ -538,19 +570,19 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
         .from('tenants')
         .select('*')
         .eq('id', id)
-        .maybeSingle();
-      if (error) throw error;
-      return data ? mapTenant(data as TenantRow) : null;
+        .maybeSingle()
+      if (error) throw error
+      return data ? mapTenant(data as TenantRow) : null
     },
 
     async addTenant(input: AddTenantInput): Promise<Tenant> {
-      const context = await propertyContext();
-      const rooms = await fetchRooms();
-      const room = rooms.find((item) => item.id === input.roomId);
-      if (!room) throw new Error('ROOM_NOT_FOUND');
-      const tenants = await this.listTenants('active');
+      const context = await propertyContext()
+      const rooms = await fetchRooms()
+      const room = rooms.find((item) => item.id === input.roomId)
+      if (!room) throw new Error('ROOM_NOT_FOUND')
+      const tenants = await this.listTenants('active')
       if (tenants.some((tenant) => tenant.roomId === input.roomId)) {
-        throw new Error('ROOM_OCCUPIED');
+        throw new Error('ROOM_OCCUPIED')
       }
       const { data, error } = await client
         .from('tenants')
@@ -564,63 +596,68 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
           move_in_date: input.moveInDate,
         })
         .select()
-        .single();
-      if (error) throw error;
+        .single()
+      if (error) throw error
       const { error: roomError } = await client
         .from('rooms')
         .update({ status: 'occupied' })
-        .eq('id', input.roomId);
-      if (roomError) throw roomError;
-      return mapTenant(data as TenantRow);
+        .eq('id', input.roomId)
+      if (roomError) throw roomError
+      return mapTenant(data as TenantRow)
     },
 
     async updateTenant(id, patch): Promise<Tenant> {
-      const values: Record<string, unknown> = {};
-      if (patch.name !== undefined) values.name = patch.name;
-      if (patch.phone !== undefined) values.phone = patch.phone;
+      const values: Record<string, unknown> = {}
+      if (patch.name !== undefined) values.name = patch.name
+      if (patch.phone !== undefined) values.phone = patch.phone
       const { data, error } = await client
         .from('tenants')
         .update(values)
         .eq('id', id)
         .select()
-        .maybeSingle();
-      if (error) throw error;
-      if (!data) throw new Error('TENANT_NOT_FOUND');
-      return mapTenant(data as TenantRow);
+        .maybeSingle()
+      if (error) throw error
+      if (!data) throw new Error('TENANT_NOT_FOUND')
+      return mapTenant(data as TenantRow)
     },
 
     async shiftRoom(tenantId, newRoomId, effectiveDate): Promise<Tenant> {
-      const context = await propertyContext();
-      const tenant = await this.getTenant(tenantId);
-      if (!tenant) throw new Error('TENANT_NOT_FOUND');
-      if (tenant.status !== 'active') throw new Error('TENANT_ARCHIVED');
-      const rooms = await fetchRooms();
-      const newRoom = rooms.find((item) => item.id === newRoomId);
-      if (!newRoom) throw new Error('ROOM_NOT_FOUND');
-      const tenants = await this.listTenants('active');
-      const holder = tenants.find((item) => item.roomId === newRoomId);
-      if (holder && holder.id !== tenantId) throw new Error('ROOM_OCCUPIED');
+      const context = await propertyContext()
+      const tenant = await this.getTenant(tenantId)
+      if (!tenant) throw new Error('TENANT_NOT_FOUND')
+      if (tenant.status !== 'active') throw new Error('TENANT_ARCHIVED')
+      const rooms = await fetchRooms()
+      const newRoom = rooms.find((item) => item.id === newRoomId)
+      if (!newRoom) throw new Error('ROOM_NOT_FOUND')
+      const tenants = await this.listTenants('active')
+      const holder = tenants.find((item) => item.roomId === newRoomId)
+      if (holder && holder.id !== tenantId) throw new Error('ROOM_OCCUPIED')
 
-      const fromRoomId = tenant.roomId;
+      const fromRoomId = tenant.roomId
       if (fromRoomId) {
-        const { error } = await client.from('rooms').update({ status: 'vacant' }).eq('id', fromRoomId);
-        if (error) throw error;
+        const { error } = await client
+          .from('rooms')
+          .update({ status: 'vacant' })
+          .eq('id', fromRoomId)
+        if (error) throw error
       }
       const { error: occupyError } = await client
         .from('rooms')
         .update({ status: 'occupied' })
-        .eq('id', newRoomId);
-      if (occupyError) throw occupyError;
+        .eq('id', newRoomId)
+      if (occupyError) throw occupyError
 
       const { data, error } = await client
         .from('tenants')
         .update({ room_id: newRoomId })
         .eq('id', tenantId)
         .select()
-        .single();
-      if (error) throw error;
+        .single()
+      if (error) throw error
 
-      const fromLabel = fromRoomId ? rooms.find((room) => room.id === fromRoomId)?.number ?? '' : '';
+      const fromLabel = fromRoomId
+        ? (rooms.find((room) => room.id === fromRoomId)?.number ?? '')
+        : ''
       const { error: eventError } = await client.from('tenant_events').insert({
         property_id: context.id,
         owner_id: context.ownerId,
@@ -628,19 +665,22 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
         date: effectiveDate,
         label: 'রুম বদল',
         detail: `রুম ${fromLabel} → রুম ${newRoom.number}`,
-      });
-      if (eventError) throw eventError;
+      })
+      if (eventError) throw eventError
 
-      return mapTenant(data as TenantRow);
+      return mapTenant(data as TenantRow)
     },
 
     async moveOut(tenantId, input: MoveOutInput): Promise<Tenant> {
-      const tenant = await this.getTenant(tenantId);
-      if (!tenant) throw new Error('TENANT_NOT_FOUND');
-      if (tenant.status !== 'active') throw new Error('TENANT_ARCHIVED');
+      const tenant = await this.getTenant(tenantId)
+      if (!tenant) throw new Error('TENANT_NOT_FOUND')
+      if (tenant.status !== 'active') throw new Error('TENANT_ARCHIVED')
       if (tenant.roomId) {
-        const { error } = await client.from('rooms').update({ status: 'vacant' }).eq('id', tenant.roomId);
-        if (error) throw error;
+        const { error } = await client
+          .from('rooms')
+          .update({ status: 'vacant' })
+          .eq('id', tenant.roomId)
+        if (error) throw error
       }
       const { data, error } = await client
         .from('tenants')
@@ -653,84 +693,91 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
         })
         .eq('id', tenantId)
         .select()
-        .single();
-      if (error) throw error;
-      return mapTenant(data as TenantRow);
+        .single()
+      if (error) throw error
+      return mapTenant(data as TenantRow)
     },
 
     async deleteArchivedTenant(tenantId: TenantId): Promise<void> {
-      const tenant = await this.getTenant(tenantId);
-      if (!tenant) throw new Error('TENANT_NOT_FOUND');
-      if (tenant.status !== 'archived') throw new Error('TENANT_ACTIVE');
+      const tenant = await this.getTenant(tenantId)
+      if (!tenant) throw new Error('TENANT_NOT_FOUND')
+      if (tenant.status !== 'archived') throw new Error('TENANT_ACTIVE')
 
       const [bills, ledger] = await Promise.all([
-        client.from('bills').select('id', { count: 'exact', head: true }).eq('tenant_id', tenantId),
+        client
+          .from('bills')
+          .select('id', { count: 'exact', head: true })
+          .eq('tenant_id', tenantId),
         client
           .from('ledger_entries')
           .select('id', { count: 'exact', head: true })
           .eq('tenant_id', tenantId),
-      ]);
-      if (bills.error) throw bills.error;
-      if (ledger.error) throw ledger.error;
+      ])
+      if (bills.error) throw bills.error
+      if (ledger.error) throw ledger.error
       if ((bills.count ?? 0) > 0 || (ledger.count ?? 0) > 0) {
-        throw new Error('TENANT_HAS_HISTORY');
+        throw new Error('TENANT_HAS_HISTORY')
       }
 
-      const { error } = await client.from('tenants').delete().eq('id', tenantId);
+      const { error } = await client.from('tenants').delete().eq('id', tenantId)
       if (error) {
         // Loans (and any other restricted FK) also protect financial history.
-        if ((error as { code?: string }).code === '23503') throw new Error('TENANT_HAS_HISTORY');
-        throw error;
+        if ((error as { code?: string }).code === '23503')
+          throw new Error('TENANT_HAS_HISTORY')
+        throw error
       }
     },
 
     async getTenantHistory(tenantId): Promise<HistoryEvent[]> {
-      const context = await maybePropertyContext();
-      if (!context) return [];
-      const tenant = await this.getTenant(tenantId);
-      if (!tenant) return [];
+      const context = await maybePropertyContext()
+      if (!context) return []
+      const tenant = await this.getTenant(tenantId)
+      if (!tenant) return []
 
-      const [rooms, billsResult, ledgerResult, eventsResult] = await Promise.all([
-        fetchRooms(),
-        client.from('bills').select('*').eq('tenant_id', tenantId),
-        client.from('ledger_entries').select('*').eq('tenant_id', tenantId),
-        client.from('tenant_events').select('*').eq('tenant_id', tenantId),
-      ]);
-      if (billsResult.error) throw billsResult.error;
-      if (ledgerResult.error) throw ledgerResult.error;
-      if (eventsResult.error) throw eventsResult.error;
+      const [rooms, billsResult, ledgerResult, eventsResult] =
+        await Promise.all([
+          fetchRooms(),
+          client.from('bills').select('*').eq('tenant_id', tenantId),
+          client.from('ledger_entries').select('*').eq('tenant_id', tenantId),
+          client.from('tenant_events').select('*').eq('tenant_id', tenantId),
+        ])
+      if (billsResult.error) throw billsResult.error
+      if (ledgerResult.error) throw ledgerResult.error
+      if (eventsResult.error) throw eventsResult.error
 
       const roomNumber = (id: RoomId | null): string =>
-        id ? rooms.find((room) => room.id === id)?.number ?? '' : '';
+        id ? (rooms.find((room) => room.id === id)?.number ?? '') : ''
 
       const events: HistoryEvent[] = [
         {
           id: `hist-movein-${tenant.id}`,
           date: tenant.moveInDate,
           label: 'রুম যোগদান',
-          detail: tenant.roomId ? `রুম ${roomNumber(tenant.roomId)}` : 'ভাড়াটে যোগ হয়েছে',
+          detail: tenant.roomId
+            ? `রুম ${roomNumber(tenant.roomId)}`
+            : 'ভাড়াটে যোগ হয়েছে',
         },
-      ];
+      ]
 
       for (const row of (billsResult.data ?? []) as BillRow[]) {
-        const bill = mapBill(row);
+        const bill = mapBill(row)
         events.push({
           id: `hist-bill-${bill.id}`,
           date: bill.createdAt.slice(0, 10),
           label: 'মাসিক বিল',
           detail: `${bill.paperRef} · রুম ${roomNumber(bill.roomId)}`,
           amount: bill.total,
-        });
+        })
       }
       for (const row of (ledgerResult.data ?? []) as LedgerRow[]) {
-        const entry = mapLedger(row);
+        const entry = mapLedger(row)
         events.push({
           id: `hist-pay-${entry.id}`,
           date: entry.paidAt,
           label: 'পেমেন্ট',
           detail: entry.method ?? '',
           amount: entry.amount,
-        });
+        })
       }
       for (const row of (eventsResult.data ?? []) as TenantEventRow[]) {
         const event: HistoryEvent = {
@@ -738,9 +785,9 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
           date: row.date,
           label: row.label,
           detail: row.detail ?? '',
-        };
-        if (row.amount != null) event.amount = num(row.amount);
-        events.push(event);
+        }
+        if (row.amount != null) event.amount = num(row.amount)
+        events.push(event)
       }
       if (tenant.moveOutDate) {
         events.push({
@@ -748,29 +795,36 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
           date: tenant.moveOutDate,
           label: 'মুভ-আউট',
           detail: tenant.moveOutNote ?? tenant.moveOutResolution ?? '',
-        });
+        })
       }
 
-      return events.sort((a, b) => b.date.localeCompare(a.date) || a.id.localeCompare(b.id));
+      return events.sort(
+        (a, b) => b.date.localeCompare(a.date) || a.id.localeCompare(b.id),
+      )
     },
 
     // ---- meters ----
     async getMeterEntry(month: MonthKey): Promise<MeterEntry | null> {
-      const context = await propertyContext();
+      const context = await propertyContext()
       const { data, error } = await client
         .from('meter_readings')
         .select('*')
         .eq('property_id', context.id)
-        .eq('month', month);
-      if (error) throw error;
-      const rows = (data ?? []) as MeterRow[];
-      if (rows.length === 0) return null;
+        .eq('month', month)
+      if (error) throw error
+      const rows = (data ?? []) as MeterRow[]
+      if (rows.length === 0) return null
 
-      const [rooms, tenants] = await Promise.all([fetchRooms(), this.listTenants('active')]);
-      const roomById = new Map(rooms.map((room) => [room.id, room]));
+      const [rooms, tenants] = await Promise.all([
+        fetchRooms(),
+        this.listTenants('active'),
+      ])
+      const roomById = new Map(rooms.map((room) => [room.id, room]))
       const tenantByRoom = new Map(
-        tenants.filter((tenant) => tenant.roomId).map((tenant) => [tenant.roomId as string, tenant.name]),
-      );
+        tenants
+          .filter((tenant) => tenant.roomId)
+          .map((tenant) => [tenant.roomId as string, tenant.name]),
+      )
 
       const electricity = rows
         .filter((row) => row.utility === 'electricity' && row.room_id)
@@ -785,20 +839,28 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
           (a, b) =>
             (roomById.get(a.roomId)?.sortOrder ?? MAX_ORDER) -
             (roomById.get(b.roomId)?.sortOrder ?? MAX_ORDER),
-        );
+        )
 
-      const waterRow = rows.find((row) => row.utility === 'water' && row.room_id === null);
+      const waterRow = rows.find(
+        (row) => row.utility === 'water' && row.room_id === null,
+      )
 
       return {
         month,
         rooms: electricity,
-        water: { previous: num(waterRow?.previous), current: num(waterRow?.current) },
-      };
+        water: {
+          previous: num(waterRow?.previous),
+          current: num(waterRow?.current),
+        },
+      }
     },
 
-    async saveMeterEntry(month: MonthKey, entry: MeterEntry): Promise<MeterEntry> {
-      const context = await propertyContext();
-      const recordedAt = new Date().toISOString();
+    async saveMeterEntry(
+      month: MonthKey,
+      entry: MeterEntry,
+    ): Promise<MeterEntry> {
+      const context = await propertyContext()
+      const recordedAt = new Date().toISOString()
 
       async function upsertRow(
         utility: 'electricity' | 'water',
@@ -811,169 +873,198 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
           .select('id')
           .eq('property_id', context.id)
           .eq('month', month)
-          .eq('utility', utility);
-        lookup = roomId === null ? lookup.is('room_id', null) : lookup.eq('room_id', roomId);
-        const { data, error } = await lookup.maybeSingle();
-        if (error) throw error;
+          .eq('utility', utility)
+        lookup =
+          roomId === null
+            ? lookup.is('room_id', null)
+            : lookup.eq('room_id', roomId)
+        const { data, error } = await lookup.maybeSingle()
+        if (error) throw error
         if (data) {
           const { error: updateError } = await client
             .from('meter_readings')
             .update({ previous, current, recorded_at: recordedAt })
-            .eq('id', data.id);
-          if (updateError) throw updateError;
+            .eq('id', data.id)
+          if (updateError) throw updateError
         } else {
-          const { error: insertError } = await client.from('meter_readings').insert({
-            property_id: context.id,
-            owner_id: context.ownerId,
-            month,
-            room_id: roomId,
-            utility,
-            previous,
-            current,
-            recorded_at: recordedAt,
-          });
-          if (insertError) throw insertError;
+          const { error: insertError } = await client
+            .from('meter_readings')
+            .insert({
+              property_id: context.id,
+              owner_id: context.ownerId,
+              month,
+              room_id: roomId,
+              utility,
+              previous,
+              current,
+              recorded_at: recordedAt,
+            })
+          if (insertError) throw insertError
         }
       }
 
       for (const room of entry.rooms) {
-        await upsertRow('electricity', room.roomId, room.previous, room.current);
+        await upsertRow('electricity', room.roomId, room.previous, room.current)
       }
-      await upsertRow('water', null, entry.water.previous, entry.water.current);
+      await upsertRow('water', null, entry.water.previous, entry.water.current)
 
       return {
         month,
         rooms: entry.rooms.map((room) => ({ ...room })),
         water: { ...entry.water },
-      };
+      }
     },
 
-    async getLastKnownReadings(month: MonthKey): Promise<{ rooms: Map<RoomId, number>; water: number }> {
-      const rooms = new Map<RoomId, number>();
-      const context = await maybePropertyContext();
-      if (!context) return { rooms, water: 0 };
+    async getLastKnownReadings(
+      month: MonthKey,
+    ): Promise<{ rooms: Map<RoomId, number>; water: number }> {
+      const rooms = new Map<RoomId, number>()
+      const context = await maybePropertyContext()
+      if (!context) return { rooms, water: 0 }
 
       const { data, error } = await client
         .from('meter_readings')
         .select('month, room_id, utility, current')
         .eq('property_id', context.id)
-        .lt('month', month);
-      if (error) throw error;
+        .lt('month', month)
+      if (error) throw error
 
       // Ascending, so the latest earlier month wins per room meter.
-      const rows = ((data ?? []) as Pick<MeterRow, 'month' | 'room_id' | 'utility' | 'current'>[])
+      const rows = (
+        (data ?? []) as Pick<
+          MeterRow,
+          'month' | 'room_id' | 'utility' | 'current'
+        >[]
+      )
         .slice()
-        .sort((a, b) => a.month.localeCompare(b.month));
-      let water = 0;
+        .sort((a, b) => a.month.localeCompare(b.month))
+      let water = 0
       for (const row of rows) {
         if (row.utility === 'water' && row.room_id === null) {
-          water = num(row.current);
+          water = num(row.current)
         } else if (row.utility === 'electricity' && row.room_id) {
-          rooms.set(row.room_id, num(row.current));
+          rooms.set(row.room_id, num(row.current))
         }
       }
-      return { rooms, water };
+      return { rooms, water }
     },
 
     // ---- bills / monthly cycle ----
     async getActiveMonth(): Promise<MonthKey> {
-      const current = currentMonth();
-      const context = await maybePropertyContext();
+      const current = currentMonth()
+      const context = await maybePropertyContext()
       if (context) {
         const [meterResult, billResult] = await Promise.all([
-          client.from('meter_readings').select('month').eq('property_id', context.id),
+          client
+            .from('meter_readings')
+            .select('month')
+            .eq('property_id', context.id),
           client.from('bills').select('month').eq('property_id', context.id),
-        ]);
-        if (meterResult.error) throw meterResult.error;
-        if (billResult.error) throw billResult.error;
+        ])
+        if (meterResult.error) throw meterResult.error
+        if (billResult.error) throw billResult.error
 
-        const billed = new Set((billResult.data ?? []).map((row) => row.month as string));
-        const unfinished = [...new Set((meterResult.data ?? []).map((row) => row.month as string))]
+        const billed = new Set(
+          (billResult.data ?? []).map((row) => row.month as string),
+        )
+        const unfinished = [
+          ...new Set(
+            (meterResult.data ?? []).map((row) => row.month as string),
+          ),
+        ]
           .filter((month) => !billed.has(month))
-          .sort();
-        if (unfinished.length > 0) return unfinished[0];
+          .sort()
+        if (unfinished.length > 0) return unfinished[0]
 
-        const billedMonths = [...billed].sort();
+        const billedMonths = [...billed].sort()
         if (billedMonths.length > 0) {
-          const next = addMonths(billedMonths[billedMonths.length - 1], 1);
-          return next > current ? current : next;
+          const next = addMonths(billedMonths[billedMonths.length - 1], 1)
+          return next > current ? current : next
         }
       }
-      return current;
+      return current
     },
 
     async getLatestBilledMonth(): Promise<MonthKey | null> {
-      const context = await maybePropertyContext();
-      if (!context) return null;
+      const context = await maybePropertyContext()
+      if (!context) return null
       const { data, error } = await client
         .from('bills')
         .select('month')
         .eq('property_id', context.id)
         .order('month', { ascending: false })
         .limit(1)
-        .maybeSingle();
-      if (error) throw error;
-      return data ? (data.month as string) : null;
+        .maybeSingle()
+      if (error) throw error
+      return data ? (data.month as string) : null
     },
 
     async listDataMonths(): Promise<MonthKey[]> {
-      const context = await maybePropertyContext();
-      if (!context) return [];
+      const context = await maybePropertyContext()
+      if (!context) return []
       const [meterResult, billResult] = await Promise.all([
-        client.from('meter_readings').select('month').eq('property_id', context.id),
+        client
+          .from('meter_readings')
+          .select('month')
+          .eq('property_id', context.id),
         client.from('bills').select('month').eq('property_id', context.id),
-      ]);
-      if (meterResult.error) throw meterResult.error;
-      if (billResult.error) throw billResult.error;
+      ])
+      if (meterResult.error) throw meterResult.error
+      if (billResult.error) throw billResult.error
       return [
         ...new Set([
           ...(billResult.data ?? []).map((row) => row.month as string),
           ...(meterResult.data ?? []).map((row) => row.month as string),
         ]),
-      ].sort();
+      ].sort()
     },
 
     async listBills(month: MonthKey): Promise<Bill[]> {
-      const context = await maybePropertyContext();
-      if (!context) return [];
+      const context = await maybePropertyContext()
+      if (!context) return []
       const { data, error } = await client
         .from('bills')
         .select('*')
         .eq('property_id', context.id)
-        .eq('month', month);
-      if (error) throw error;
-      const rooms = await fetchRooms();
-      const order = new Map(rooms.map((room) => [room.id, room.sortOrder]));
+        .eq('month', month)
+      if (error) throw error
+      const rooms = await fetchRooms()
+      const order = new Map(rooms.map((room) => [room.id, room.sortOrder]))
       return (data ?? [])
         .map((row) => mapBill(row as BillRow))
         .sort(
           (a, b) =>
-            (order.get(a.roomId) ?? MAX_ORDER) - (order.get(b.roomId) ?? MAX_ORDER) ||
+            (order.get(a.roomId) ?? MAX_ORDER) -
+              (order.get(b.roomId) ?? MAX_ORDER) ||
             a.roomId.localeCompare(b.roomId),
-        );
+        )
     },
 
     async getBill(id: BillId): Promise<Bill | null> {
-      const { data, error } = await client.from('bills').select('*').eq('id', id).maybeSingle();
-      if (error) throw error;
-      return data ? mapBill(data as BillRow) : null;
+      const { data, error } = await client
+        .from('bills')
+        .select('*')
+        .eq('id', id)
+        .maybeSingle()
+      if (error) throw error
+      return data ? mapBill(data as BillRow) : null
     },
 
     async calculatePapers(month: MonthKey): Promise<Bill[]> {
-      const stored = await this.listBills(month);
-      if (stored.length > 0) return stored;
+      const stored = await this.listBills(month)
+      if (stored.length > 0) return stored
 
-      const meterEntry = await this.getMeterEntry(month);
-      if (!meterEntry) throw new Error('NO_METER_ENTRY');
+      const meterEntry = await this.getMeterEntry(month)
+      if (!meterEntry) throw new Error('NO_METER_ENTRY')
 
-      const context = await propertyContext();
+      const context = await propertyContext()
       const [property, rooms, tenants, adjustments, loans] = await Promise.all([
         this.getProperty(),
         fetchRooms(),
         this.listTenants(),
         this.listAdjustments(month),
         this.listLoans(),
-      ]);
+      ])
 
       const tenancies: Tenancy[] = tenants
         .filter((tenant) => tenant.roomId !== null)
@@ -983,28 +1074,32 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
             name: tenant.name,
             roomId: tenant.roomId as string,
             moveInDate: tenant.moveInDate,
-          };
-          if (tenant.moveOutDate) tenancy.moveOutDate = tenant.moveOutDate;
-          return tenancy;
-        });
+          }
+          if (tenant.moveOutDate) tenancy.moveOutDate = tenant.moveOutDate
+          return tenancy
+        })
 
-      const adjustmentsByRoom = new Map<string, { label: string; amount: number }[]>();
+      const adjustmentsByRoom = new Map<
+        string,
+        { label: string; amount: number }[]
+      >()
       for (const adjustment of adjustments) {
-        const list = adjustmentsByRoom.get(adjustment.roomId) ?? [];
-        list.push({ label: adjustment.label, amount: adjustment.amount });
-        adjustmentsByRoom.set(adjustment.roomId, list);
+        const list = adjustmentsByRoom.get(adjustment.roomId) ?? []
+        list.push({ label: adjustment.label, amount: adjustment.amount })
+        adjustmentsByRoom.set(adjustment.roomId, list)
       }
 
-      const loanInstallmentByRoom = new Map<string, number>();
+      const loanInstallmentByRoom = new Map<string, number>()
       for (const loan of loans) {
-        if (loan.status !== 'active' || !loan.addToBill) continue;
-        if (loan.paidInstallments >= loan.installmentCount) continue;
-        const tenant = tenants.find((item) => item.id === loan.tenantId);
-        if (tenant?.roomId) loanInstallmentByRoom.set(tenant.roomId, loan.installmentAmount);
+        if (loan.status !== 'active' || !loan.addToBill) continue
+        if (loan.paidInstallments >= loan.installmentCount) continue
+        const tenant = tenants.find((item) => item.id === loan.tenantId)
+        if (tenant?.roomId)
+          loanInstallmentByRoom.set(tenant.roomId, loan.installmentAmount)
       }
 
-      const prevDueByRoom = await this.getPrevDueByRoom(month);
-      const existingRefs = await allPaperRefs();
+      const prevDueByRoom = await this.getPrevDueByRoom(month)
+      const existingRefs = await allPaperRefs()
 
       const built = buildMonthBills({
         month,
@@ -1016,7 +1111,7 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
         prevDueByRoom,
         loanInstallmentByRoom,
         existingRefs,
-      });
+      })
 
       if (built.length > 0) {
         const rows = built.map((bill) => ({
@@ -1032,131 +1127,163 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
           status: bill.status,
           paid_amount: bill.paidAmount,
           created_at: bill.createdAt,
-        }));
-        const { error } = await client.from('bills').insert(rows);
-        if (error && (error as { code?: string }).code !== '23505') throw error;
+        }))
+        const { error } = await client.from('bills').insert(rows)
+        if (error && (error as { code?: string }).code !== '23505') throw error
       }
 
       // calculatePapers shifts readings: previous ← current for the whole month.
-      await shiftMonthReadings(month);
+      await shiftMonthReadings(month)
 
-      return this.listBills(month);
+      return this.listBills(month)
     },
 
-    async adjustBill(month, roomId, adjustment, kind = 'adjustment'): Promise<Bill> {
-      const context = await propertyContext();
+    async adjustBill(
+      month,
+      roomId,
+      adjustment,
+      kind = 'adjustment',
+    ): Promise<Bill> {
+      const context = await propertyContext()
       const { data: row, error } = await client
         .from('bills')
         .select('*')
         .eq('property_id', context.id)
         .eq('month', month)
         .eq('room_id', roomId)
-        .maybeSingle();
-      if (error) throw error;
-      if (!row) throw new Error('BILL_NOT_FOUND');
+        .maybeSingle()
+      if (error) throw error
+      if (!row) throw new Error('BILL_NOT_FOUND')
 
-      const { error: adjustmentError } = await client.from('adjustments').insert({
-        property_id: context.id,
-        owner_id: context.ownerId,
-        month,
-        room_id: roomId,
-        label: adjustment.label,
-        amount: adjustment.amount,
-        note: adjustment.note ?? null,
-      });
-      if (adjustmentError) throw adjustmentError;
+      const { error: adjustmentError } = await client
+        .from('adjustments')
+        .insert({
+          property_id: context.id,
+          owner_id: context.ownerId,
+          month,
+          room_id: roomId,
+          label: adjustment.label,
+          amount: adjustment.amount,
+          note: adjustment.note ?? null,
+        })
+      if (adjustmentError) throw adjustmentError
 
-      const bill = mapBill(row as BillRow);
+      const bill = mapBill(row as BillRow)
       // 'prev_due' seeds opening (pre-history) debt — an OPENING line, so the
       // ledger carry keeps it instead of subtracting it as a transfer.
       const lines: BillLine[] = [
         ...bill.lines,
         kind === 'prev_due'
-          ? { kind: 'prev_due', label: BILL_LABELS.prev_due, amount: adjustment.amount, opening: true }
+          ? {
+              kind: 'prev_due',
+              label: BILL_LABELS.prev_due,
+              amount: adjustment.amount,
+              opening: true,
+            }
           : {
               kind: 'adjustment',
               label: BILL_LABELS.adjustment,
               amount: adjustment.amount,
               detail: adjustment.label,
             },
-      ];
-      const total = lines.reduce((sum, line) => sum + line.amount, 0);
+      ]
+      const total = lines.reduce((sum, line) => sum + line.amount, 0)
       const { data: updated, error: updateError } = await client
         .from('bills')
         .update({ lines, total, status: billStatus(bill.paidAmount, total) })
         .eq('id', bill.id)
         .select()
-        .single();
-      if (updateError) throw updateError;
-      return mapBill(updated as BillRow);
+        .single()
+      if (updateError) throw updateError
+      return mapBill(updated as BillRow)
     },
 
     async getPrevDueByRoom(month: MonthKey): Promise<Map<RoomId, number>> {
-      const context = await propertyContext();
-      const rooms = await fetchRooms();
+      const context = await propertyContext()
+      const rooms = await fetchRooms()
       const { data, error } = await client
         .from('bills')
         .select('id, room_id, total, lines')
         .eq('property_id', context.id)
-        .lt('month', month);
-      if (error) throw error;
-      const priorBills = (data ?? []) as Pick<BillRow, 'id' | 'room_id' | 'total' | 'lines'>[];
-      const billIds = priorBills.map((bill) => bill.id);
+        .lt('month', month)
+      if (error) throw error
+      const priorBills = (data ?? []) as Pick<
+        BillRow,
+        'id' | 'room_id' | 'total' | 'lines'
+      >[]
+      const billIds = priorBills.map((bill) => bill.id)
 
-      const paidByBill = new Map<string, number>();
+      const paidByBill = new Map<string, number>()
       if (billIds.length > 0) {
         const { data: ledgerRows, error: ledgerError } = await client
           .from('ledger_entries')
           .select('bill_id, amount')
-          .in('bill_id', billIds);
-        if (ledgerError) throw ledgerError;
-        for (const entry of (ledgerRows ?? []) as Pick<LedgerRow, 'bill_id' | 'amount'>[]) {
-          paidByBill.set(entry.bill_id, (paidByBill.get(entry.bill_id) ?? 0) + num(entry.amount));
+          .in('bill_id', billIds)
+        if (ledgerError) throw ledgerError
+        for (const entry of (ledgerRows ?? []) as Pick<
+          LedgerRow,
+          'bill_id' | 'amount'
+        >[]) {
+          paidByBill.set(
+            entry.bill_id,
+            (paidByBill.get(entry.bill_id) ?? 0) + num(entry.amount),
+          )
         }
       }
 
-      const map = new Map<RoomId, number>();
+      const map = new Map<RoomId, number>()
       for (const room of rooms) {
-        const roomBills = priorBills.filter((bill) => bill.room_id === room.id);
-        const billed = roomBills.reduce((sum, bill) => sum + num(bill.total), 0);
+        const roomBills = priorBills.filter((bill) => bill.room_id === room.id)
+        const billed = roomBills.reduce((sum, bill) => sum + num(bill.total), 0)
         const transferred = roomBills.reduce(
           (sum, bill) =>
             sum +
             mapLines(bill.lines)
-              .filter((line) => line.kind === 'prev_due' && line.opening !== true)
+              .filter(
+                (line) => line.kind === 'prev_due' && line.opening !== true,
+              )
               .reduce((inner, line) => inner + line.amount, 0),
           0,
-        );
-        const paid = roomBills.reduce((sum, bill) => sum + (paidByBill.get(bill.id) ?? 0), 0);
-        const carried = billed - paid - transferred;
-        if (carried !== 0) map.set(room.id, carried);
+        )
+        const paid = roomBills.reduce(
+          (sum, bill) => sum + (paidByBill.get(bill.id) ?? 0),
+          0,
+        )
+        const carried = billed - paid - transferred
+        if (carried !== 0) map.set(room.id, carried)
       }
-      return map;
+      return map
     },
 
     // ---- ledger / collection ----
     async listLedger(month?): Promise<LedgerEntry[]> {
-      const context = await maybePropertyContext();
-      if (!context) return [];
-      let query = client.from('ledger_entries').select('*').eq('property_id', context.id);
-      if (month) query = query.eq('month', month);
-      const { data, error } = await query;
-      if (error) throw error;
+      const context = await maybePropertyContext()
+      if (!context) return []
+      let query = client
+        .from('ledger_entries')
+        .select('*')
+        .eq('property_id', context.id)
+      if (month) query = query.eq('month', month)
+      const { data, error } = await query
+      if (error) throw error
       return (data ?? [])
         .map((row) => mapLedger(row as LedgerRow))
-        .sort((a, b) => a.paidAt.localeCompare(b.paidAt) || a.id.localeCompare(b.id));
+        .sort(
+          (a, b) =>
+            a.paidAt.localeCompare(b.paidAt) || a.id.localeCompare(b.id),
+        )
     },
 
     async recordPayment(input: PaymentInput): Promise<LedgerEntry> {
-      const context = await propertyContext();
+      const context = await propertyContext()
       const { data: row, error } = await client
         .from('bills')
         .select('*')
         .eq('id', input.billId)
-        .maybeSingle();
-      if (error) throw error;
-      if (!row) throw new Error('BILL_NOT_FOUND');
-      const bill = mapBill(row as BillRow);
+        .maybeSingle()
+      if (error) throw error
+      if (!row) throw new Error('BILL_NOT_FOUND')
+      const bill = mapBill(row as BillRow)
 
       const { data: inserted, error: insertError } = await client
         .from('ledger_entries')
@@ -1172,24 +1299,24 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
           note: input.note ?? null,
         })
         .select()
-        .single();
-      if (insertError) throw insertError;
+        .single()
+      if (insertError) throw insertError
 
       // paid_amount is Σ ledger for the bill (never an incremental guess).
       const { data: ledgerRows, error: sumError } = await client
         .from('ledger_entries')
         .select('amount')
-        .eq('bill_id', bill.id);
-      if (sumError) throw sumError;
+        .eq('bill_id', bill.id)
+      if (sumError) throw sumError
       const paid = (ledgerRows ?? []).reduce(
         (sum, entry) => sum + num((entry as Pick<LedgerRow, 'amount'>).amount),
         0,
-      );
+      )
       const { error: updateError } = await client
         .from('bills')
         .update({ paid_amount: paid, status: billStatus(paid, bill.total) })
-        .eq('id', bill.id);
-      if (updateError) throw updateError;
+        .eq('id', bill.id)
+      if (updateError) throw updateError
 
       // A loan folded into this bill advances the paying tenant's active loan.
       if (bill.lines.some((line) => line.kind === 'loan')) {
@@ -1200,61 +1327,74 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
           .eq('status', 'active')
           .eq('add_to_bill', true)
           .limit(1)
-          .maybeSingle();
-        if (loanError) throw loanError;
+          .maybeSingle()
+        if (loanError) throw loanError
         if (loanRow) {
-          const loan = mapLoan(loanRow as LoanRow);
-          const next = Math.min(loan.paidInstallments + 1, loan.installmentCount);
+          const loan = mapLoan(loanRow as LoanRow)
+          const next = Math.min(
+            loan.paidInstallments + 1,
+            loan.installmentCount,
+          )
           const { error: loanUpdateError } = await client
             .from('loans')
             .update({
               paid_installments: next,
               status: next >= loan.installmentCount ? 'completed' : 'active',
             })
-            .eq('id', loan.id);
-          if (loanUpdateError) throw loanUpdateError;
+            .eq('id', loan.id)
+          if (loanUpdateError) throw loanUpdateError
         }
       }
 
-      return mapLedger(inserted as LedgerRow);
+      return mapLedger(inserted as LedgerRow)
     },
 
     // ---- adjustments history ----
     async listAdjustments(month?): Promise<Adjustment[]> {
-      const context = await maybePropertyContext();
-      if (!context) return [];
-      let query = client.from('adjustments').select('*').eq('property_id', context.id);
-      if (month) query = query.eq('month', month);
-      const { data, error } = await query;
-      if (error) throw error;
+      const context = await maybePropertyContext()
+      if (!context) return []
+      let query = client
+        .from('adjustments')
+        .select('*')
+        .eq('property_id', context.id)
+      if (month) query = query.eq('month', month)
+      const { data, error } = await query
+      if (error) throw error
       return (data ?? [])
         .map((row) => mapAdjustment(row as AdjustmentRow))
-        .sort((a, b) => a.createdAt.localeCompare(b.createdAt) || a.id.localeCompare(b.id));
+        .sort(
+          (a, b) =>
+            a.createdAt.localeCompare(b.createdAt) || a.id.localeCompare(b.id),
+        )
     },
 
     // ---- loans ----
     async listLoans(): Promise<Loan[]> {
-      const context = await maybePropertyContext();
-      if (!context) return [];
+      const context = await maybePropertyContext()
+      if (!context) return []
       const { data, error } = await client
         .from('loans')
         .select('*')
         .eq('property_id', context.id)
-        .order('created_at', { ascending: true });
-      if (error) throw error;
-      return (data ?? []).map((row) => mapLoan(row as LoanRow));
+        .order('created_at', { ascending: true })
+      if (error) throw error
+      return (data ?? []).map((row) => mapLoan(row as LoanRow))
     },
 
     async getLoan(id: LoanId): Promise<Loan | null> {
-      const { data, error } = await client.from('loans').select('*').eq('id', id).maybeSingle();
-      if (error) throw error;
-      return data ? mapLoan(data as LoanRow) : null;
+      const { data, error } = await client
+        .from('loans')
+        .select('*')
+        .eq('id', id)
+        .maybeSingle()
+      if (error) throw error
+      return data ? mapLoan(data as LoanRow) : null
     },
 
     async addLoan(input: AddLoanInput): Promise<Loan> {
-      const context = await propertyContext();
-      const tenant = await this.getTenant(input.tenantId);
-      if (!tenant) throw new Error('TENANT_NOT_FOUND');
+      const context = await propertyContext()
+      const tenant = await this.getTenant(input.tenantId)
+      if (!tenant) throw new Error('TENANT_NOT_FOUND')
       const { data, error } = await client
         .from('loans')
         .insert({
@@ -1270,9 +1410,9 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
           note: input.note ?? null,
         })
         .select()
-        .single();
-      if (error) throw error;
-      return mapLoan(data as LoanRow);
+        .single()
+      if (error) throw error
+      return mapLoan(data as LoanRow)
     },
 
     async cancelLoan(id: LoanId): Promise<Loan> {
@@ -1281,17 +1421,17 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
         .update({ status: 'cancelled', cancelled_at: new Date().toISOString() })
         .eq('id', id)
         .select()
-        .maybeSingle();
-      if (error) throw error;
-      if (!data) throw new Error('LOAN_NOT_FOUND');
-      return mapLoan(data as LoanRow);
+        .maybeSingle()
+      if (error) throw error
+      if (!data) throw new Error('LOAN_NOT_FOUND')
+      return mapLoan(data as LoanRow)
     },
 
     async payLoanInstallment(id: LoanId): Promise<Loan> {
-      const loan = await this.getLoan(id);
-      if (!loan) throw new Error('LOAN_NOT_FOUND');
-      if (loan.status === 'cancelled') throw new Error('LOAN_CANCELLED');
-      const next = Math.min(loan.paidInstallments + 1, loan.installmentCount);
+      const loan = await this.getLoan(id)
+      if (!loan) throw new Error('LOAN_NOT_FOUND')
+      if (loan.status === 'cancelled') throw new Error('LOAN_CANCELLED')
+      const next = Math.min(loan.paidInstallments + 1, loan.installmentCount)
       const { data, error } = await client
         .from('loans')
         .update({
@@ -1300,28 +1440,30 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
         })
         .eq('id', id)
         .select()
-        .single();
-      if (error) throw error;
-      return mapLoan(data as LoanRow);
+        .single()
+      if (error) throw error
+      return mapLoan(data as LoanRow)
     },
 
     // ---- finance ----
     async listFinance(month?): Promise<FinanceEntry[]> {
-      const context = await maybePropertyContext();
-      if (!context) return [];
+      const context = await maybePropertyContext()
+      if (!context) return []
       const { data, error } = await client
         .from('finance_entries')
         .select('*')
-        .eq('property_id', context.id);
-      if (error) throw error;
+        .eq('property_id', context.id)
+      if (error) throw error
       return (data ?? [])
         .map((row) => mapFinance(row as FinanceRow))
         .filter((entry) => (month ? entry.date.slice(0, 7) === month : true))
-        .sort((a, b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
+        .sort(
+          (a, b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id),
+        )
     },
 
     async addFinanceEntry(input: AddFinanceInput): Promise<FinanceEntry> {
-      const context = await propertyContext();
+      const context = await propertyContext()
       const { data, error } = await client
         .from('finance_entries')
         .insert({
@@ -1334,38 +1476,60 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
           note: input.note ?? null,
         })
         .select()
-        .single();
-      if (error) throw error;
-      return mapFinance(data as FinanceRow);
+        .single()
+      if (error) throw error
+      return mapFinance(data as FinanceRow)
     },
 
     async deleteFinanceEntry(id): Promise<void> {
-      const { error } = await client.from('finance_entries').delete().eq('id', id);
-      if (error) throw error;
+      const { error } = await client
+        .from('finance_entries')
+        .delete()
+        .eq('id', id)
+      if (error) throw error
     },
 
     // ---- derived views ----
     async getDashboard(month: MonthKey): Promise<DashboardSnapshot> {
-      const context = await propertyContext();
-      const [billsResult, ledgerResult, financeResult, rooms, tenants] = await Promise.all([
-        client.from('bills').select('*').eq('property_id', context.id).eq('month', month),
-        client.from('ledger_entries').select('*').eq('property_id', context.id).eq('month', month),
-        client.from('finance_entries').select('*').eq('property_id', context.id),
-        fetchRooms(),
-        this.listTenants(),
-      ]);
-      if (billsResult.error) throw billsResult.error;
-      if (ledgerResult.error) throw ledgerResult.error;
-      if (financeResult.error) throw financeResult.error;
+      const context = await propertyContext()
+      const [billsResult, ledgerResult, financeResult, rooms, tenants] =
+        await Promise.all([
+          client
+            .from('bills')
+            .select('*')
+            .eq('property_id', context.id)
+            .eq('month', month),
+          client
+            .from('ledger_entries')
+            .select('*')
+            .eq('property_id', context.id)
+            .eq('month', month),
+          client
+            .from('finance_entries')
+            .select('*')
+            .eq('property_id', context.id),
+          fetchRooms(),
+          this.listTenants(),
+        ])
+      if (billsResult.error) throw billsResult.error
+      if (ledgerResult.error) throw ledgerResult.error
+      if (financeResult.error) throw financeResult.error
 
       return dashboardSnapshot({
         bills: (billsResult.data ?? []).map((row) => mapBill(row as BillRow)),
-        ledger: (ledgerResult.data ?? []).map((row) => mapLedger(row as LedgerRow)),
-        expenses: (financeResult.data ?? []).map((row) => mapFinance(row as FinanceRow)),
+        ledger: (ledgerResult.data ?? []).map((row) =>
+          mapLedger(row as LedgerRow),
+        ),
+        expenses: (financeResult.data ?? []).map((row) =>
+          mapFinance(row as FinanceRow),
+        ),
         rooms,
         month,
-        tenants: tenants.map((tenant) => ({ id: tenant.id, name: tenant.name })),
-      });
+        tenants: tenants.map((tenant) => ({
+          id: tenant.id,
+          name: tenant.name,
+        })),
+      })
     },
 
     async getMonthlyLedger(month: MonthKey): Promise<MonthlyLedgerRow[]> {
@@ -1373,14 +1537,14 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
         this.listBills(month),
         fetchRooms(),
         this.listTenants(),
-      ]);
-      const roomById = new Map(rooms.map((room) => [room.id, room]));
-      const tenantById = new Map(tenants.map((tenant) => [tenant.id, tenant]));
+      ])
+      const roomById = new Map(rooms.map((room) => [room.id, room]))
+      const tenantById = new Map(tenants.map((tenant) => [tenant.id, tenant]))
       return bills.map((bill) => {
         const sumKind = (kind: string): number =>
           bill.lines
             .filter((line) => line.kind === kind)
-            .reduce((sum, line) => sum + line.amount, 0);
+            .reduce((sum, line) => sum + line.amount, 0)
         return {
           roomNumber: roomById.get(bill.roomId)?.number ?? '',
           tenantName: tenantById.get(bill.tenantId)?.name ?? '',
@@ -1394,43 +1558,67 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
           paid: bill.paidAmount,
           status: bill.status,
           paperRef: bill.paperRef,
-        };
-      });
+        }
+      })
     },
 
     async getCashflow(months: MonthKey[]): Promise<CashflowRow[]> {
-      const context = await propertyContext();
-      const rows: CashflowRow[] = [];
+      const context = await propertyContext()
+      const rows: CashflowRow[] = []
       for (const month of months) {
         const [billsResult, ledgerResult, financeResult] = await Promise.all([
-          client.from('bills').select('*').eq('property_id', context.id).eq('month', month),
-          client.from('ledger_entries').select('*').eq('property_id', context.id).eq('month', month),
-          client.from('finance_entries').select('*').eq('property_id', context.id),
-        ]);
-        if (billsResult.error) throw billsResult.error;
-        if (ledgerResult.error) throw ledgerResult.error;
-        if (financeResult.error) throw financeResult.error;
+          client
+            .from('bills')
+            .select('*')
+            .eq('property_id', context.id)
+            .eq('month', month),
+          client
+            .from('ledger_entries')
+            .select('*')
+            .eq('property_id', context.id)
+            .eq('month', month),
+          client
+            .from('finance_entries')
+            .select('*')
+            .eq('property_id', context.id),
+        ])
+        if (billsResult.error) throw billsResult.error
+        if (ledgerResult.error) throw ledgerResult.error
+        if (financeResult.error) throw financeResult.error
 
-        const billed = cycleTotal((billsResult.data ?? []).map((row) => mapBill(row as BillRow)));
+        const billed = cycleTotal(
+          (billsResult.data ?? []).map((row) => mapBill(row as BillRow)),
+        )
         const collected = ((ledgerResult.data ?? []) as LedgerRow[]).reduce(
           (sum, row) => sum + num(row.amount),
           0,
-        );
+        )
         const expenses = ((financeResult.data ?? []) as FinanceRow[])
-          .filter((row) => row.kind === 'expense' && row.date.slice(0, 7) === month)
-          .reduce((sum, row) => sum + num(row.amount), 0);
+          .filter(
+            (row) => row.kind === 'expense' && row.date.slice(0, 7) === month,
+          )
+          .reduce((sum, row) => sum + num(row.amount), 0)
         const financeIncome = ((financeResult.data ?? []) as FinanceRow[])
-          .filter((row) => row.kind === 'income' && row.date.slice(0, 7) === month)
-          .reduce((sum, row) => sum + num(row.amount), 0);
-        const income = collected + financeIncome;
-        rows.push({ month, billed, collected, income, expenses, net: income - expenses });
+          .filter(
+            (row) => row.kind === 'income' && row.date.slice(0, 7) === month,
+          )
+          .reduce((sum, row) => sum + num(row.amount), 0)
+        const income = collected + financeIncome
+        rows.push({
+          month,
+          billed,
+          collected,
+          income,
+          expenses,
+          net: income - expenses,
+        })
       }
-      return rows;
+      return rows
     },
 
     // ---- demo ----
     async seedDemo(): Promise<void> {
-      throw new Error('USE_SEED_SCRIPT');
+      throw new Error('USE_SEED_SCRIPT')
     },
-  };
+  }
 }
