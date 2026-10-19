@@ -163,14 +163,16 @@ export default function IncomeExpenseList() {
         repo.listFinance(target),
         repo.getCashflow([target]),
         repo.getProperty(),
-        repo.listLedger(target),
+        repo.listLedger(),
       ])
       if (!alive) return
       setAnchorMonth(activeMonth)
       setMonth(target)
       setEntries(rows)
       // রেন্ট কালেকশন = ক্যাশ আয় — তালিকায়ও দেখাই (display-only, paidAt মাসে)।
-      const collections: FinanceEntry[] = ledgerRows.map((row) => ({
+      const collections: FinanceEntry[] = ledgerRows
+        .filter((row) => row.paidAt.slice(0, 7) === target)
+        .map((row) => ({
         id: `ledger-${row.id}`,
         propertyId: row.propertyId,
         kind: 'income' as const,
@@ -216,12 +218,11 @@ export default function IncomeExpenseList() {
   }
 
   const filtered = useMemo(() => {
-    const all = [...entries, ...collections].sort((a, b) =>
-      b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt),
+    const all = [...entries, ...collections].sort(
+      (a, b) =>
+        b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt),
     )
-    return filter === 'all'
-      ? all
-      : all.filter((entry) => entry.kind === filter)
+    return filter === 'all' ? all : all.filter((entry) => entry.kind === filter)
   }, [entries, collections, filter])
 
   const groups = useMemo(() => {
