@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { addMonths } from '../lib/view'
 import { useRepository } from '../app/repository'
 import EmptyState from '../components/EmptyState'
 import KpiCard, { type KpiTrend } from '../components/KpiCard'
@@ -160,7 +161,10 @@ const CreditCardIcon = ({ size = 18 }: { size?: number }) => (
 /* ---------- data shape ---------- */
 
 interface DashboardData {
+  /** cash month — the month the owner is standing in (collections + expenses of this month) */
   month: string
+  /** bill cycle month = month − 1 (its bills/dues/meter the owner works with this month) */
+  billMonth: string
   property: Property
   dashboard: DashboardSnapshot
   previous: DashboardSnapshot
@@ -182,16 +186,14 @@ const ICON_BUTTON_CLASS =
 function DashboardHeader({
   property,
   month,
-  billedMonths,
+  monthOptions,
   onPickMonth,
   onOpenNotifications,
 }: {
   property: Property
   month: string
-  /** latest cycle month — the month dropdown window anchors here */
-  anchorMonth: string
-  /** months that have papers — dropdown shows only these (bill হলেই মাস আসে) */
-  billedMonths: string[]
+  /** selectable cash months (derived: previous month has bills) */
+  monthOptions: string[]
   onPickMonth: (month: string) => void
   onOpenNotifications: () => void
 }) {
@@ -214,7 +216,7 @@ function DashboardHeader({
       <div className="mt-4 flex items-center justify-end gap-2 lg:mt-0 lg:gap-3">
         <MonthSelect
           value={month}
-          months={billedMonths}
+          months={monthOptions}
           onChange={onPickMonth}
           align="right"
         />
@@ -355,13 +357,13 @@ export default function Dashboard() {
     ;(async () => {
       const now = new Date()
       const deviceMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
-      // anchor = সর্বশেষ বিল-হওয়া মাস (না থাকলে ডিভাইস-মাস);
-      // dropdown শুধু বিল-হওয়া মাস দেখায় — বিল হলেই মাস আসবে।
-      const anchor = months.anchor ?? (await repo.getLatestBilledMonth()) ?? deviceMonth
+      const anchor = months.anchor ?? deviceMonth
       const month = months.chosen ?? anchor
       if (!alive) return
       if (!months.anchor) setMonths((current) => ({ ...current, anchor }))
-      const window = lastMonths(month, 6)
+      /** bill cycle worked on during `month` = the previous month's papers. */
+      const billMonth = shiftMonth(month, -1)
+      const window = lastMonths(month, 13)
       const [
         property,
         dashboard,
@@ -374,18 +376,19 @@ export default function Dashboard() {
         meter,
       ] = await Promise.all([
         repo.getProperty(),
-        repo.getDashboard(month),
-        repo.getDashboard(shiftMonth(month, -1)),
+        repo.getDashboard(billMonth),
+        repo.getDashboard(shiftMonth(billMonth, -1)),
         repo.getCashflow(window),
-        repo.listBills(month),
+        repo.listBills(billMonth),
         repo.listRooms(),
         repo.listLoans(),
-        repo.listLedger(month),
-        repo.getMeterEntry(month),
+        repo.listLedger(),
+        repo.getMeterEntry(billMonth),
       ])
       if (!alive) return
       setData({
         month,
+        billMonth,
         property,
         dashboard,
         previous,
@@ -417,6 +420,7 @@ export default function Dashboard() {
 
   const {
     month,
+    billMonth,
     property,
     dashboard,
     previous,
@@ -428,27 +432,68 @@ export default function Dashboard() {
     meter,
   } = data
 
-  // dropdown-এ শুধু বিল-হওয়া মাস — বিল হলেই মাস আসবে
-  const billedMonths = [...new Set(bills.map((b) => b.month))].sort((a, b) => b.localeCompare(a))
+  /** Dropdown = cash months whose previous month has papers (bill generated).
+   * Current device month qualifies only when its bill-month has bills —
+   * “bill generate korle then ei mas asbe”. */
+  const nowNow = new Date()
+  const deviceNow = `${nowNow.getFullYear()}-${String(nowNow.getMonth() + 1).padStart(2, '0')}`
+  const billedHere = new Set(cashflow.filter((row) => row.billed > 0).map((row) => row.month))
+  const monthOptions = [
+    ...new Set([
+      month,
+      ...[...billedHere]
+        .map((m) => addMonths(m, 1))
+        .filter((m) => m <= deviceNow),
+    ]),
+  ]
+    .filter((m) => billedHere.has(shiftMonth(m, -1)) || m === month)
+    .sort((a, b) => b.localeCompare(a))
 
   if (bills.length === 0) {
+    // বিল-সাইকেল মাসের কোনো কাগজ নেই — শুধু এই ক্যাশ মাসের আয়-ব্যয় দেখাই।
+    const cash = cashflow.find((row) => row.month === month)
     return (
       <>
         <DashboardHeader
           property={property}
           month={month}
-          anchorMonth={months.anchor ?? month}
-          billedMonths={billedMonths}
+          monthOptions={monthOptions}
           onPickMonth={pickMonth}
           onOpenNotifications={() => setNotifyOpen(true)}
         />
         <EmptyState
           className="mt-4"
-          title="এখনও কোনো বিল নেই"
-          caption="মিটার রিডিং দিয়ে এই মাসের বিল তৈরি করুন।"
+          title={`${bnMonth(billMonth)}-এর বিল এখনো হয়নি`}
+          caption="মিটার রিডিং দিয়ে বিল বানালে সেই হিসাব এখানে আসবে।"
           actionLabel="বিল তৈরি করুন"
-          onAction={() => navigate("/bills/meters")}
+          onAction={() => navigate('/bills/meters')}
         />
+        {cash && (cash.income > 0 || cash.expenses > 0) ? (
+          <section
+            className="mt-3 rounded-card border border-border bg-surface-raised p-4"
+            aria-label="এই মাসের আয়-ব্যয়"
+          >
+            <h2 className="text-base font-semibold text-ink">
+              {bnMonth(month)}-এর আয়-ব্যয়
+            </h2>
+            <div className="mt-3 grid grid-cols-3 divide-x divide-border text-center">
+              <div>
+                <p className="text-xs text-ink-faint">আয়</p>
+                <p className="mt-1 text-lg font-bold text-success">{bnTaka(cash.income)}</p>
+              </div>
+              <div>
+                <p className="text-xs text-ink-faint">ব্যয়</p>
+                <p className="mt-1 text-lg font-bold text-ink">{bnTaka(cash.expenses)}</p>
+              </div>
+              <div>
+                <p className="text-xs text-ink-faint">নিট</p>
+                <p className="mt-1 text-lg font-bold text-ink">
+                  {cash.net < 0 ? '−' : '+'}{bnTaka(Math.abs(cash.net))}
+                </p>
+              </div>
+            </div>
+          </section>
+        ) : null}
       </>
     )
   }
@@ -475,10 +520,6 @@ export default function Dashboard() {
   }
 
   const monthCashflow = cashflow.find((row) => row.month === month)
-  const billed = monthCashflow?.billed ?? 0
-  const collectionPct =
-    billed > 0 ? Math.round((dashboard.collectedTotal / billed) * 100) : 0
-
   /* ---- chart geometry (viewBox 0 0 560 232, same as canvas) ---- */
   const BASE_Y = 206
   const TOP_Y = 15.5
@@ -541,12 +582,12 @@ export default function Dashboard() {
   if (meter) {
     activities.push({
       key: 'meter',
-      date: `${month}-01`,
+      date: `${billMonth}-01`,
       tone: 'primary',
       icon: <BoltIcon />,
-      title: 'মিটার এন্ট্রি',
-      detail: `${bnMonth(month)} · খসড়া সেভ হয়েছে`,
-      time: bnDate(`${month}-01`),
+      title: `${bnMonth(billMonth)} মিটার এন্ট্রি`,
+      detail: 'খসড়া সেভ হয়েছে',
+      time: bnDate(`${billMonth}-01`),
     })
   }
   for (const bill of bills) {
@@ -590,8 +631,7 @@ export default function Dashboard() {
       <DashboardHeader
         property={property}
         month={month}
-        anchorMonth={months.anchor ?? month}
-        billedMonths={billedMonths}
+        monthOptions={monthOptions}
         onPickMonth={pickMonth}
         onOpenNotifications={() => setNotifyOpen(true)}
       />
@@ -744,21 +784,26 @@ export default function Dashboard() {
         open={notifyOpen}
         onClose={() => setNotifyOpen(false)}
         dashboard={dashboard}
-        month={month}
+        month={billMonth}
       />
 
-      {/* KPI */}
+      {/* মডেল নোট: বিল/বকেয়া = আগের মাসের কাগজ; আয়-ব্যয় = এই মাসের ক্যাশ */}
+      <p className="mt-4 rounded-card border border-border bg-surface-soft px-4 py-2.5 text-xs text-ink-muted">
+        {bnMonth(billMonth)}-এর বিল ও বকেয়া · {bnMonth(month)}-এর আয়-ব্যয়
+      </p>
+
+      {/* KPI — বকেয়া/বিল = বিল-মাসের (আগের মাস); আদায়/ব্যয় = এই মাসের ক্যাশ */}
       <section className="mt-4 grid grid-cols-2 gap-3 md:mt-6 md:gap-4 lg:grid-cols-4">
         <KpiCard
-          label="এই মাসের বকেয়া"
+          label={`${bnMonth(billMonth)}-এর বকেয়া`}
           value={bnTaka(dashboard.dueTotal)}
           trend={dueTrend}
         />
         <KpiCard
-          label="আদায় হয়েছে"
-          value={bnTaka(dashboard.collectedTotal)}
+          label="এই মাসে আদায়"
+          value={bnTaka(monthCashflow?.collected ?? 0)}
           trend={{
-            text: `বিলের ${bnNumber(collectionPct)}% আদায়`,
+            text: `${bnMonth(month)}-এ ক্যাশ আদায়`,
             tone: 'success',
           }}
         />
@@ -873,7 +918,7 @@ export default function Dashboard() {
           <div className="flex items-center justify-between">
             <h2 className="text-base font-semibold text-ink">বকেয়া তালিকা</h2>
             <Link
-              to={`/collection?month=${month}`}
+              to={`/collection?month=${billMonth}`}
               className="text-sm font-medium text-primary"
             >
               সব দেখুন
@@ -968,7 +1013,7 @@ export default function Dashboard() {
               icon={<GaugeIcon />}
             />
             <CycleTile
-              to={`/bills/preview?month=${month}`}
+              to={`/bills/preview?month=${billMonth}`}
               done={tile2Done}
               step="২"
               title="বিল দেখুন"
@@ -980,7 +1025,7 @@ export default function Dashboard() {
               icon={<BillIcon />}
             />
             <CycleTile
-              to={`/bills/print?month=${month}`}
+              to={`/bills/print?month=${billMonth}`}
               done={tile3Done}
               step="৩"
               title="প্রিন্ট করুন"
@@ -988,7 +1033,7 @@ export default function Dashboard() {
               icon={<PrinterIcon />}
             />
             <CycleTile
-              to={`/collection?month=${month}`}
+              to={`/collection?month=${billMonth}`}
               done={tile4Done}
               step="৪"
               title="কালেকশন"
