@@ -168,7 +168,11 @@ export default function ForgotPassword() {
       return;
     }
     setSubmitting(true);
-    const { error } = await supabase.auth.resetPasswordForEmail(email.trim());
+    // Email link must land back on this screen; Supabase requires the URL to
+    // be allowlisted under Auth → URL Configuration → Redirect URLs.
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: `${window.location.origin}/forgot-password`,
+    });
     setSubmitting(false);
     if (error) {
       setFormError(authErrorMessage(error.message));
@@ -230,7 +234,9 @@ export default function ForgotPassword() {
   async function handleResend() {
     setOtpError(null);
     setResendNote(false);
-    const { error } = await supabase.auth.resetPasswordForEmail(email.trim());
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: `${window.location.origin}/forgot-password`,
+    });
     if (error) {
       setOtpError(authErrorMessage(error.message));
       return;
