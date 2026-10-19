@@ -737,7 +737,7 @@ export default function Dashboard() {
                         {row.tenantName}
                       </p>
                       <p className="text-xs text-ink-muted">
-                        রুম {bnDigits(row.roomNumber)} · {bnMonth(month)}
+                        রুম {bnDigits(row.roomNumber)}
                       </p>
                     </div>
                     <div className="text-right">
