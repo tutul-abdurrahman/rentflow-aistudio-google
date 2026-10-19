@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useRepository } from '../app/repository'
+import EmptyState from '../components/EmptyState'
 import KpiCard, { type KpiTrend } from '../components/KpiCard'
 import MonthSelect from '../components/MonthSelect'
 import Sheet from '../components/Sheet'
@@ -181,7 +182,7 @@ const ICON_BUTTON_CLASS =
 function DashboardHeader({
   property,
   month,
-  anchorMonth,
+  billedMonths,
   onPickMonth,
   onOpenNotifications,
 }: {
@@ -189,6 +190,8 @@ function DashboardHeader({
   month: string
   /** latest cycle month — the month dropdown window anchors here */
   anchorMonth: string
+  /** months that have papers — dropdown shows only these (bill হলেই মাস আসে) */
+  billedMonths: string[]
   onPickMonth: (month: string) => void
   onOpenNotifications: () => void
 }) {
@@ -211,7 +214,7 @@ function DashboardHeader({
       <div className="mt-4 flex items-center justify-end gap-2 lg:mt-0 lg:gap-3">
         <MonthSelect
           value={month}
-          months={lastMonths(anchorMonth, 12)}
+          months={billedMonths}
           onChange={onPickMonth}
           align="right"
         />
@@ -315,6 +318,7 @@ function DashboardSkeleton() {
 /* ---------- screen ---------- */
 
 export default function Dashboard() {
+  const navigate = useNavigate()
   const repo = useRepository()
   const [searchParams, setSearchParams] = useSearchParams()
   const [data, setData] = useState<DashboardData | null>(null)
@@ -351,7 +355,9 @@ export default function Dashboard() {
     ;(async () => {
       const now = new Date()
       const deviceMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
-      const anchor = months.anchor ?? deviceMonth
+      // anchor = সর্বশেষ বিল-হওয়া মাস (না থাকলে ডিভাইস-মাস);
+      // dropdown শুধু বিল-হওয়া মাস দেখায় — বিল হলেই মাস আসবে।
+      const anchor = months.anchor ?? (await repo.getLatestBilledMonth()) ?? deviceMonth
       const month = months.chosen ?? anchor
       if (!alive) return
       if (!months.anchor) setMonths((current) => ({ ...current, anchor }))
@@ -422,80 +428,31 @@ export default function Dashboard() {
     meter,
   } = data
 
-  /* এই মাসে বিল হয়নি → ওই মাসের হিসাব (বকেয়া/আদায়) শূন্য;
-     উপরে নোট দিয়ে বোঝাই গত মাসের বিলের হিসাব এখনও আলাদা দেখা যাবে। */
-  const cycleNotBilled = bills.length === 0
+  // dropdown-এ শুধু বিল-হওয়া মাস — বিল হলেই মাস আসবে
+  const billedMonths = [...new Set(bills.map((b) => b.month))].sort((a, b) => b.localeCompare(a))
 
-  if (cycleNotBilled) {
+  if (bills.length === 0) {
     return (
       <>
         <DashboardHeader
           property={property}
           month={month}
           anchorMonth={months.anchor ?? month}
+          billedMonths={billedMonths}
           onPickMonth={pickMonth}
           onOpenNotifications={() => setNotifyOpen(true)}
         />
-        <div className="mt-4 flex items-start gap-2.5 rounded-card border border-border bg-surface-soft px-4 py-3">
-          <p className="text-sm text-ink-muted">
-            <span className="font-semibold text-ink">
-              {bnMonth(month)}-এর বিল এখনো হয়নি
-            </span>
-            {' — '}মিটার রিডিং দিয়ে বিল বানালে এই মাসের হিসাব এখানে আসবে।
-            {previous.dueTotal > 0
-              ? ` গত মাসের (${bnMonth(shiftMonth(month, -1))}) বকেয়া ৳${bnNumber(previous.dueTotal)} — কালেকশন পেজে আদায় লেখা যাবে।`
-              : ''}
-          </p>
-        </div>
-        {dashboard.expenseTotal > 0 ||
-        cashflow.some((row) => row.month === month && row.income > 0) ? (
-          <section
-            className="mt-3 rounded-card border border-border bg-surface-raised p-4"
-            aria-label="এই মাসের আয়-ব্যয়"
-          >
-            <h2 className="text-base font-semibold text-ink">
-              {bnMonth(month)}-এর আয়-ব্যয়
-            </h2>
-            <div className="mt-3 grid grid-cols-3 divide-x divide-border text-center">
-              <div>
-                <p className="text-xs text-ink-faint">আয়</p>
-                <p className="mt-1 text-lg font-bold text-success">
-                  {bnTaka(
-                    cashflow.find((row) => row.month === month)?.income ?? 0,
-                  )}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-ink-faint">ব্যয়</p>
-                <p className="mt-1 text-lg font-bold text-ink">
-                  {bnTaka(dashboard.expenseTotal)}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-ink-faint">নিট</p>
-                <p className="mt-1 text-lg font-bold text-ink">
-                  {(cashflow.find((row) => row.month === month)?.income ?? 0) -
-                    dashboard.expenseTotal <
-                  0
-                    ? '−'
-                    : '+'}
-                  {bnTaka(
-                    Math.abs(
-                      (cashflow.find((row) => row.month === month)?.income ??
-                        0) - dashboard.expenseTotal,
-                    ),
-                  )}
-                </p>
-              </div>
-            </div>
-          </section>
-        ) : null}
+        <EmptyState
+          className="mt-4"
+          title="এখনও কোনো বিল নেই"
+          caption="মিটার রিডিং দিয়ে এই মাসের বিল তৈরি করুন।"
+          actionLabel="বিল তৈরি করুন"
+          onAction={() => navigate("/bills/meters")}
+        />
       </>
     )
   }
-
-  /* ---- KPI numbers ---- */
-  /** Below this base a Δ% is noise (৳1 base → +2,58,200%); show taka instead. */
+  /** Below this base a Δ% is noise; show taka instead. */
   const MIN_TREND_BASE = 1000
   let dueTrend: KpiTrend
   if (previous.dueTotal <= 0) {
@@ -634,6 +591,7 @@ export default function Dashboard() {
         property={property}
         month={month}
         anchorMonth={months.anchor ?? month}
+        billedMonths={billedMonths}
         onPickMonth={pickMonth}
         onOpenNotifications={() => setNotifyOpen(true)}
       />
