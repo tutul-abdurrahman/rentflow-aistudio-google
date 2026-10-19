@@ -172,8 +172,10 @@ export default function ForgotPassword() {
       )
       const isRecoveryHash =
         params.get('type') === 'recovery' ||
-        (params.get('access_token') !== null && params.get('refresh_token') !== null)
-      const hasCode = new URLSearchParams(window.location.search).get('code') !== null
+        (params.get('access_token') !== null &&
+          params.get('refresh_token') !== null)
+      const hasCode =
+        new URLSearchParams(window.location.search).get('code') !== null
       if (!isRecoveryHash && !hasCode) return
 
       try {
