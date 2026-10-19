@@ -633,8 +633,8 @@ export default function Dashboard() {
           </div>
 
           <svg
-            className="mt-1 w-full px-4 pb-2"
-            viewBox="0 0 560 232"
+            className="mt-1 w-full px-1"
+            viewBox="4 0 556 226"
             role="img"
             aria-label="শেষ ছয় মাসের প্রতি মাসের আয়-ব্যয়ের গ্রুপড কলাম চার্ট"
           >
@@ -721,7 +721,7 @@ export default function Dashboard() {
                 এই মাসে কোনো বকেয়া নেই।
               </p>
             ) : (
-              dashboard.dueList.slice(0, 5).map((row) => {
+              dashboard.dueList.slice(0, 4).map((row) => {
                 const bill = billByTenant.get(row.tenantId)
                 const overdue =
                   bill?.lines.some(
