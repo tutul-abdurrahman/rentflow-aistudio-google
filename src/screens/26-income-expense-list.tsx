@@ -173,15 +173,15 @@ export default function IncomeExpenseList() {
       const collections: FinanceEntry[] = ledgerRows
         .filter((row) => row.paidAt.slice(0, 7) === target)
         .map((row) => ({
-        id: `ledger-${row.id}`,
-        propertyId: row.propertyId,
-        kind: 'income' as const,
-        category: 'ভাড়া আদায়',
-        amount: row.amount,
-        date: row.paidAt,
-        note: row.note,
-        createdAt: row.createdAt,
-      }))
+          id: `ledger-${row.id}`,
+          propertyId: row.propertyId,
+          kind: 'income' as const,
+          category: 'ভাড়া আদায়',
+          amount: row.amount,
+          date: row.paidAt,
+          note: row.note,
+          createdAt: row.createdAt,
+        }))
       setCollections(collections)
       setCash(cashRows[0] ?? null)
       setPropertyName(property.name)
@@ -211,9 +211,9 @@ export default function IncomeExpenseList() {
     Promise.all([
       repo.listFinance(next),
       repo.getCashflow([next]),
-      repo.listLedger().then((rows) =>
-        rows.filter((row) => row.paidAt.slice(0, 7) === next),
-      ),
+      repo
+        .listLedger()
+        .then((rows) => rows.filter((row) => row.paidAt.slice(0, 7) === next)),
     ]).then(([rows, cashRows, ledgerRows]) => {
       setEntries(rows)
       setCash(cashRows[0] ?? null)
@@ -433,7 +433,7 @@ export default function IncomeExpenseList() {
             caption="এই ফিল্টারে এই মাসের কোনো এন্ট্রি নেই।"
           />
         ) : (
-          <div className="mt-2 divide-y divide-border rounded-card border border-border bg-surface-raised">
+          <div className="mt-2 divide-y divide-border overflow-hidden rounded-card border border-border bg-surface-raised">
             {groups.map(([date, rows]) => (
               <div key={date}>
                 <div className="flex items-center bg-surface-soft px-4 py-2 text-xs font-medium text-ink-faint">
