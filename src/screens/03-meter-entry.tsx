@@ -163,13 +163,22 @@ export default function MeterEntry() {
       if (!alive) return
 
       const nextDrafts: Record<string, RoomDraft> = {}
+      const draftMonth = bills.length === 0
       for (const room of rooms) {
         const row = entry?.rooms.find((item) => item.roomId === room.id)
+        const previous = row
+          ? String(row.previous)
+          : String(lastKnown.rooms.get(room.id) ?? 0)
+        // ড্রাফট মাসে বর্তমান == পূর্ববর্তী (০ ব্যবহৃত) মানে আসল রিডিং এখনো দেওয়া হয়নি —
+        // ক্ষেত্র ফাঁকা দেখাই যেন ওনার ক্লিক করে নিজে লেখেন।
+        const current = row
+          ? draftMonth && row.current === row.previous
+            ? ''
+            : String(row.current)
+          : ''
         nextDrafts[room.id] = {
-          previous: row
-            ? String(row.previous)
-            : String(lastKnown.rooms.get(room.id) ?? 0),
-          current: row ? String(row.current) : '',
+          previous,
+          current,
           touched: false,
         }
       }
@@ -178,7 +187,7 @@ export default function MeterEntry() {
       setWaterPrevious(
         entry ? String(entry.water.previous) : String(lastKnown.water),
       )
-      setWaterCurrent(entry ? String(entry.water.current) : '')
+      setWaterCurrent(entry ? (bills.length === 0 && Number(entry.water.current) === Number(entry.water.previous) ? '' : String(entry.water.current)) : '')
       setWaterTouched(false)
       setHasPapers(bills.length > 0)
       setRate(String(property?.electricityRate ?? 0))

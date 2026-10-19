@@ -250,7 +250,7 @@ export default function MonthlySummaryLedger() {
             : ''}
         </p>
         <p className="mt-1 text-xs text-ink-faint">
-          ক্যাশ নেওয়ার সময় স্বাক্ষর কলামটি হাতে পূরণ করা হবে।
+          প্রিন্টে স্বাক্ষরের জায়গা হাতে পূরণ করা হবে।
         </p>
       </div>
 
@@ -355,7 +355,6 @@ export default function MonthlySummaryLedger() {
                 <th className={`${TH_CLASS} text-right text-ink`}>মোট</th>
                 <th className={`${TH_CLASS} text-right text-ink`}>পরিশোধিত</th>
                 <th className={`${TH_CLASS} text-ink-muted`}>অবস্থা</th>
-                <th className={`${TH_CLASS} text-ink-muted`}>স্বাক্ষর</th>
               </tr>
             </thead>
 
@@ -386,7 +385,7 @@ export default function MonthlySummaryLedger() {
                 <tr>
                   <td
                     className="border-b border-border px-3 py-2.5 text-center text-ink-faint"
-                    colSpan={11}
+                    colSpan={10}
                   >
                     এই মাসে কোনো বিল নেই।
                   </td>
@@ -442,9 +441,6 @@ export default function MonthlySummaryLedger() {
                     <td className={`${TD_CLASS} text-right`}>
                       <StatusChip variant={STATUS_VARIANT[row.status]} />
                     </td>
-                    <td className="border-b border-border px-3 py-2.5 text-center whitespace-nowrap text-ink-faint">
-                      —
-                    </td>
                   </tr>
                 ))
               )}
@@ -480,9 +476,6 @@ export default function MonthlySummaryLedger() {
                   </td>
                   <td className="border-t-2 border-border-strong px-3 py-3 text-sm font-bold whitespace-nowrap text-warning">
                     নিট বাকি {bnTaka(dueTotal)}
-                  </td>
-                  <td className="border-t-2 border-border-strong px-3 py-3 text-center text-sm whitespace-nowrap text-ink-faint">
-                    —
                   </td>
                 </tr>
               ) : null}
