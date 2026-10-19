@@ -661,8 +661,12 @@ export function createMemoryRepository(options: MemoryRepositoryOptions = {}): R
         const expenses = s.finance
           .filter((entry) => entry.kind === 'expense' && entry.date.slice(0, 7) === month)
           .reduce((sum, entry) => sum + entry.amount, 0);
-        // Screen 28: নিট ক্যাশফ্লো = মোট আয় − মোট ব্যয় (আয় = billed).
-        return { month, billed, collected, expenses, net: billed - expenses };
+        const financeIncome = s.finance
+          .filter((entry) => entry.kind === 'income' && entry.date.slice(0, 7) === month)
+          .reduce((sum, entry) => sum + entry.amount, 0);
+        // আয় = আদায়-করা ভাড়া + ম্যানুয়াল finance income; নিট = আয় − ব্যয়।
+        const income = collected + financeIncome;
+        return { month, billed, collected, income, expenses, net: income - expenses };
       });
     },
 

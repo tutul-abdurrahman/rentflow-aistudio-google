@@ -193,8 +193,8 @@ describe('memory repository — demo seed', () => {
   it('getCashflow recomputes billed/collected/expenses/net per month', async () => {
     await repo.calculatePapers(DEMO_MONTH);
     const [july, august] = await repo.getCashflow(['2026-07', '2026-08']);
-    expect(july).toEqual({ month: '2026-07', billed: 47500, collected: 35900, expenses: 0, net: 47500 });
-    expect(august).toEqual({ month: '2026-08', billed: 67773, collected: 42200, expenses: 9400, net: 58373 });
+    expect(july).toEqual({ month: '2026-07', billed: 47500, collected: 35900, income: 35900, expenses: 0, net: 35900 });
+    expect(august).toEqual({ month: '2026-08', billed: 67773, collected: 42200, income: 42200, expenses: 9400, net: 32800 });
   });
 
   it('listTenants filters active/archived and blocks deleting an active tenant', async () => {

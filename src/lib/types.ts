@@ -239,6 +239,8 @@ export interface CashflowRow {
   month: MonthKey;
   billed: number;
   collected: number;
+  /** cash-basis income = collected rent + manual finance income entries */
+  income: number;
   expenses: number;
   net: number;
 }

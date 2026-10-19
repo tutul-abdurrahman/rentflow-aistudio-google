@@ -74,7 +74,7 @@ interface ChartProps {
 }
 
 function CashflowChart({ rows, activeMonth }: ChartProps) {
-  const peak = rows.reduce((max, row) => Math.max(max, row.billed, row.expenses), 0);
+  const peak = rows.reduce((max, row) => Math.max(max, row.income, row.expenses), 0);
   const niceMax = Math.max(30000, Math.ceil(peak / 30000) * 30000);
   const scale = CHART_HEIGHT / niceMax;
   const guides = [niceMax, (niceMax * 2) / 3, niceMax / 3];
@@ -129,7 +129,7 @@ function CashflowChart({ rows, activeMonth }: ChartProps) {
       {rows.map((row, index) => {
         const incomeX = 60 + index * GROUP_STEP;
         const expenseX = incomeX + BAR_WIDTH + 4;
-        const incomeHeight = row.billed > 0 ? Math.max(3, row.billed * scale) : 0;
+        const incomeHeight = row.income > 0 ? Math.max(3, row.income * scale) : 0;
         const expenseHeight = row.expenses > 0 ? Math.max(3, row.expenses * scale) : 0;
         return (
           <g key={row.month}>
@@ -218,6 +218,7 @@ export default function CashflowSummary() {
 
   const current = rows.find((row) => row.month === month) ?? null;
   const billed = current?.billed ?? 0;
+  const income = current?.income ?? 0;
   const expenses = current?.expenses ?? 0;
   const net = current?.net ?? 0;
   const collected = current?.collected ?? 0;
@@ -279,8 +280,8 @@ export default function CashflowSummary() {
       >
         <div className="rounded-card border border-border bg-surface-raised p-4">
           <p className="text-sm text-ink-faint">এই মাসের আয়</p>
-          <p className="mt-2 text-2xl font-bold leading-none text-ink">{dash(billed)}</p>
-          <p className="mt-2 text-xs text-success">মূল ভাড়া + অন্যান্য</p>
+          <p className="mt-2 text-2xl font-bold leading-none text-ink">{dash(income)}</p>
+          <p className="mt-2 text-xs text-success">ভাড়া আদায় + অন্যান্য আয়</p>
         </div>
         <div className="rounded-card border border-border bg-surface-raised p-4">
           <p className="text-sm text-ink-faint">এই মাসের ব্যয়</p>
@@ -342,7 +343,7 @@ export default function CashflowSummary() {
             নিট ক্যাশফ্লো = মোট আয় − মোট ব্যয়
           </p>
           <p className="mt-2 text-sm text-ink-muted">
-            {bnTaka(billed)} − {bnTaka(expenses)} ={' '}
+            {bnTaka(income)} − {bnTaka(expenses)} ={' '}
             <span className="font-bold text-success">
               {net < 0 ? '−' : '+'}
               {bnTaka(Math.abs(net))}

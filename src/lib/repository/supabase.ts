@@ -1419,7 +1419,11 @@ export function createSupabaseRepository(client: SupabaseClient): RentFlowReposi
         const expenses = ((financeResult.data ?? []) as FinanceRow[])
           .filter((row) => row.kind === 'expense' && row.date.slice(0, 7) === month)
           .reduce((sum, row) => sum + num(row.amount), 0);
-        rows.push({ month, billed, collected, expenses, net: billed - expenses });
+        const financeIncome = ((financeResult.data ?? []) as FinanceRow[])
+          .filter((row) => row.kind === 'income' && row.date.slice(0, 7) === month)
+          .reduce((sum, row) => sum + num(row.amount), 0);
+        const income = collected + financeIncome;
+        rows.push({ month, billed, collected, income, expenses, net: income - expenses });
       }
       return rows;
     },

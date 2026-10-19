@@ -6,6 +6,7 @@ import KpiCard, { type KpiTrend } from '../components/KpiCard'
 import MonthSelect from '../components/MonthSelect'
 import Sheet from '../components/Sheet'
 import StatusChip from '../components/StatusChip'
+import { cn } from '../lib/cn'
 import { bnDate, bnDigits, bnMonth, bnNumber, bnTaka } from '../lib/format'
 import { isMonthKey } from '../lib/screen-month'
 import type {
@@ -334,6 +335,18 @@ export default function Dashboard() {
       : null,
   })
   const [notifyOpen, setNotifyOpen] = useState(false)
+  const [reloadKey, setReloadKey] = useState(0)
+  const [
+    payFor,
+    setPayFor,
+  ] = useState<{ billId: string; roomNumber: string; tenantName: string; due: number } | null>(
+    null,
+  )
+  const [payAmount, setPayAmount] = useState('')
+  const [payMethod, setPayMethod] = useState<'নগদ' | 'বিকাশ'>('নগদ')
+  const [payNote, setPayNote] = useState('')
+  const [payError, setPayError] = useState<string | null>(null)
+  const [payBusy, setPayBusy] = useState(false)
 
   useEffect(() => {
     let alive = true
@@ -384,7 +397,7 @@ export default function Dashboard() {
     return () => {
       alive = false
     }
-  }, [repo, months])
+  }, [repo, months, reloadKey])
 
   const pickMonth = (month: string) => {
     if (!data || month === data.month) return
@@ -466,7 +479,7 @@ export default function Dashboard() {
   const PLOT_H = BASE_Y - TOP_Y
   const rawMax = Math.max(
     1,
-    ...cashflow.flatMap((row) => [row.billed, row.expenses]),
+    ...cashflow.flatMap((row) => [row.income, row.expenses]),
   )
   const axisMax = niceStep(rawMax / 3) * 3
   const guideRows = [3, 2, 1, 0].map((step) => ({
@@ -576,6 +589,133 @@ export default function Dashboard() {
         onOpenNotifications={() => setNotifyOpen(true)}
       />
 
+      <Sheet
+        open={payFor !== null}
+        onClose={() => setPayFor(null)}
+        ariaLabel="আদায় নিশ্চিত করুন"
+      >
+        {payFor ? (
+          <>
+            <div className="mt-4 flex items-center gap-3">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary-tint text-primary">
+                <CashIcon />
+              </span>
+              <div className="min-w-0">
+                <h2 className="text-lg font-semibold text-ink">
+                  {bnTaka(payFor.due)} আদায় নিশ্চিত করুন
+                </h2>
+                <p className="text-sm text-ink-muted">
+                  রুম {bnDigits(payFor.roomNumber)} · {payFor.tenantName} · {bnMonth(month)}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <label htmlFor="dash-amount" className="mb-1.5 block text-sm font-medium text-ink">
+                আদায়ের পরিমাণ
+              </label>
+              <div className="relative">
+                <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-md font-medium text-ink-faint">
+                  ৳
+                </span>
+                <input
+                  id="dash-amount"
+                  type="text"
+                  inputMode="numeric"
+                  value={payAmount}
+                  onChange={(event) => setPayAmount(event.target.value)}
+                  className="w-full rounded-input border border-border bg-surface-raised py-3 pl-10 pr-4 text-md font-semibold text-ink transition-colors focus:border-border-focus"
+                />
+              </div>
+            </div>
+
+            <p className="mt-4 text-sm font-medium text-ink">আদায়ের মাধ্যম</p>
+            <div className="mt-2 grid grid-cols-2 gap-3">
+              {(['নগদ', 'বিকাশ'] as const).map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  onClick={() => setPayMethod(option)}
+                  aria-pressed={payMethod === option}
+                  className={cn(
+                    'flex items-center justify-center gap-2 rounded-card border px-4 py-3 text-sm font-semibold text-ink transition-colors',
+                    payMethod === option
+                      ? 'border-border-focus bg-primary-tint'
+                      : 'border-border bg-surface-raised hover:bg-surface-soft',
+                  )}
+                >
+                  <span
+                    className={cn(
+                      'h-3 w-3 rounded-full border-[1.5px]',
+                      payMethod === option
+                        ? 'border-primary bg-primary'
+                        : 'border-border-strong bg-transparent',
+                    )}
+                  />
+                  {option}
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-4">
+              <label htmlFor="dash-note" className="mb-1.5 block text-sm font-medium text-ink">
+                নোট (ইচ্ছা হলে)
+              </label>
+              <input
+                id="dash-note"
+                type="text"
+                value={payNote}
+                onChange={(event) => setPayNote(event.target.value)}
+                placeholder="যেমন: বিকাশে পাঠিয়েছে"
+                className="w-full rounded-input border border-border bg-surface-raised px-4 py-3 text-md text-ink transition-colors placeholder:text-ink-faint focus:border-border-focus"
+              />
+            </div>
+
+            {payError ? <p className="mt-3 text-sm text-danger">{payError}</p> : null}
+
+            <div className="mt-5 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setPayFor(null)}
+                className="flex-1 rounded-button border border-secondary bg-transparent px-5 py-3 text-base font-semibold text-secondary transition-colors hover:bg-secondary-hover active:bg-secondary-active"
+              >
+                বাতিল
+              </button>
+              <button
+                type="button"
+                disabled={payBusy}
+                onClick={async () => {
+                  const parsed = Number(payAmount)
+                  if (payAmount === '' || !Number.isFinite(parsed) || parsed <= 0) {
+                    setPayError('আদায়ের পরিমাণ দিন।')
+                    return
+                  }
+                  setPayBusy(true)
+                  try {
+                    await repo.recordPayment({
+                      billId: payFor.billId,
+                      amount: parsed,
+                      paidAt: new Date().toISOString().slice(0, 10),
+                      method: payMethod,
+                      note: payNote.trim() || undefined,
+                    })
+                    setPayFor(null)
+                    setPayBusy(false)
+                    setReloadKey((key) => key + 1)
+                  } catch (caught) {
+                    setPayError(caught instanceof Error ? caught.message : 'আদায় লেখা যায়নি')
+                    setPayBusy(false)
+                  }
+                }}
+                className="flex-1 rounded-button bg-primary px-5 py-3 text-base font-semibold text-on-primary transition-colors hover:bg-primary-hover active:bg-primary-active disabled:bg-primary-disabled disabled:text-ink-faint"
+              >
+                আদায় নিশ্চিত করুন
+              </button>
+            </div>
+          </>
+        ) : null}
+      </Sheet>
+
       <NotificationSheet
         open={notifyOpen}
         onClose={() => setNotifyOpen(false)}
@@ -664,7 +804,7 @@ export default function Dashboard() {
             ))}
             {cashflow.map((row, index) => {
               const centerX = 86 + index * 84
-              const incomeHeight = (row.billed / axisMax) * PLOT_H
+              const incomeHeight = (row.income / axisMax) * PLOT_H
               const expenseHeight = (row.expenses / axisMax) * PLOT_H
               return (
                 <g key={row.month}>
@@ -753,14 +893,27 @@ export default function Dashboard() {
                         variant={overdue ? 'overdue' : 'due'}
                       />
                     </div>
-                    <Link
-                      to={`/collection?month=${month}`}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPayAmount(String(row.amount))
+                        setPayMethod('নগদ')
+                        setPayNote('')
+                        setPayError(null)
+                        const bill = billByTenant.get(row.tenantId)
+                        setPayFor({
+                          billId: bill?.id ?? '',
+                          roomNumber: row.roomNumber,
+                          tenantName: row.tenantName,
+                          due: row.amount,
+                        })
+                      }}
                       className={ICON_BUTTON_CLASS}
                       aria-label={`${row.tenantName} থেকে আদায়`}
                     >
                       <CashIcon />
                       আদায়
-                    </Link>
+                    </button>
                   </div>
                 )
               })

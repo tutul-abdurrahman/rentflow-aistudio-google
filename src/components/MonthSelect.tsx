@@ -61,7 +61,9 @@ export default function MonthSelect({
   /** Selected month on top; the rest newest-first regardless of incoming order. */
   const ordered = [
     value,
-    ...months.filter((month) => month !== value).sort((a, b) => b.localeCompare(a)),
+    ...months
+      .filter((month) => month !== value)
+      .sort((a, b) => b.localeCompare(a)),
   ]
 
   return (
